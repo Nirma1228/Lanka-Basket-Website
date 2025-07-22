@@ -5,6 +5,7 @@ dotenv.config();
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import helmet from 'helmet';
+import connectDB from './config/connectDB.js';
 
 const app = express();
 
@@ -55,7 +56,20 @@ app.get("/health", (request, response) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-    console.log(`Access the server at: http://localhost:${PORT}`);
-});
+const startServer = async () => {
+    try {
+        // Connect to database first
+        await connectDB();
+        
+        // Then start the server
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+            console.log(`Access the server at: http://localhost:${PORT}`);
+        });
+    } catch (error) {
+        console.error("Failed to start server:", error);
+        process.exit(1);
+    }
+};
+
+startServer();
