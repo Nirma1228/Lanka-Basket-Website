@@ -59,10 +59,17 @@ const CategoryWiseProductDisplay = ({ id, name }) => {
                             )
                         })
                     }
-
-
-
-               </div>
+                    
+                <div className='w-full left-0 right-0 container mx-auto  px-2  absolute hidden lg:flex justify-between'>
+                    <button onClick={handleScrollLeft} className='z-10 relative bg-white hover:bg-gray-100 shadow-lg text-lg p-2 rounded-full'>
+                        <FaAngleLeft />
+                    </button>
+                    <button onClick={handleScrollRight} className='z-10 relative  bg-white hover:bg-gray-100 shadow-lg p-2 text-lg rounded-full'>
+                        <FaAngleRight />
+                    </button>
+                </div>
+            </div>
+        </div>
     )
 }
 
