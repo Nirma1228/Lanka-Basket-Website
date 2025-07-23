@@ -68,7 +68,9 @@ const router = createBrowserRouter([
                         element : <AdminPermision><ProductAdmin/></AdminPermision>
                                 }
                             ]
-                        }
+                        },
+
+                        
                     ]
                 }
             ]);
