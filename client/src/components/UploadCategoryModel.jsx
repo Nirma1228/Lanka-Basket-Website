@@ -18,7 +18,7 @@ const [data,setData] = useState({
             }
         })
     }
-   
+
     
     const handleSubmit = async(e)=>{
         e.preventDefault()
