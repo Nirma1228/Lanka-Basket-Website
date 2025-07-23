@@ -18,29 +18,7 @@ const [data,setData] = useState({
             }
         })
     }
-     const handleSubmit = async(e)=>{
-        e.preventDefault()
-
-
-        try {
-            setLoading(true)
-            const response = await Axios({
-                ...SummaryApi.addCategory,
-                data : data
-            })
-            const { data : responseData } = response
-
-            if(responseData.success){
-                toast.success(responseData.message)
-                close()
-                fetchData()
-            }
-        } catch (error) {
-            AxiosToastError(error)
-        }finally{
-            setLoading(false)
-        }
-    }
+   
     
     const handleSubmit = async(e)=>{
         e.preventDefault()
