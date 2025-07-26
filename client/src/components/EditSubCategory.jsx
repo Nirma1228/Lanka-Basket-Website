@@ -10,7 +10,6 @@ import { useEffect } from 'react';
 
 const EditSubCategory = ({close, fetchData}) => {
     const [subCategoryData,setSubCategoryData] = useState({
-        _id : data._id,
         name : data.name,
         image : data.image,
         category : data.category || []
