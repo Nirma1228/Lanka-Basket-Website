@@ -12,10 +12,10 @@ async function connectDB() {
     try {
         await mongoose.connect(process.env.MONGODB_URI)
         console.log("MongoDB Connected Successfully");
-    } catch(error) {
+    }catch(error){
         console.log("MongoDB Connect error:", error)
         process.exit(1)
     }
-}
+    }
 
-export default connectDB;
+    export default connectDB
