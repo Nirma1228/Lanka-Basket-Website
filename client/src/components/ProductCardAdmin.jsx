@@ -72,7 +72,7 @@ const ProductCardAdmin = ({ data, fetchProductData }) => {
                         </button>
                     </div>
 
-                    <p className='my-2'>Are you sure want to delete permanently?</p>
+                    <p className='my-2'>Are you sure you want to delete this permanently?</p>
 
                     <div className='flex justify-end gap-5 py-4'>
                       <button onClick={handleDeleteCancel} className='border px-3 py-1 rounded bg-red-100 border-red-500 text-red-500 hover:bg-red-200'>Cancel</button>
