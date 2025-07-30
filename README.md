@@ -1,6 +1,6 @@
 # 🛒 Lanka Basket
 
-https://github.com/Nirma1228/Fullstack-Ecommerce/blob/main/GitHub%20Poster.jpg
+![GitHub Poster](https://github.com/user-attachments/assets/c071d46e-ed58-4459-87b9-57350ac82863)
 
 Welcome to **Lanka Basket**, a full-featured online retail e-commerce platform built with the MERN (MongoDB, Express.js, React.js, Node.js) stack. Inspired by real-world platforms like Keells, Glomark, and Cargills Food City, this project is designed for the Sri Lankan market, featuring multi-vendor support, secure authentication, cart management, order tracking, and an intuitive admin dashboard.
 
@@ -35,9 +35,9 @@ Welcome to **Lanka Basket**, a full-featured online retail e-commerce platform b
 | Frontend        | Backend     | Database | Tools                   |
 |-----------------|-------------|----------|--------------------------|
 | React.js (Vite) | Node.js     | MongoDB  | Redux Toolkit            |
-| Tailwind CSS    | Express.js  |          | Cloudinary (Image Upload) |
-| Axios           | Mongoose    |          | JWT Auth                 |
-| React Hot Toast | Dotenv      |          | React Router DOM         |
-|                 |             |          | Vercel / Render (Deploy) |
+| Tailwind CSS    | Express.js  |          | |
+| Axios           | Mongoose    |          |               |
+| React Hot Toast | Dotenv      |          |       |
+                                     
 
 
