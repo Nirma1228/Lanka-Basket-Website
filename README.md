@@ -1,6 +1,6 @@
 # 🛒 Lanka Basket
 
-https://github.com/Nirma1228/Fullstack-Ecommerce/blob/main/GitHub%20Poster.jpg
+https://github.com/Chanith27/Lanka-Basket-Website/blob/main/GitHub%20Poster.jpg
 
 Welcome to **Lanka Basket**, a full-featured online retail e-commerce platform built with the MERN (MongoDB, Express.js, React.js, Node.js) stack. Inspired by real-world platforms like Keells, Glomark, and Cargills Food City, this project is designed for the Sri Lankan market, featuring multi-vendor support, secure authentication, cart management, order tracking, and an intuitive admin dashboard.
 
