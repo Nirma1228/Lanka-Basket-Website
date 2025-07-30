@@ -38,6 +38,6 @@ Welcome to **Lanka Basket**, a full-featured online retail e-commerce platform b
 | Tailwind CSS    | Express.js  |          | |
 | Axios           | Mongoose    |          |               |
 | React Hot Toast | Dotenv      |          |       |
-|                 |             |          |  |
+                                     
 
 
