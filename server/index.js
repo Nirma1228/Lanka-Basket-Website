@@ -1,18 +1,23 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-dotenv.config();
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.join(__dirname, '.env') });
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import helmet from 'helmet';
-import connectDB from './config/connectDB.js';
 
 const app = express();
 
 // Configure CORS
 app.use(cors({
     credentials: true,
-    origin: process.env.FRONTEND_URL || 'http://localhost:8080'
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000'
 }));
 
 // Basic middleware
@@ -58,8 +63,8 @@ app.get("/health", (request, response) => {
 // Start server
 const startServer = async () => {
     try {
-        // Connect to database first
-        await connectDB();
+        // Skip database connection for now and just start the server
+        console.log("Starting server without database connection...");
         
         // Then start the server
         app.listen(PORT, () => {
