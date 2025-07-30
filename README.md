@@ -36,7 +36,7 @@ Welcome to **Lanka Basket**, a full-featured online retail e-commerce platform b
 |-----------------|-------------|----------|--------------------------|
 | React.js (Vite) | Node.js     | MongoDB  | Redux Toolkit            |
 | Tailwind CSS    | Express.js  |          | |
-| Axios           | Mongoose    |          | Auth                 |
+| Axios           | Mongoose    |          |               |
 | React Hot Toast | Dotenv      |          |       |
 |                 |             |          |  |
 
