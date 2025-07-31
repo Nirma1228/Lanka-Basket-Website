@@ -39,5 +39,17 @@ Welcome to **Lanka Basket**, a full-featured online retail e-commerce platform b
 | Axios           | Mongoose    |          |               |
 | React Hot Toast | Dotenv      |          |       |
                                      
+## 👨‍💻 Team Member Contributions
 
+- *A.M.C.R.P. Adikari (IM/2022/004):* Led the frontend client development, focusing on user interface design and integration using React.js and Tailwind CSS.
+
+- *B.M.N.N. Bandara (IM/2022/050):* Contributed extensively to both the server and admin-side UI, handling major files like order controllers, payment integration, and several key admin components.
+
+- *W.M.A.M. Madushan (IM/2022/025):* Responsible for the overall backend server structure and implementation.
+
+- *J.M.T. Sanjana (IM/2022/130):* Worked on various components and backend routes related to product and order management, including editing, viewing, and alert notifications.
+
+- *H.M.M.C.H. Herath (IM/2022/057):* Managed file uploads, middleware, category routing, and several utility and admin-related components.
+
+- *S.B. Mallikarathne (IM/2022/046):* Focused on product card design, cart functionalities, payment modules, and user address handling.
 
