@@ -39,6 +39,16 @@ Welcome to **Lanka Basket**, a full-featured online retail e-commerce platform b
 | Axios           | Mongoose    |          |               |
 | React Hot Toast | Dotenv      |          |       |
                                      
+##How to Run
+
+# For frontend
+cd client
+npm run build
+
+# For backend
+cd server
+npm start
+
 ## 👨‍💻 Team Member Contributions
 
 - *A.M.C.R.P. Adikari (IM/2022/004):* Led the frontend client development, focusing on user interface design and integration using React.js and Tailwind CSS.
