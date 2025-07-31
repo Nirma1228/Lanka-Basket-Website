@@ -1,12 +1,17 @@
-import react from 'react';
+import React, { useState } from 'react'
 import { IoClose } from "react-icons/io5";
+import uploadImage from '../utils/UploadImage';
+import Axios from '../utils/Axios';
+import SummaryApi from '../common/SummaryApi';
+import toast from 'react-hot-toast'
+import AxiosToastError from '../utils/AxiosToastError';
 
-const UploadCategoryModel =({close, fetchData}) => {  
-
-const [data,setData] = useState({
+const UploadCategoryModel = ({close, fetchData}) => {
+    const [data,setData] = useState({
         name : "",
         image : ""
     })
+    const [loading,setLoading] = useState(false)
 
     const handleOnChange = (e)=>{
         const { name, value} = e.target
@@ -19,7 +24,6 @@ const [data,setData] = useState({
         })
     }
 
-    
     const handleSubmit = async(e)=>{
         e.preventDefault()
 
@@ -61,8 +65,7 @@ const [data,setData] = useState({
             }
         })
     }
-    
-   return (
+  return (
     <section className='fixed top-0 bottom-0 left-0 right-0 p-4 bg-neutral-800 bg-opacity-60 flex items-center justify-center'>
         <div className='bg-white max-w-4xl w-full p-4 rounded'>
             <div className='flex items-center justify-between'>
@@ -123,7 +126,7 @@ const [data,setData] = useState({
             </form>
         </div>
     </section>
-  );
+  )
 }
 
-export default UploadCategoryModel;
+export default UploadCategoryModel
