@@ -1,74 +1,61 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import express from 'express'
+import cors from 'cors'
+import dotenv from 'dotenv'
+dotenv.config()
+import cookieParser from 'cookie-parser'
+import morgan from 'morgan'
+import helmet from 'helmet'
+import userRouter from './route/user.route.js'
+import categoryRouter from './route/category.route.js'
+import uploadRouter from './route/upload.router.js'
+import subCategoryRouter from './route/subCategory.route.js'
+import productRouter from './route/product.route.js'
+import cartRouter from './route/cart.route.js'
+import addressRouter from './route/address.route.js'
+import orderRouter from './route/order.route.js'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-dotenv.config({ path: path.join(__dirname, '.env') });
-import cookieParser from 'cookie-parser';
-import morgan from 'morgan';
-import helmet from 'helmet';
-
-const app = express();
-
-// Configure CORS
+const app = express()
 app.use(cors({
-    credentials: true,
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000'
-}));
-
-// Basic middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(morgan('combined'));
-
-// Configure helmet with less restrictive settings
+    credentials : true,
+    origin : process.env.FRONTEND_URL
+}))
+app.use(express.json())
+app.use(cookieParser())
+app.use(morgan())
 app.use(helmet({
-    crossOriginResourcePolicy: { policy: "cross-origin" },
-    contentSecurityPolicy: false
-}));
+    crossOriginResourcePolicy : false
+}))
 
-const PORT = process.env.PORT || 8080;
+const PORT = 8080 || process.env.PORT 
 
-// Root route
-app.get("/", (request, response) => {
-    try {
-        response.status(200).json({
-            message: `Hey! Server is Running on port ${PORT}`,
-            status: "success",
-            timestamp: new Date().toISOString()
-        });
-    } catch (error) {
-        console.error("Error in root route:", error);
-        response.status(500).json({
-            message: "Internal server error",
-            error: error.message
-        });
-    }
-});
+app.get("/",(request,response)=>{
+    ///server to client
+    response.json({
+        message : "Server is running " + PORT
+    })
+})
 
-// Health check route
-app.get("/health", (request, response) => {
-    response.status(200).json({
-        status: "OK",
-        message: "Server is healthy",
-        port: PORT
-    });
-});
+app.use('/api/user',userRouter)
+app.use("/api/category",categoryRouter)
+app.use("/api/file",uploadRouter)
+app.use("/api/subcategory",subCategoryRouter)
+app.use("/api/product",productRouter)
+app.use("/api/cart",cartRouter)
+app.use("/api/address",addressRouter)
+app.use('/api/order',orderRouter)
 
-// Start server
 const startServer = async () => {
     try {
-        // Skip database connection for now and just start the server
-        console.log("Starting server without database connection...");
+        // Import connectDB after dotenv is configured
+        const { default: connectDB } = await import('./config/connectDB.js');
+        
+        // Connect to database first
+        await connectDB();
+        console.log("Database connected successfully");
         
         // Then start the server
         app.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}`);
+            console.log("Server is running on port", PORT);
             console.log(`Access the server at: http://localhost:${PORT}`);
         });
     } catch (error) {
