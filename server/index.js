@@ -21,12 +21,12 @@ app.use(cors({
 }))
 app.use(express.json())
 app.use(cookieParser())
-app.use(morgan())
+app.use(morgan('combined'))
 app.use(helmet({
     crossOriginResourcePolicy : false
 }))
 
-const PORT = 8080 || process.env.PORT 
+const PORT = process.env.PORT || 8080 
 
 app.get("/",(request,response)=>{
     ///server to client
