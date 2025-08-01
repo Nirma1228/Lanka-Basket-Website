@@ -6,15 +6,16 @@ import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
 import toast from 'react-hot-toast';
 import AxiosToastError from '../utils/AxiosToastError';
-import { useEffect } from 'react';
 
-const EditSubCategory = ({close, fetchData}) => {
+const EditSubCategory = ({close,data,fetchData}) => {
     const [subCategoryData,setSubCategoryData] = useState({
+        _id : data._id,
         name : data.name,
         image : data.image,
         category : data.category || []
     })
     const allCategory = useSelector(state => state.product.allCategory)
+
 
     const handleChange = (e)=>{
         const { name, value} = e.target 
@@ -60,7 +61,7 @@ const EditSubCategory = ({close, fetchData}) => {
 
         try {
             const response = await Axios({
-                ...SummaryApi.UpdateSubCategory,
+                ...SummaryApi.updateSubCategory,
                 data : subCategoryData
             })
 
