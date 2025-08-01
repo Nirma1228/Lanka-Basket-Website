@@ -7,11 +7,14 @@ import AxiosToastError from '../utils/AxiosToastError'
 import Loading from './Loading'
 import { useSelector } from 'react-redux'
 import { FaMinus, FaPlus } from "react-icons/fa6";
+import { useNavigate } from 'react-router-dom'
 
 const AddToCartButton = ({ data }) => {
     const { fetchCartItem, updateCartItem, deleteCartItem } = useGlobalContext()
     const [loading, setLoading] = useState(false)
     const cartItem = useSelector(state => state.cartItem.cart)
+    const user = useSelector(state => state.user)
+    const navigate = useNavigate()
     const [isAvailableCart, setIsAvailableCart] = useState(false)
     const [qty, setQty] = useState(0)
     const [cartItemDetails,setCartItemsDetails] = useState()
@@ -19,6 +22,13 @@ const AddToCartButton = ({ data }) => {
     const handleADDTocart = async (e) => {
         e.preventDefault()
         e.stopPropagation()
+
+        // Check if user is logged in
+        if (!user?._id) {
+            toast.error("Please login to add items to cart")
+            navigate("/login")
+            return
+        }
 
         try {
             setLoading(true)
@@ -61,6 +71,13 @@ const AddToCartButton = ({ data }) => {
         e.preventDefault()
         e.stopPropagation()
     
+        // Check if user is logged in
+        if (!user?._id) {
+            toast.error("Please login to update cart")
+            navigate("/login")
+            return
+        }
+
        const response = await  updateCartItem(cartItemDetails?._id,qty+1)
         
        if(response.success){
@@ -71,6 +88,14 @@ const AddToCartButton = ({ data }) => {
     const decreaseQty = async(e) => {
         e.preventDefault()
         e.stopPropagation()
+
+        // Check if user is logged in
+        if (!user?._id) {
+            toast.error("Please login to update cart")
+            navigate("/login")
+            return
+        }
+
         if(qty === 1){
             deleteCartItem(cartItemDetails?._id)
         }else{

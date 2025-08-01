@@ -301,14 +301,33 @@ export async function forgotPasswordController(request,response) {
             forgot_password_expiry : new Date(expireTime).toISOString()
         })
 
-        await sendEmail({
+        const emailResult = await sendEmail({
             sendTo : email,
-            subject : "Forgot password from Binkeyit",
+            subject : "Forgot password from Lanka Basket",
             html : forgotPasswordTemplate({
                 name : user.name,
                 otp : otp
             })
         })
+
+        console.log('Email send result:', emailResult);
+
+        if (emailResult && emailResult.error) {
+            // Check if it's a Resend testing limitation error
+            if (emailResult.error.statusCode === 403 && emailResult.error.error && emailResult.error.error.includes('testing emails')) {
+                return response.status(400).json({
+                    message : "This email service is in testing mode. Please use the registered email address or contact support.",
+                    error : true,
+                    success : false
+                })
+            }
+            
+            return response.status(500).json({
+                message : "Failed to send email. Please try again later.",
+                error : true,
+                success : false
+            })
+        }
 
         return response.json({
             message : "check your email",
