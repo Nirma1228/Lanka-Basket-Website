@@ -69,6 +69,10 @@ const Register = () => {
                     password : "",
                     confirmPassword : ""
                 })
+                // Show verification message instead of redirecting immediately
+                toast.success("Please check your email and click the verification link to activate your account.", {
+                    duration: 6000
+                })
                 navigate("/login")
             }
 

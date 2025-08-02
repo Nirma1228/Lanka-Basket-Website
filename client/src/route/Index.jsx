@@ -23,6 +23,7 @@ import CartMobile from "../pages/CartMobile";
 import CheckoutPage from "../pages/CheckoutPage";
 import Success from "../pages/Success";
 import Cancel from "../pages/Cancel";
+import VerifyEmail from "../pages/VerifyEmail";
 
 const router = createBrowserRouter([
     {
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
             {
                 path : "register",
                 element : <Register/>
+            },
+            {
+                path : "verify-email",
+                element : <VerifyEmail/>
             },
             {
                 path : "forgot-password",
