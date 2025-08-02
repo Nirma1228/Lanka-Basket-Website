@@ -4,17 +4,17 @@ FROM node:18
 # Set working directory
 WORKDIR /app
 
-# Copy only package.json first for caching
+# Copy package.json and lockfile from server
 COPY server/package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy all server files
+# Copy the rest of the server code
 COPY server/ .
 
-# Expose the port (match your backend port)
+# Expose backend port
 EXPOSE 8080
 
-# Start server
+# Start the backend
 CMD ["npm", "start"]
