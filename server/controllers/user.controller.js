@@ -9,6 +9,7 @@ import generatedOtp from '../utils/generatedOtp.js'
 import forgotPasswordTemplate from '../utils/forgotPasswordTemplate.js'
 import jwt from 'jsonwebtoken'
 import validatePasswordStrength from '../utils/passwordValidation.js'
+import generateVerificationToken from '../utils/generateVerificationToken.js'
 
 export async function registerUserController(request,response){
     try {
@@ -45,31 +46,52 @@ export async function registerUserController(request,response){
         const salt = await bcryptjs.genSalt(10)
         const hashPassword = await bcryptjs.hash(password,salt)
 
+        // Generate verification token
+        const verificationToken = generateVerificationToken()
+        const verificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours from now
+
         const payload = {
             name,
             email,
-            password : hashPassword
+            password : hashPassword,
+            verify_email_token: verificationToken,
+            verify_email_token_expiry: verificationTokenExpiry
         }
 
         const newUser = new UserModel(payload)
         const save = await newUser.save()
 
-        const VerifyEmailUrl = `${process.env.FRONTEND_URL}/verify-email?code=${save?._id}`
+        const VerifyEmailUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`
 
         const verifyEmail = await sendEmail({
             sendTo : email,
-            subject : "Verify email from supermarket",
+            subject : "Verify your email - Lanka Basket",
             html : verifyEmailTemplate({
                 name,
                 url : VerifyEmailUrl
             })
         })
 
+        // Check if email sending failed
+        if (verifyEmail && verifyEmail.error) {
+            console.error('Verification email sending failed:', verifyEmail.error);
+            return response.status(500).json({
+                message : "Failed to send verification email. Please try again later.",
+                error : true,
+                success : false
+            })
+        }
+
         return response.json({
-            message : "User register successfully",
+            message : "User registered successfully. Please check your email to verify your account.",
             error : false,
             success : true,
-            data : save
+            data : {
+                id: save._id,
+                name: save.name,
+                email: save.email,
+                verify_email: save.verify_email
+            }
         })
 
     } catch (error) {
@@ -83,24 +105,46 @@ export async function registerUserController(request,response){
 
 export async function verifyEmailController(request,response){
     try {
-        const { code } = request.body
+        const { token } = request.body
 
-        const user = await UserModel.findOne({ _id : code})
-
-        if(!user){
+        if(!token){
             return response.status(400).json({
-                message : "Invalid code",
+                message : "Verification token is required",
                 error : true,
                 success : false
             })
         }
 
-        const updateUser = await UserModel.updateOne({ _id : code },{
-            verify_email : true
+        const user = await UserModel.findOne({ 
+            verify_email_token: token,
+            verify_email_token_expiry: { $gt: new Date() } // Token not expired
+        })
+
+        if(!user){
+            return response.status(400).json({
+                message : "Invalid or expired verification token",
+                error : true,
+                success : false
+            })
+        }
+
+        // Check if already verified
+        if(user.verify_email){
+            return response.status(400).json({
+                message : "Email is already verified",
+                error : true,
+                success : false
+            })
+        }
+
+        const updateUser = await UserModel.updateOne({ _id : user._id },{
+            verify_email : true,
+            verify_email_token: "",
+            verify_email_token_expiry: null
         })
 
         return response.json({
-            message : "Verify email done",
+            message : "Email verified successfully! You can now login to your account.",
             success : true,
             error : false
         })
@@ -108,7 +152,83 @@ export async function verifyEmailController(request,response){
         return response.status(500).json({
             message : error.message || error,
             error : true,
+            success : false
+        })
+    }
+}
+
+//resend verification email
+export async function resendVerificationEmailController(request,response){
+    try {
+        const { email } = request.body
+
+        if(!email){
+            return response.status(400).json({
+                message : "Email is required",
+                error : true,
+                success : false
+            })
+        }
+
+        const user = await UserModel.findOne({ email })
+
+        if(!user){
+            return response.status(400).json({
+                message : "User not found with this email",
+                error : true,
+                success : false
+            })
+        }
+
+        if(user.verify_email){
+            return response.status(400).json({
+                message : "Email is already verified",
+                error : true,
+                success : false
+            })
+        }
+
+        // Generate new verification token
+        const verificationToken = generateVerificationToken()
+        const verificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours from now
+
+        await UserModel.updateOne({ _id: user._id }, {
+            verify_email_token: verificationToken,
+            verify_email_token_expiry: verificationTokenExpiry
+        })
+
+        const VerifyEmailUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`
+
+        const verifyEmail = await sendEmail({
+            sendTo : email,
+            subject : "Verify your email - Lanka Basket",
+            html : verifyEmailTemplate({
+                name: user.name,
+                url : VerifyEmailUrl
+            })
+        })
+
+        // Check if email sending failed
+        if (verifyEmail && verifyEmail.error) {
+            console.error('Resend verification email failed:', verifyEmail.error);
+            return response.status(500).json({
+                message : "Failed to send verification email. Please try again later.",
+                error : true,
+                success : false
+            })
+        }
+
+        return response.json({
+            message : "Verification email sent successfully. Please check your email.",
+            error : false,
             success : true
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message : error.message || error,
+            error : true,
+            success : false
         })
     }
 }
@@ -140,6 +260,15 @@ export async function loginController(request,response){
         if(user.status !== "Active"){
             return response.status(400).json({
                 message : "Contact to Admin",
+                error : true,
+                success : false
+            })
+        }
+
+        // Check if email is verified
+        if(!user.verify_email){
+            return response.status(400).json({
+                message : "Your Account is Not Activated please verify your mail",
                 error : true,
                 success : false
             })
@@ -333,16 +462,19 @@ export async function forgotPasswordController(request,response) {
 
         console.log('Email send result:', emailResult);
 
+        // Check if email sending failed
         if (emailResult && emailResult.error) {
-            // Check if it's a Resend testing limitation error
-            if (emailResult.error.statusCode === 403 && emailResult.error.error && emailResult.error.error.includes('testing emails')) {
-                return response.status(400).json({
-                    message : "This email service is in testing mode. Please use the registered email address or contact support.",
-                    error : true,
-                    success : false
-                })
-            }
-            
+            console.error('Email sending failed:', emailResult.error);
+            return response.status(500).json({
+                message : "Failed to send email. Please try again later.",
+                error : true,
+                success : false
+            })
+        }
+
+        // Check if email was sent successfully
+        if (!emailResult || !emailResult.success) {
+            console.error('Email sending failed - no success response');
             return response.status(500).json({
                 message : "Failed to send email. Please try again later.",
                 error : true,
@@ -351,7 +483,7 @@ export async function forgotPasswordController(request,response) {
         }
 
         return response.json({
-            message : "check your email",
+            message : "Check your email for the OTP code",
             error : false,
             success : true
         })
