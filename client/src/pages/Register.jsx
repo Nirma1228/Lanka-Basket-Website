@@ -6,6 +6,8 @@ import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
 import AxiosToastError from '../utils/AxiosToastError';
 import { Link, useNavigate } from 'react-router-dom';
+import PasswordStrengthIndicator from '../components/PasswordStrengthIndicator';
+import { validatePassword } from '../utils/passwordValidation';
 
 const Register = () => {
     const [data, setData] = useState({
@@ -34,6 +36,13 @@ const Register = () => {
 
     const handleSubmit = async(e)=>{
         e.preventDefault()
+
+        // Validate password strength
+        const passwordValidation = validatePassword(data.password)
+        if (!passwordValidation.isValid) {
+            toast.error("Password is not strong enough! Please meet all criteria.")
+            return
+        }
 
         if(data.password !== data.confirmPassword){
             toast.error(
@@ -123,6 +132,10 @@ const Register = () => {
                                 }
                             </div>
                         </div>
+                        <PasswordStrengthIndicator 
+                            password={data.password} 
+                            showIndicator={data.password.length > 0}
+                        />
                     </div>
                     <div className='grid gap-1'>
                         <label htmlFor='confirmPassword'>Confirm Password :</label>
