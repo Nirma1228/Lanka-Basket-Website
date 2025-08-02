@@ -8,6 +8,7 @@ import uploadImageClodinary from '../utils/uploadImageClodinary.js'
 import generatedOtp from '../utils/generatedOtp.js'
 import forgotPasswordTemplate from '../utils/forgotPasswordTemplate.js'
 import jwt from 'jsonwebtoken'
+import validatePasswordStrength from '../utils/passwordValidation.js'
 
 export async function registerUserController(request,response){
     try {
@@ -16,6 +17,16 @@ export async function registerUserController(request,response){
         if(!name || !email || !password){
             return response.status(400).json({
                 message : "provide email, name, password",
+                error : true,
+                success : false
+            })
+        }
+
+        // Validate password strength
+        const passwordValidation = validatePasswordStrength(password)
+        if (!passwordValidation.isValid) {
+            return response.status(400).json({
+                message : `Password is not strong enough: ${passwordValidation.errors.join(', ')}`,
                 error : true,
                 success : false
             })
@@ -250,6 +261,16 @@ export async function updateUserDetails(request,response){
         let hashPassword = ""
 
         if(password){
+            // Validate password strength when updating password
+            const passwordValidation = validatePasswordStrength(password)
+            if (!passwordValidation.isValid) {
+                return response.status(400).json({
+                    message : `Password is not strong enough: ${passwordValidation.errors.join(', ')}`,
+                    error : true,
+                    success : false
+                })
+            }
+
             const salt = await bcryptjs.genSalt(10)
             hashPassword = await bcryptjs.hash(password,salt)
         }
@@ -434,6 +455,16 @@ export async function resetpassword(request,response){
                 message : "newPassword and confirmPassword must be same.",
                 error : true,
                 success : false,
+            })
+        }
+
+        // Validate password strength
+        const passwordValidation = validatePasswordStrength(newPassword)
+        if (!passwordValidation.isValid) {
+            return response.status(400).json({
+                message : `Password is not strong enough: ${passwordValidation.errors.join(', ')}`,
+                error : true,
+                success : false
             })
         }
 
