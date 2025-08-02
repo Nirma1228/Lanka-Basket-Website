@@ -1,20 +1,7 @@
-# Use Node 18 as base
-FROM node:18
-
-# Set working directory
+FROM node:20
 WORKDIR /app
-
-# Copy package.json and lockfile from server
-COPY server/package*.json ./
-
-# Install dependencies
+COPY package*.json ./
 RUN npm install
-
-# Copy the rest of the server code
-COPY server/ .
-
-# Expose backend port
+COPY . .
 EXPOSE 8080
-
-# Start the backend
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]
