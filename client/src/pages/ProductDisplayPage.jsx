@@ -126,7 +126,6 @@ const ProductDisplayPage = () => {
 
 
         <div className='p-4 lg:pl-7 text-base lg:text-lg'>
-            <p className='bg-green-300 w-fit px-2 rounded-full'>10 Min</p>
             <h2 className='text-lg font-semibold lg:text-3xl'>{data.name}</h2>  
             <p className=''>{data.unit}</p> 
             <Divider/>
@@ -164,7 +163,7 @@ const ProductDisplayPage = () => {
               }
            
 
-            <h2 className='font-semibold'>Why shop from Binkeyit? </h2>
+            <h2 className='font-semibold'>Why shop from Lanka Basket? </h2>
             <div>
                   <div className='flex  items-center gap-4 my-4'>
                       <img
