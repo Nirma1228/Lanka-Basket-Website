@@ -16,6 +16,8 @@ const Login = () => {
         password: "",
     })
     const [showPassword, setShowPassword] = useState(false)
+    const [showResendVerification, setShowResendVerification] = useState(false)
+    const [resendLoading, setResendLoading] = useState(false)
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
@@ -44,6 +46,11 @@ const Login = () => {
             
             if(response.data.error){
                 toast.error(response.data.message)
+                
+                // Check if the error is due to unverified email
+                if(response.data.message.includes("Your Account is Not Activated please verify your mail")){
+                    setShowResendVerification(true)
+                }
             }
 
             if(response.data.success){
@@ -58,15 +65,41 @@ const Login = () => {
                     email : "",
                     password : "",
                 })
+                setShowResendVerification(false)
                 navigate("/")
             }
 
         } catch (error) {
             AxiosToastError(error)
+            // Check if the error is due to unverified email
+            if(error.response?.data?.message?.includes("Your Account is Not Activated please verify your mail")){
+                setShowResendVerification(true)
+            }
+        }
+    }
+
+    const handleResendVerification = async () => {
+        if (!data.email) {
+            toast.error('Please enter your email address')
+            return
         }
 
+        try {
+            setResendLoading(true)
+            const response = await Axios({
+                ...SummaryApi.resendVerificationEmail,
+                data: { email: data.email }
+            })
 
-
+            if (response.data.success) {
+                toast.success(response.data.message)
+                setShowResendVerification(false)
+            }
+        } catch (error) {
+            AxiosToastError(error)
+        } finally {
+            setResendLoading(false)
+        }
     }
     return (
         <section className='w-full container mx-auto px-2'>
@@ -111,6 +144,21 @@ const Login = () => {
                     </div>
     
                     <button disabled={!valideValue} className={` ${valideValue ? "bg-green-800 hover:bg-green-700" : "bg-gray-500" }    text-white py-2 rounded font-semibold my-3 tracking-wide`}>Login</button>
+
+                    {showResendVerification && (
+                        <div className='mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded'>
+                            <p className='text-sm text-yellow-800 mb-3'>
+                                Your account is not verified. Please check your email for the verification link or resend it.
+                            </p>
+                            <button
+                                onClick={handleResendVerification}
+                                disabled={resendLoading || !data.email}
+                                className='w-full bg-yellow-600 text-white py-2 rounded hover:bg-yellow-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm'
+                            >
+                                {resendLoading ? 'Sending...' : 'Resend Verification Email'}
+                            </button>
+                        </div>
+                    )}
 
                 </form>
 
