@@ -1,20 +1,16 @@
-# Use Node 18 as base
 FROM node:18
 
-# Set working directory
 WORKDIR /app
 
-# Copy only package.json first for caching
+# Copy server files into container
 COPY server/package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Copy all server files
 COPY server/ .
 
-# Expose the port (match your backend port)
+RUN npm install
+
+# Dummy build step (won’t fail)
+RUN npm run build
+
 EXPOSE 8080
 
-# Start server
 CMD ["npm", "start"]
