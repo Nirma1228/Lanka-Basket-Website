@@ -54,10 +54,40 @@ const CheckoutPage = () => {
 
   const handleOnlinePayment = async()=>{
     try {
-        toast.loading("Loading...")
+        // Check if address is selected
+        if(!addressList[selectAddress]?._id){
+          toast.error("Please select a delivery address")
+          return
+        }
+
+        // Check if cart has items
+        if(!cartItemsList || cartItemsList.length === 0){
+          toast.error("Your cart is empty")
+          return
+        }
+
+        toast.loading("Initializing payment...")
+        
         const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY
+        
+        if(!stripePublicKey){
+          toast.dismiss()
+          toast.error("Payment service is not configured. Please contact support.")
+          console.error("VITE_STRIPE_PUBLIC_KEY is not set in environment variables")
+          return
+        }
+
         const stripePromise = await loadStripe(stripePublicKey)
+        
+        if(!stripePromise){
+          toast.dismiss()
+          toast.error("Failed to load payment service")
+          return
+        }
        
+        toast.dismiss()
+        toast.loading("Creating payment session...")
+
         const response = await Axios({
             ...SummaryApi.payment_url,
             data : {
@@ -70,7 +100,25 @@ const CheckoutPage = () => {
 
         const { data : responseData } = response
 
-        stripePromise.redirectToCheckout({ sessionId : responseData.id })
+        if(!responseData || !responseData.id){
+          toast.dismiss()
+          toast.error("Failed to create payment session")
+          return
+        }
+
+        toast.dismiss()
+        toast.loading("Redirecting to payment...")
+
+        const result = await stripePromise.redirectToCheckout({ sessionId : responseData.id })
+        
+        if(result.error){
+          toast.dismiss()
+          toast.error(result.error.message || "Payment redirection failed")
+          return
+        }
+        
+        // This code runs only if redirect fails
+        toast.dismiss()
         
         if(fetchCartItem){
           fetchCartItem()
@@ -79,6 +127,8 @@ const CheckoutPage = () => {
           fetchOrder()
         }
     } catch (error) {
+        toast.dismiss()
+        console.error("Payment error:", error)
         AxiosToastError(error)
     }
   }

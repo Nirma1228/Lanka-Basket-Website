@@ -8,6 +8,7 @@ import uploadImageClodinary from '../utils/uploadImageClodinary.js'
 import generatedOtp from '../utils/generatedOtp.js'
 import forgotPasswordTemplate from '../utils/forgotPasswordTemplate.js'
 import jwt from 'jsonwebtoken'
+import validatePasswordStrength from '../utils/passwordValidation.js'
 
 export async function registerUserController(request,response){
     try {
@@ -16,6 +17,16 @@ export async function registerUserController(request,response){
         if(!name || !email || !password){
             return response.status(400).json({
                 message : "provide email, name, password",
+                error : true,
+                success : false
+            })
+        }
+
+        // Validate password strength
+        const passwordValidation = validatePasswordStrength(password)
+        if (!passwordValidation.isValid) {
+            return response.status(400).json({
+                message : `Password is not strong enough: ${passwordValidation.errors.join(', ')}`,
                 error : true,
                 success : false
             })
@@ -250,6 +261,16 @@ export async function updateUserDetails(request,response){
         let hashPassword = ""
 
         if(password){
+            // Validate password strength when updating password
+            const passwordValidation = validatePasswordStrength(password)
+            if (!passwordValidation.isValid) {
+                return response.status(400).json({
+                    message : `Password is not strong enough: ${passwordValidation.errors.join(', ')}`,
+                    error : true,
+                    success : false
+                })
+            }
+
             const salt = await bcryptjs.genSalt(10)
             hashPassword = await bcryptjs.hash(password,salt)
         }
@@ -301,14 +322,33 @@ export async function forgotPasswordController(request,response) {
             forgot_password_expiry : new Date(expireTime).toISOString()
         })
 
-        await sendEmail({
+        const emailResult = await sendEmail({
             sendTo : email,
-            subject : "Forgot password from Binkeyit",
+            subject : "Forgot password from Lanka Basket",
             html : forgotPasswordTemplate({
                 name : user.name,
                 otp : otp
             })
         })
+
+        console.log('Email send result:', emailResult);
+
+        if (emailResult && emailResult.error) {
+            // Check if it's a Resend testing limitation error
+            if (emailResult.error.statusCode === 403 && emailResult.error.error && emailResult.error.error.includes('testing emails')) {
+                return response.status(400).json({
+                    message : "This email service is in testing mode. Please use the registered email address or contact support.",
+                    error : true,
+                    success : false
+                })
+            }
+            
+            return response.status(500).json({
+                message : "Failed to send email. Please try again later.",
+                error : true,
+                success : false
+            })
+        }
 
         return response.json({
             message : "check your email",
@@ -415,6 +455,16 @@ export async function resetpassword(request,response){
                 message : "newPassword and confirmPassword must be same.",
                 error : true,
                 success : false,
+            })
+        }
+
+        // Validate password strength
+        const passwordValidation = validatePasswordStrength(newPassword)
+        if (!passwordValidation.isValid) {
+            return response.status(400).json({
+                message : `Password is not strong enough: ${passwordValidation.errors.join(', ')}`,
+                error : true,
+                success : false
             })
         }
 

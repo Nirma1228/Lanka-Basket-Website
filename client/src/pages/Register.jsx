@@ -6,6 +6,8 @@ import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
 import AxiosToastError from '../utils/AxiosToastError';
 import { Link, useNavigate } from 'react-router-dom';
+import PasswordStrengthIndicator from '../components/PasswordStrengthIndicator';
+import { validatePassword } from '../utils/passwordValidation';
 
 const Register = () => {
     const [data, setData] = useState({
@@ -34,6 +36,13 @@ const Register = () => {
 
     const handleSubmit = async(e)=>{
         e.preventDefault()
+
+        // Validate password strength
+        const passwordValidation = validatePassword(data.password)
+        if (!passwordValidation.isValid) {
+            toast.error("Password is not strong enough! Please meet all criteria.")
+            return
+        }
 
         if(data.password !== data.confirmPassword){
             toast.error(
@@ -73,7 +82,7 @@ const Register = () => {
     return (
         <section className='w-full container mx-auto px-2'>
             <div className='bg-white my-4 w-full max-w-lg mx-auto rounded p-7'>
-                <p>Welcome to Binkeyit</p>
+                <p>Welcome to Lanka Basket</p>
 
                 <form className='grid gap-4 mt-6' onSubmit={handleSubmit}>
                     <div className='grid gap-1'>
@@ -123,6 +132,10 @@ const Register = () => {
                                 }
                             </div>
                         </div>
+                        <PasswordStrengthIndicator 
+                            password={data.password} 
+                            showIndicator={data.password.length > 0}
+                        />
                     </div>
                     <div className='grid gap-1'>
                         <label htmlFor='confirmPassword'>Confirm Password :</label>

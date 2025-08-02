@@ -64,7 +64,7 @@ export async function paymentController(request,response){
         const line_items  = list_items.map(item =>{
             return{
                price_data : {
-                    currency : 'inr',
+                    currency : 'lkr',
                     product_data : {
                         name : item.productId.name,
                         images : item.productId.image,

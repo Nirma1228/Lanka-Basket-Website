@@ -59,7 +59,7 @@ const Search = () => {
                                     1000,
                                     'Search "sugar"',
                                     1000,
-                                    'Search "panner"',
+                                    'Search "onions"',
                                     1000,
                                     'Search "chocolate"',
                                     1000,

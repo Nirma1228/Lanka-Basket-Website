@@ -1,0 +1,29 @@
+# Ignore node modules and logs
+node_modules
+npm-debug.log
+yarn-error.log
+pnpm-lock.yaml
+
+# Ignore environment and config
+.env
+.env.local
+.env.development
+.env.production
+
+# Ignore build outputs
+dist
+build
+
+# Ignore editor/project files
+.git
+.gitignore
+.vscode
+.idea
+
+# Ignore Docker files (optional for multi-stage)
+Dockerfile
+docker-compose.yml
+
+# Mac/Windows system files
+.DS_Store
+Thumbs.db

@@ -5,6 +5,8 @@ import SummaryApi from '../common/SummaryApi'
 import toast from 'react-hot-toast'
 import AxiosToastError from '../utils/AxiosToastError'
 import Axios from '../utils/Axios'
+import PasswordStrengthIndicator from '../components/PasswordStrengthIndicator'
+import { validatePassword } from '../utils/passwordValidation'
 
 const ResetPassword = () => {
   const location = useLocation()
@@ -49,6 +51,13 @@ const ResetPassword = () => {
 
   const handleSubmit = async(e)=>{
     e.preventDefault()
+
+    // Validate password strength
+    const passwordValidation = validatePassword(data.newPassword)
+    if (!passwordValidation.isValid) {
+        toast.error("Password is not strong enough! Please meet all criteria.")
+        return
+    }
 
     ///optional 
     if(data.newPassword !== data.confirmPassword){
@@ -112,6 +121,10 @@ const ResetPassword = () => {
                                 }
                             </div>
                         </div>
+                        <PasswordStrengthIndicator 
+                            password={data.newPassword} 
+                            showIndicator={data.newPassword.length > 0}
+                        />
                     </div>
 
                     <div className='grid gap-1'>
