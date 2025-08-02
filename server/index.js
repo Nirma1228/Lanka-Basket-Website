@@ -23,44 +23,45 @@ import addressRouter from './route/address.route.js'
 import orderRouter from './route/order.route.js'
 
 const app = express()
+const frontendUrl = process.env.FRONTEND_URL || 'https://sage-griffin-006be5.netlify.app';
 app.use(cors({
-    credentials : true,
-    origin : process.env.FRONTEND_URL
+    credentials: true,
+    origin: process.env.FRONTEND_URL
 }))
 app.use(express.json())
 app.use(cookieParser())
 app.use(morgan('combined'))
 app.use(helmet({
-    crossOriginResourcePolicy : false
+    crossOriginResourcePolicy: false
 }))
 
-const PORT = process.env.PORT || 8080 
+const PORT = process.env.PORT || 8080
 
-app.get("/",(request,response)=>{
+app.get("/", (request, response) => {
     ///server to client
     response.json({
-        message : "Server is running " + PORT
+        message: "Server is running " + PORT
     })
 })
 
-app.use('/api/user',userRouter)
-app.use("/api/category",categoryRouter)
-app.use("/api/file",uploadRouter)
-app.use("/api/subcategory",subCategoryRouter)
-app.use("/api/product",productRouter)
-app.use("/api/cart",cartRouter)
-app.use("/api/address",addressRouter)
-app.use('/api/order',orderRouter)
+app.use('/api/user', userRouter)
+app.use("/api/category", categoryRouter)
+app.use("/api/file", uploadRouter)
+app.use("/api/subcategory", subCategoryRouter)
+app.use("/api/product", productRouter)
+app.use("/api/cart", cartRouter)
+app.use("/api/address", addressRouter)
+app.use('/api/order', orderRouter)
 
 const startServer = async () => {
     try {
         // Import connectDB after dotenv is configured
         const { default: connectDB } = await import('./config/connectDB.js');
-        
+
         // Connect to database first
         await connectDB();
         console.log("Database connected successfully");
-        
+
         // Then start the server
         app.listen(PORT, () => {
             console.log("Server is running on port", PORT);
