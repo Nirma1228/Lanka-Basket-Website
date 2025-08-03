@@ -49,6 +49,9 @@ Welcome to **Lanka Basket**, a full-featured online retail e-commerce platform b
 - cd server
 - npm start
 
+API DOCUMENTATION : https://github.com/Chanith27/Lanka-Basket-Website/blob/main/API%20Documentation.pdf
+UNIT TEST REPORT : https://github.com/Chanith27/Lanka-Basket-Website/blob/main/Backend%20Test%20Report.pdf  
+
 ## Team Member Contributions
 
 - *A.M.C.R.P. Adikari (IM/2022/004)* - Led the frontend client development, focusing on user interface design and integration using React.js and Tailwind CSS.
@@ -59,7 +62,7 @@ Welcome to **Lanka Basket**, a full-featured online retail e-commerce platform b
 
 - *J.M.T. Sanjana (IM/2022/130)* - Worked on various components and backend routes related to product and order management, including editing, viewing, and alert notifications.
 
-API DOCUMENTATION : https://github.com/Chanith27/Lanka-Basket-Website/blob/main/API%20Documentation.pdf
+
 
 
 - *H.M.M.C.H. Herath (IM/2022/057)* - Managed file uploads, middleware, category routing, and several utility and admin-related components.
