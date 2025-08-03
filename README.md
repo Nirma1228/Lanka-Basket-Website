@@ -59,6 +59,9 @@ Welcome to **Lanka Basket**, a full-featured online retail e-commerce platform b
 
 - *J.M.T. Sanjana (IM/2022/130)* - Worked on various components and backend routes related to product and order management, including editing, viewing, and alert notifications.
 
+API DOCUMENTATION : https://github.com/Chanith27/Lanka-Basket-Website/blob/main/API%20Documentation.pdf
+
+
 - *H.M.M.C.H. Herath (IM/2022/057)* - Managed file uploads, middleware, category routing, and several utility and admin-related components.
 
 - *S.B. Mallikarathne (IM/2022/046)* - Focused on product card design, cart functionalities, payment modules, and user address handling.
