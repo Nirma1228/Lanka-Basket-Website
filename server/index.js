@@ -26,7 +26,7 @@ const app = express()
 const frontendUrl = process.env.FRONTEND_URL || 'https://lively-river-02e6bc000.1.azurestaticapps.net';
 app.use(cors({
     credentials: true,
-    origin: process.env.FRONTEND_URL
+    origin: frontendUrl
 }))
 app.use(express.json())
 app.use(cookieParser())
