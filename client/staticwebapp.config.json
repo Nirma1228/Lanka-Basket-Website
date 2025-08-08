@@ -1,0 +1,8 @@
+{
+    "routes": [
+        {
+            "route": "/api/*",
+            "rewrite": "https://lankabasket-dme4c4dcf0gea3c4.southindia-01.azurewebsites.net/api/*"
+        }
+    ]
+}
