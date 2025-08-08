@@ -3,6 +3,26 @@
         {
             "route": "/api/*",
             "rewrite": "https://lankabasket-dme4c4dcf0gea3c4.southindia-01.azurewebsites.net/api/*"
+        },
+        {
+            "route": "/*",
+            "serve": "/index.html",
+            "statusCode": 200
         }
-    ]
+    ],
+    "navigationFallback": {
+        "rewrite": "/index.html",
+        "exclude": [
+            "/images/*",
+            "/css/*",
+            "/js/*",
+            "/api/*"
+        ]
+    },
+    "responseOverrides": {
+        "404": {
+            "rewrite": "/index.html",
+            "statusCode": 200
+        }
+    }
 }
