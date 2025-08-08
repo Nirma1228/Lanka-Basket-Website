@@ -23,7 +23,7 @@ import addressRouter from './route/address.route.js'
 import orderRouter from './route/order.route.js'
 
 const app = express()
-const frontendUrl = process.env.FRONTEND_URL || 'https://sage-griffin-006be5.netlify.app';
+const frontendUrl = process.env.FRONTEND_URL || 'https://lively-river-02e6bc000.1.azurestaticapps.net';
 app.use(cors({
     credentials: true,
     origin: process.env.FRONTEND_URL
