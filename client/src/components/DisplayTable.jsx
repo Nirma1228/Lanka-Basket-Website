@@ -1,6 +1,5 @@
 import React from 'react'
 import {
-  createColumnHelper,
   flexRender,
   getCoreRowModel,
   useReactTable,

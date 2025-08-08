@@ -10,7 +10,7 @@ import { valideURLConvert } from '../utils/valideURLConvert'
 
 const ProductListPage = () => {
   const [data, setData] = useState([])
-  const [page, setPage] = useState(1)
+  const [page] = useState(1)
   const [loading, setLoading] = useState(false)
   const [totalPage, setTotalPage] = useState(1)
   const params = useParams()
@@ -78,7 +78,7 @@ const ProductListPage = () => {
         {/**sub category **/}
         <div className=' min-h-[88vh] max-h-[88vh] overflow-y-scroll  grid gap-1 shadow-md scrollbarCustom bg-white py-2'>
           {
-            DisplaySubCatory.map((s, index) => {
+            DisplaySubCatory.map((s) => {
                const link = `/${valideURLConvert(s?.category[0]?.name)}-${s?.category[0]?._id}/${valideURLConvert(s.name)}-${s._id}`
               return (
                 <Link to={link} className={`w-full p-2 lg:flex items-center lg:w-full lg:h-16 box-border lg:gap-4 border-b 

@@ -8,7 +8,6 @@ import EditCategory from '../components/EditCategory'
 import CofirmBox from '../components/CofirmBox'
 import toast from 'react-hot-toast'
 import AxiosToastError from '../utils/AxiosToastError'
-import { useSelector } from 'react-redux'
 
 const CategoryPage = () => {
     const [openUploadCategory,setOpenUploadCategory] = useState(false)
@@ -42,7 +41,7 @@ const CategoryPage = () => {
                 setCategoryData(responseData.data)
             }
         } catch (error) {
-            
+            console.error('Error fetching categories:', error)
         }finally{
             setLoading(false)
         }
@@ -85,7 +84,7 @@ const CategoryPage = () => {
 
         <div className='p-4 grid  grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2'>
             {
-                categoryData.map((category,index)=>{
+                categoryData.map((category)=>{
                     return(
                         <div className='w-32 h-56 rounded shadow-md' key={category._id}>
                             <img 

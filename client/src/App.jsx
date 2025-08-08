@@ -2,17 +2,15 @@ import { Outlet, useLocation } from 'react-router-dom'
 import './App.css'
 import Header from './components/Header'
 import Footer from './components/Footer'
-import toast, { Toaster } from 'react-hot-toast';
-import { useEffect } from 'react';
+import { Toaster } from 'react-hot-toast';
+import { useEffect, useCallback } from 'react';
 import fetchUserDetails from './utils/fetchUserDetails';
 import { setUserDetails } from './store/userSlice';
 import { setAllCategory,setAllSubCategory,setLoadingCategory } from './store/productSlice';
 import { useDispatch } from 'react-redux';
 import Axios from './utils/Axios';
 import SummaryApi from './common/SummaryApi';
-import { handleAddItemCart } from './store/cartProduct'
 import GlobalProvider from './provider/GlobalProvider';
-import { FaCartShopping } from "react-icons/fa6";
 import CartMobileLink from './components/CartMobile';
 
 function App() {
@@ -20,12 +18,12 @@ function App() {
   const location = useLocation()
   
 
-  const fetchUser = async()=>{
+  const fetchUser = useCallback(async()=>{
       const userData = await fetchUserDetails()
       dispatch(setUserDetails(userData.data))
-  }
+  }, [dispatch])
 
-  const fetchCategory = async()=>{
+  const fetchCategory = useCallback(async()=>{
     try {
         dispatch(setLoadingCategory(true))
         const response = await Axios({
@@ -37,13 +35,13 @@ function App() {
            dispatch(setAllCategory(responseData.data.sort((a, b) => a.name.localeCompare(b.name)))) 
         }
     } catch (error) {
-        
+        console.error('Error fetching categories:', error)
     }finally{
       dispatch(setLoadingCategory(false))
     }
-  }
+  }, [dispatch])
 
-  const fetchSubCategory = async()=>{
+  const fetchSubCategory = useCallback(async()=>{
     try {
         const response = await Axios({
             ...SummaryApi.getSubCategory
@@ -54,10 +52,9 @@ function App() {
            dispatch(setAllSubCategory(responseData.data.sort((a, b) => a.name.localeCompare(b.name)))) 
         }
     } catch (error) {
-        
-    }finally{
+        console.error('Error fetching subcategories:', error)
     }
-  }
+  }, [dispatch])
 
   
 
@@ -66,7 +63,7 @@ function App() {
     fetchCategory()
     fetchSubCategory()
     // fetchCartItem()
-  },[])
+  },[fetchUser, fetchCategory, fetchSubCategory])
 
   return (
     <GlobalProvider> 

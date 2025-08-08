@@ -1,14 +1,14 @@
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import SummaryApi from '../common/SummaryApi'
 import AxiosToastError from '../utils/AxiosToastError'
 import Axios from '../utils/Axios'
 
 const Product = () => {
   const [productData,setProductData] = useState([])
-  const [page,setPage] = useState(1)
+  const [page] = useState(1)
   
-  const fetchProductData = async()=>{
+  const fetchProductData = useCallback(async()=>{
     try {
         const response = await Axios({
            ...SummaryApi.getProduct,
@@ -28,12 +28,12 @@ const Product = () => {
     } catch (error) {
       AxiosToastError(error)
     }
-  }
+  }, [page])
   
   console.log("product page")
   useEffect(()=>{
     fetchProductData()
-  },[])
+  },[fetchProductData])
 
   return (
     <div>

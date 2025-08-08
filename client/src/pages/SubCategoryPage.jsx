@@ -16,7 +16,7 @@ import toast from 'react-hot-toast'
 const SubCategoryPage = () => {
   const [openAddSubCategory,setOpenAddSubCategory] = useState(false)
   const [data,setData] = useState([])
-  const [loading,setLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
   const columnHelper = createColumnHelper()
   const [ImageURL,setImageURL] = useState("")
   const [openEdit,setOpenEdit] = useState(false)
@@ -77,7 +77,7 @@ const SubCategoryPage = () => {
         return(
           <>
             {
-              row.original.category.map((c,index)=>{
+              row.original.category.map((c)=>{
                 return(
                   <p key={c._id+"table"} className='shadow-md px-1 inline-block'>{c.name}</p>
                 )
