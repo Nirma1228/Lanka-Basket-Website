@@ -7,6 +7,7 @@ import AxiosToastError from '../utils/AxiosToastError'
 import Loading from './Loading'
 import { useSelector } from 'react-redux'
 import { FaMinus, FaPlus } from "react-icons/fa6";
+import { BsCart4 } from "react-icons/bs";
 import { useNavigate } from 'react-router-dom'
 
 const AddToCartButton = ({ data }) => {
@@ -106,24 +107,50 @@ const AddToCartButton = ({ data }) => {
             }
         }
     }
+    
     return (
-        <div className='w-full max-w-[150px]'>
+        <div className='w-full max-w-[140px]'>
             {
                 isAvailableCart ? (
-                    <div className='flex w-full h-full'>
-                        <button onClick={decreaseQty} className='bg-green-600 hover:bg-green-700 text-white flex-1 w-full p-1 rounded flex items-center justify-center'><FaMinus /></button>
+                    <div className='flex items-center bg-white border border-green-500 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300'>
+                        <button 
+                            onClick={decreaseQty} 
+                            className='bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white p-2 flex items-center justify-center transform hover:scale-110 transition-all duration-200 active:scale-95'
+                        >
+                            <FaMinus className="text-xs" />
+                        </button>
 
-                        <p className='flex-1 w-full font-semibold px-1 flex items-center justify-center'>{qty}</p>
+                        <div className='flex-1 bg-green-50 py-2 px-3 text-center'>
+                            <span className='font-bold text-green-800 text-sm'>{qty}</span>
+                        </div>
 
-                        <button onClick={increaseQty} className='bg-green-600 hover:bg-green-700 text-white flex-1 w-full p-1 rounded flex items-center justify-center'><FaPlus /></button>
+                        <button 
+                            onClick={increaseQty} 
+                            className='bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white p-2 flex items-center justify-center transform hover:scale-110 transition-all duration-200 active:scale-95'
+                        >
+                            <FaPlus className="text-xs" />
+                        </button>
                     </div>
                 ) : (
-                    <button onClick={handleADDTocart} className='bg-green-600 hover:bg-green-700 text-white px-2 lg:px-4 py-1 rounded'>
-                        {loading ? <Loading /> : "Add"}
+                    <button 
+                        onClick={handleADDTocart} 
+                        disabled={loading}
+                        className='group w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold px-4 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2'
+                    >
+                        {loading ? (
+                            <div className="flex items-center gap-2">
+                                <Loading />
+                                <span className="text-xs">Adding...</span>
+                            </div>
+                        ) : (
+                            <>
+                                <BsCart4 className="group-hover:animate-bounce text-sm" />
+                                <span className="text-sm">Add to Cart</span>
+                            </>
+                        )}
                     </button>
                 )
             }
-
         </div>
     )
 }

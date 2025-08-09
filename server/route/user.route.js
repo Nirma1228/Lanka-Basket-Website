@@ -27,11 +27,11 @@ userRouter.put('/update-user', auth, validateEmail, updateUserDetails)
 userRouter.get('/user-details', auth, userDetails)
 userRouter.post('/refresh-token', refreshToken)
 
-// Admin routes with enhanced validation
+// Admin routes with enhanced validation and proper error handling
 userRouter.post('/admin/get-all-users', auth, admin, getAllUsersController)
 userRouter.delete('/admin/delete-user/:userId', auth, admin, validateObjectId('userId'), deleteUserController)
 userRouter.put('/admin/update-user-role/:userId', auth, admin, validateObjectId('userId'), updateUserRoleController)
 userRouter.put('/admin/reset-security/:userId', auth, admin, validateObjectId('userId'), resetUserSecurityController)
-userRouter.get('/admin/security-status/:email', auth, admin, validateEmail, getUserSecurityStatusController)
+userRouter.get('/admin/security-status/:email', auth, admin, getUserSecurityStatusController)
 
 export default userRouter

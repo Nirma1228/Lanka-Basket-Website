@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux';
 import Axios from './utils/Axios';
 import SummaryApi from './common/SummaryApi';
 import GlobalProvider from './provider/GlobalProvider';
+import { ThemeProvider } from './provider/ThemeProvider';
 import CartMobileLink from './components/CartMobile';
 
 function App() {
@@ -66,19 +67,21 @@ function App() {
   },[fetchUser, fetchCategory, fetchSubCategory])
 
   return (
-    <GlobalProvider> 
-      <Header/>
-      <main className='min-h-[78vh]'>
-          <Outlet/>
-      </main>
-      <Footer/>
-      <Toaster/>
-      {
-        location.pathname !== '/checkout' && (
-          <CartMobileLink/>
-        )
-      }
-    </GlobalProvider>
+    <ThemeProvider>
+      <GlobalProvider> 
+        <Header/>
+        <main className='min-h-[78vh]'>
+            <Outlet/>
+        </main>
+        <Footer/>
+        <Toaster/>
+        {
+          location.pathname !== '/checkout' && (
+            <CartMobileLink/>
+          )
+        }
+      </GlobalProvider>
+    </ThemeProvider>
   )
 }
 
