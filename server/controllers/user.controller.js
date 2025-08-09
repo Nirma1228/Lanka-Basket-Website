@@ -10,6 +10,12 @@ import forgotPasswordTemplate from '../utils/forgotPasswordTemplate.js'
 import jwt from 'jsonwebtoken'
 import validatePasswordStrength from '../utils/passwordValidation.js'
 import generateVerificationToken from '../utils/generateVerificationToken.js'
+import { 
+    checkTemporarySuspension, 
+    checkVerificationEmailLimits, 
+    checkForgotPasswordLimits,
+    resetUserAttempts
+} from '../utils/securityUtils.js'
 
 export async function registerUserController(request,response){
     try {
@@ -170,13 +176,54 @@ export async function resendVerificationEmailController(request,response){
             })
         }
 
-        const user = await UserModel.findOne({ email })
-
-        if(!user){
-            return response.status(400).json({
-                message : "User not found with this email",
+        // Check if user is temporarily suspended
+        const suspensionCheck = await checkTemporarySuspension(email)
+        if (suspensionCheck.suspended) {
+            const timeRemaining = Math.ceil((suspensionCheck.suspensionEnds - new Date()) / (1000 * 60))
+            return response.status(429).json({
+                message : `Account temporarily suspended. Try again in ${timeRemaining} minutes.`,
                 error : true,
-                success : false
+                success : false,
+                suspensionEnd: suspensionCheck.suspensionEnds,
+                reason: suspensionCheck.reason
+            })
+        }
+
+        // Check rate limits and security constraints
+        const limitCheck = await checkVerificationEmailLimits(email)
+        if (!limitCheck.allowed) {
+            if (limitCheck.reason === 'daily_limit_exceeded') {
+                const resetTime = new Date(limitCheck.resetTime).toLocaleString()
+                return response.status(429).json({
+                    message : `Daily limit of 5 verification email requests exceeded. Try again after ${resetTime}`,
+                    error : true,
+                    success : false,
+                    attemptsRemaining: 0,
+                    resetTime: limitCheck.resetTime
+                })
+            } else if (limitCheck.reason === 'user_not_found') {
+                // Don't reveal that user doesn't exist, but don't actually send email
+                return response.json({
+                    message : "If this email exists in our system, a verification email has been sent.",
+                    error : false,
+                    success : true
+                })
+            } else if (limitCheck.reason === 'user_suspended') {
+                return response.status(429).json({
+                    message : limitCheck.suspensionReason,
+                    error : true,
+                    success : false,
+                    suspensionEnd: limitCheck.suspensionEnd
+                })
+            }
+        }
+
+        const user = limitCheck.user
+        if (!user) {
+            return response.json({
+                message : "If this email exists in our system, a verification email has been sent.",
+                error : false,
+                success : true
             })
         }
 
@@ -221,7 +268,8 @@ export async function resendVerificationEmailController(request,response){
         return response.json({
             message : "Verification email sent successfully. Please check your email.",
             error : false,
-            success : true
+            success : true,
+            attemptsRemaining: limitCheck.attemptsRemaining
         })
 
     } catch (error) {
@@ -244,6 +292,19 @@ export async function loginController(request,response){
                 message : "provide email, password",
                 error : true,
                 success : false
+            })
+        }
+
+        // Check if user is temporarily suspended
+        const suspensionCheck = await checkTemporarySuspension(email)
+        if (suspensionCheck.suspended) {
+            const timeRemaining = Math.ceil((suspensionCheck.suspensionEnds - new Date()) / (1000 * 60))
+            return response.status(429).json({
+                message : `Account temporarily suspended. Try again in ${timeRemaining} minutes.`,
+                error : true,
+                success : false,
+                suspensionEnd: suspensionCheck.suspensionEnds,
+                reason: suspensionCheck.reason
             })
         }
 
@@ -290,6 +351,9 @@ export async function loginController(request,response){
         const updateUser = await UserModel.findByIdAndUpdate(user?._id,{
             last_login_date : new Date()
         })
+
+        // Reset security attempts after successful login
+        await resetUserAttempts(user._id, 'all')
 
         const cookiesOption = {
             httpOnly : true,
@@ -433,13 +497,62 @@ export async function forgotPasswordController(request,response) {
     try {
         const { email } = request.body 
 
-        const user = await UserModel.findOne({ email })
-
-        if(!user){
+        if(!email){
             return response.status(400).json({
-                message : "Email not available",
+                message : "Email is required",
                 error : true,
                 success : false
+            })
+        }
+
+        // Check if user is temporarily suspended
+        const suspensionCheck = await checkTemporarySuspension(email)
+        if (suspensionCheck.suspended) {
+            const timeRemaining = Math.ceil((suspensionCheck.suspensionEnds - new Date()) / (1000 * 60))
+            return response.status(429).json({
+                message : `Account temporarily suspended. Try again in ${timeRemaining} minutes.`,
+                error : true,
+                success : false,
+                suspensionEnd: suspensionCheck.suspensionEnds,
+                reason: suspensionCheck.reason
+            })
+        }
+
+        // Check rate limits and security constraints
+        const limitCheck = await checkForgotPasswordLimits(email)
+        if (!limitCheck.allowed) {
+            if (limitCheck.reason === 'daily_limit_exceeded') {
+                const resetTime = new Date(limitCheck.resetTime).toLocaleString()
+                return response.status(429).json({
+                    message : `Daily limit of 5 password reset requests exceeded. Try again after ${resetTime}`,
+                    error : true,
+                    success : false,
+                    attemptsRemaining: 0,
+                    resetTime: limitCheck.resetTime
+                })
+            } else if (limitCheck.reason === 'user_not_found') {
+                // Don't reveal that user doesn't exist, but don't actually send email
+                return response.json({
+                    message : "If this email exists in our system, we will send a password reset OTP.",
+                    error : false,
+                    success : true
+                })
+            } else if (limitCheck.reason === 'user_suspended') {
+                return response.status(429).json({
+                    message : limitCheck.suspensionReason,
+                    error : true,
+                    success : false,
+                    suspensionEnd: limitCheck.suspensionEnd
+                })
+            }
+        }
+
+        const user = limitCheck.user
+        if (!user) {
+            return response.json({
+                message : "If this email exists in our system, we will send a password reset OTP.",
+                error : false,
+                success : true
             })
         }
 
@@ -485,7 +598,8 @@ export async function forgotPasswordController(request,response) {
         return response.json({
             message : "Check your email for the OTP code",
             error : false,
-            success : true
+            success : true,
+            attemptsRemaining: limitCheck.attemptsRemaining
         })
 
     } catch (error) {
@@ -697,6 +811,265 @@ export async function userDetails(request,response){
             message : "Something is wrong",
             error : true,
             success : false
+        })
+    }
+}
+
+// Admin: Get all users
+export async function getAllUsersController(request, response) {
+    try {
+        const { page = 1, limit = 10, search = "" } = request.body
+
+        const pageNumber = parseInt(page)
+        const limitNumber = parseInt(limit)
+        const skip = (pageNumber - 1) * limitNumber
+
+        let searchQuery = {}
+        if (search) {
+            searchQuery = {
+                $or: [
+                    { name: { $regex: search, $options: 'i' } },
+                    { email: { $regex: search, $options: 'i' } }
+                ]
+            }
+        }
+
+        const totalUsers = await UserModel.countDocuments(searchQuery)
+        const users = await UserModel.find(searchQuery)
+            .select('-password -refresh_token -verify_email_token -forgot_password_otp')
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limitNumber)
+
+        const totalPages = Math.ceil(totalUsers / limitNumber)
+
+        return response.json({
+            message: "Users retrieved successfully",
+            error: false,
+            success: true,
+            data: {
+                users,
+                totalPages,
+                currentPage: pageNumber,
+                totalUsers,
+                hasNextPage: pageNumber < totalPages,
+                hasPrevPage: pageNumber > 1
+            }
+        })
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
+
+// Admin: Delete user
+export async function deleteUserController(request, response) {
+    try {
+        const { userId } = request.params
+
+        if (!userId) {
+            return response.status(400).json({
+                message: "User ID is required",
+                error: true,
+                success: false
+            })
+        }
+
+        // Check if user exists
+        const user = await UserModel.findById(userId)
+        if (!user) {
+            return response.status(400).json({
+                message: "User not found",
+                error: true,
+                success: false
+            })
+        }
+
+        // Don't allow deleting admin users
+        if (user.role === 'ADMIN') {
+            return response.status(400).json({
+                message: "Cannot delete admin user",
+                error: true,
+                success: false
+            })
+        }
+
+        await UserModel.findByIdAndDelete(userId)
+
+        return response.json({
+            message: "User deleted successfully",
+            error: false,
+            success: true
+        })
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
+
+// Admin: Update user role and status
+export async function updateUserRoleController(request, response) {
+    try {
+        const { userId } = request.params
+        const { role, status } = request.body
+
+        if (!userId) {
+            return response.status(400).json({
+                message: "User ID is required",
+                error: true,
+                success: false
+            })
+        }
+
+        // Validate role
+        if (role && !['USER', 'ADMIN'].includes(role)) {
+            return response.status(400).json({
+                message: "Invalid role. Must be USER or ADMIN",
+                error: true,
+                success: false
+            })
+        }
+
+        // Validate status
+        if (status && !['Active', 'Inactive', 'Suspended'].includes(status)) {
+            return response.status(400).json({
+                message: "Invalid status. Must be Active, Inactive, or Suspended",
+                error: true,
+                success: false
+            })
+        }
+
+        // Check if user exists
+        const user = await UserModel.findById(userId)
+        if (!user) {
+            return response.status(400).json({
+                message: "User not found",
+                error: true,
+                success: false
+            })
+        }
+
+        const updateData = {}
+        if (role) updateData.role = role
+        if (status) {
+            updateData.status = status
+            // If activating a user, clear temporary suspension
+            if (status === 'Active') {
+                updateData.$unset = {
+                    temporary_suspension_until: 1,
+                    suspension_reason: 1
+                }
+                updateData.suspicious_activity_count = 0
+            }
+        }
+
+        const updatedUser = await UserModel.findByIdAndUpdate(
+            userId,
+            updateData,
+            { new: true }
+        ).select('-password -refresh_token -verify_email_token -forgot_password_otp')
+
+        return response.json({
+            message: "User updated successfully",
+            error: false,
+            success: true,
+            data: updatedUser
+        })
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
+
+// Admin: Reset user security attempts
+export async function resetUserSecurityController(request, response) {
+    try {
+        const { userId } = request.params
+        const { type = 'all' } = request.body // 'all', 'verification', 'password', 'suspicious'
+
+        if (!userId) {
+            return response.status(400).json({
+                message: "User ID is required",
+                error: true,
+                success: false
+            })
+        }
+
+        // Check if user exists
+        const user = await UserModel.findById(userId)
+        if (!user) {
+            return response.status(400).json({
+                message: "User not found",
+                error: true,
+                success: false
+            })
+        }
+
+        await resetUserAttempts(userId, type)
+
+        return response.json({
+            message: `User security attempts reset successfully (${type})`,
+            error: false,
+            success: true
+        })
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
+
+// Admin: Get user security status
+export async function getUserSecurityStatusController(request, response) {
+    try {
+        const { email } = request.params
+
+        if (!email) {
+            return response.status(400).json({
+                message: "Email is required",
+                error: true,
+                success: false
+            })
+        }
+
+        console.log('Getting security status for email:', email)
+
+        const { getUserSecurityStatus } = await import('../utils/securityUtils.js')
+        const securityStatus = await getUserSecurityStatus(email)
+
+        console.log('Security status result:', securityStatus)
+
+        if (!securityStatus) {
+            return response.status(404).json({
+                message: "User not found",
+                error: true,
+                success: false
+            })
+        }
+
+        return response.json({
+            message: "User security status retrieved successfully",
+            error: false,
+            success: true,
+            data: securityStatus
+        })
+    } catch (error) {
+        console.error('Error in getUserSecurityStatusController:', error)
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
         })
     }
 }

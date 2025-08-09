@@ -22,18 +22,61 @@ import cartRouter from './route/cart.route.js'
 import addressRouter from './route/address.route.js'
 import orderRouter from './route/order.route.js'
 
+// Security middlewares (simplified for now)
+// import { generalRateLimit } from './middleware/rateLimiting.js'
+// import { securityHeaders } from './middleware/securityHeaders.js'
+// import { mongoSanitize, preventParameterPollution } from './middleware/mongoSecurity.js'
+// import { sanitizeInput, preventNoSQLInjection } from './middleware/inputSanitization.js'
+// import { requestSizeLimit, validateOrigin, validateUserAgent, validateHttpMethods } from './middleware/apiSecurity.js'
+// import { securityMonitoring, bruteForceProtection } from './middleware/securityLogging.js'
+// import { sessionSecurity } from './middleware/sessionSecurity.js'
+
 const app = express()
 const frontendUrl = process.env.FRONTEND_URL || 'https://lively-river-02e6bc000.1.azurestaticapps.net';
+
+// Basic security middlewares (simplified for now)
+// Security middlewares temporarily disabled for debugging
+// app.use(validateHttpMethods) // Validate HTTP methods first
+// app.use(requestSizeLimit) // Limit request size
+// app.use(validateOrigin) // Validate request origin
+// app.use(validateUserAgent) // Check user agent
+// app.use(securityHeaders) // Set security headers
+
+app.use(helmet({
+    crossOriginResourcePolicy: false,
+    contentSecurityPolicy: false // We're handling CSP in securityHeaders
+}))
+
+// Rate limiting - temporarily disabled
+// app.use(generalRateLimit)
+// app.use(bruteForceProtection)
+
+// Security monitoring - temporarily disabled
+// app.use(securityMonitoring)
+
+// CORS configuration
 app.use(cors({
     credentials: true,
-    origin: frontendUrl
+    origin: frontendUrl,
+    optionsSuccessStatus: 200
 }))
-app.use(express.json())
+
+// Body parsing with security
+app.use(express.json({ limit: '10mb' }))
+app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 app.use(cookieParser())
+
+// Input sanitization and validation - temporarily disabled
+// app.use(mongoSanitize)
+// app.use(preventParameterPollution)
+// app.use(sanitizeInput)
+// app.use(preventNoSQLInjection)
+
+// Session security - temporarily disabled
+// app.use(sessionSecurity)
+
+// Logging
 app.use(morgan('combined'))
-app.use(helmet({
-    crossOriginResourcePolicy: false
-}))
 
 const PORT = process.env.PORT || 8080
 

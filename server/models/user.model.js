@@ -77,6 +77,35 @@ const userSchema = new mongoose.Schema({
         type : String,
         enum : ['ADMIN',"USER"],
         default : "USER"
+    },
+    // Security fields for rate limiting and suspicious activity
+    email_verification_attempts : {
+        type : Number,
+        default : 0
+    },
+    email_verification_attempts_reset : {
+        type : Date,
+        default : Date.now
+    },
+    forgot_password_attempts : {
+        type : Number,
+        default : 0
+    },
+    forgot_password_attempts_reset : {
+        type : Date,
+        default : Date.now
+    },
+    suspicious_activity_count : {
+        type : Number,
+        default : 0
+    },
+    temporary_suspension_until : {
+        type : Date,
+        default : null
+    },
+    suspension_reason : {
+        type : String,
+        default : ""
     }
 },{
     timestamps : true

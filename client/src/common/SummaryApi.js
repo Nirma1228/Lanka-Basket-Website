@@ -160,6 +160,27 @@ const SummaryApi = {
     getOrderItems: {
         url: '/api/order/order-list',
         method: 'get'
+    },
+    // Admin user management
+    getAllUsers: {
+        url: '/api/user/admin/get-all-users',
+        method: 'post'
+    },
+    deleteUser: {
+        url: '/api/user/admin/delete-user',
+        method: 'delete'
+    },
+    updateUserRole: {
+        url: '/api/user/admin/update-user-role',
+        method: 'put'
+    },
+    resetUserSecurity: {
+        url: '/api/user/admin/reset-security',
+        method: 'put'
+    },
+    getUserSecurityStatus: {
+        url: '/api/user/admin/security-status',
+        method: 'get'
     }
 }
 
