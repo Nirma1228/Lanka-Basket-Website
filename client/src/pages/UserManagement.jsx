@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react'
 import SummaryApi from '../common/SummaryApi'
 import AxiosToastError from '../utils/AxiosToastError'
 import Axios from '../utils/Axios'
-import Loading from '../components/Loading'
 import { IoSearchOutline } from "react-icons/io5"
 import { MdDelete, MdEdit, MdSecurity, MdRefresh } from "react-icons/md"
-import { FaUser, FaUserShield, FaExclamationTriangle } from "react-icons/fa"
+import { FaUser, FaUserShield, FaExclamationTriangle, FaUsers, FaChevronLeft, FaChevronRight } from "react-icons/fa"
 import toast from 'react-hot-toast'
 import UserEditModal from '../components/UserEditModal'
 import UserSecurityModal from '../components/UserSecurityModal'
+import LoadingSpinner from '../components/LoadingSpinner'
+import UserAvatar from '../components/UserAvatar'
 
 const UserManagement = () => {
     const [users, setUsers] = useState([])
@@ -141,185 +142,220 @@ const UserManagement = () => {
     }
 
     return (
-        <section className='p-4'>
-            <div className='bg-white shadow-md rounded'>
-                <div className='p-4 border-b'>
+        <div className='min-h-screen bg-gray-50 dark:bg-gray-900'>
+            {/* Modern Header */}
+            <div className='bg-white dark:bg-gray-800 shadow-lg border-b border-gray-200 dark:border-gray-700'>
+                <div className='px-6 py-4'>
                     <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
-                        <div>
-                            <h1 className='font-semibold text-lg'>User Management</h1>
-                            <p className='text-sm text-gray-600'>Manage registered users - Total: {totalUsers}</p>
+                        <div className='flex items-center gap-3'>
+                            <div className='w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md'>
+                                <FaUsers className='text-white text-lg' />
+                            </div>
+                            <div>
+                                <h1 className='text-2xl font-bold text-gray-900 dark:text-white'>User Management</h1>
+                                <p className='text-sm text-gray-600 dark:text-gray-300'>
+                                    Manage registered users • Total: {totalUsers} users
+                                </p>
+                            </div>
                         </div>
                         
-                        <div className='w-full max-w-md relative'>
-                            <IoSearchOutline size={25} className='absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400' />
+                        {/* Search Bar */}
+                        <div className='flex items-center gap-3 bg-gray-50 dark:bg-gray-700 rounded-xl px-4 py-2 border border-gray-200 dark:border-gray-600 max-w-md w-full focus-within:border-blue-500 dark:focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all duration-200'>
+                            <IoSearchOutline className='text-xl text-gray-400 dark:text-gray-500' />
                             <input
                                 type='text'
                                 placeholder='Search by name or email...'
-                                className='w-full bg-blue-50 pl-10 pr-4 py-2 rounded outline-none border focus-within:border-primary-200'
+                                className='flex-1 bg-transparent outline-none text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400'
                                 value={search}
                                 onChange={handleSearch}
                             />
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div className='overflow-x-auto'>
+            {/* Content Area */}
+            <div className='p-6'>
+                <div className='bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden'>
                     {loading ? (
-                        <div className='flex justify-center items-center h-64'>
-                            <Loading />
+                        <div className='p-12 text-center'>
+                            <div className='flex flex-col items-center gap-4'>
+                                <LoadingSpinner size="xl" />
+                                <p className='text-gray-600 dark:text-gray-300 font-medium'>Loading users...</p>
+                            </div>
                         </div>
-                    ) : (
-                        <div className='min-w-full'>
-                            {users.length > 0 ? (
-                                <>
-                                    <table className='w-full text-sm'>
-                                        <thead className='bg-gray-50'>
-                                            <tr>
-                                                <th className='px-4 py-3 text-left font-medium text-gray-700'>User</th>
-                                                <th className='px-4 py-3 text-left font-medium text-gray-700'>Role</th>
-                                                <th className='px-4 py-3 text-left font-medium text-gray-700'>Status</th>
-                                                <th className='px-4 py-3 text-left font-medium text-gray-700'>Email Verified</th>
-                                                <th className='px-4 py-3 text-left font-medium text-gray-700'>Security</th>
-                                                <th className='px-4 py-3 text-left font-medium text-gray-700'>Last Login</th>
-                                                <th className='px-4 py-3 text-left font-medium text-gray-700'>Joined</th>
-                                                <th className='px-4 py-3 text-center font-medium text-gray-700'>Actions</th>
+                    ) : users.length > 0 ? (
+                        <>
+                            {/* Table */}
+                            <div className='overflow-x-auto'>
+                                <table className='w-full text-sm'>
+                                    <thead className='bg-gray-50 dark:bg-gray-700/50'>
+                                        <tr>
+                                            <th className='px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300'>User</th>
+                                            <th className='px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300'>Role</th>
+                                            <th className='px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300'>Status</th>
+                                            <th className='px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300'>Email Verified</th>
+                                            <th className='px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300'>Security</th>
+                                            <th className='px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300'>Last Login</th>
+                                            <th className='px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300'>Joined</th>
+                                            <th className='px-6 py-4 text-center font-semibold text-gray-700 dark:text-gray-300'>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
+                                        {users.map((user) => (
+                                            <tr key={user._id} className='hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors duration-150'>
+                                                <td className='px-6 py-4'>
+                                                    <div className='flex items-center gap-3'>
+                                                        <UserAvatar user={user} size="md" />
+                                                        <div>
+                                                            <div className='font-semibold text-gray-900 dark:text-white'>{user.name}</div>
+                                                            <div className='text-gray-500 dark:text-gray-400 text-sm'>{user.email}</div>
+                                                            {user.mobile && (
+                                                                <div className='text-gray-500 dark:text-gray-400 text-sm'>{user.mobile}</div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className='px-6 py-4'>
+                                                    <div className='flex items-center gap-2'>
+                                                        {getRoleIcon(user.role)}
+                                                        <span className={`font-semibold ${user.role === 'ADMIN' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'}`}>
+                                                            {user.role || 'USER'}
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td className='px-6 py-4'>
+                                                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(user.status)}`}>
+                                                        {user.status}
+                                                    </span>
+                                                </td>
+                                                <td className='px-6 py-4'>
+                                                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                                                        user.verify_email 
+                                                            ? 'text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-800' 
+                                                            : 'text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800'
+                                                    }`}>
+                                                        {user.verify_email ? 'Verified' : 'Not Verified'}
+                                                    </span>
+                                                </td>
+                                                <td className='px-6 py-4'>
+                                                    <div className='flex items-center gap-2'>
+                                                        {hasSecurityIssues(user) && (
+                                                            <div className='p-1 bg-red-100 dark:bg-red-900/30 rounded-full'>
+                                                                <FaExclamationTriangle className="text-red-600 dark:text-red-400 text-sm" title="Security Issues Detected" />
+                                                            </div>
+                                                        )}
+                                                        <button
+                                                            onClick={() => setSecurityUser(user)}
+                                                            className='p-2 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/30 rounded-lg transition-colors duration-200 border border-orange-200 dark:border-orange-800'
+                                                            title='View Security Details'
+                                                        >
+                                                            <MdSecurity size={16} />
+                                                        </button>
+                                                        {hasSecurityIssues(user) && (
+                                                            <button
+                                                                onClick={() => resetUserSecurity(user._id)}
+                                                                className='p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200 border border-blue-200 dark:border-blue-800'
+                                                                title='Reset Security Issues'
+                                                            >
+                                                                <MdRefresh size={16} />
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                                <td className='px-6 py-4 text-gray-600 dark:text-gray-300'>
+                                                    {user.last_login_date ? formatDate(user.last_login_date) : (
+                                                        <span className='text-gray-400 dark:text-gray-500 italic'>Never</span>
+                                                    )}
+                                                </td>
+                                                <td className='px-6 py-4 text-gray-600 dark:text-gray-300'>
+                                                    {formatDate(user.createdAt)}
+                                                </td>
+                                                <td className='px-6 py-4'>
+                                                    <div className='flex justify-center gap-2'>
+                                                        <button
+                                                            onClick={() => setEditUser(user)}
+                                                            className='p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200 border border-blue-200 dark:border-blue-800'
+                                                            title='Edit User'
+                                                        >
+                                                            <MdEdit size={16} />
+                                                        </button>
+                                                        {user.role !== 'ADMIN' && (
+                                                            <button
+                                                                onClick={() => handleDeleteUser(user._id, user.name)}
+                                                                className='p-2 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors duration-200 border border-red-200 dark:border-red-800'
+                                                                title='Delete User'
+                                                            >
+                                                                <MdDelete size={16} />
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </td>
                                             </tr>
-                                        </thead>
-                                        <tbody className='divide-y divide-gray-200'>
-                                            {users.map((user) => (
-                                                <tr key={user._id} className='hover:bg-gray-50'>
-                                                    <td className='px-4 py-3'>
-                                                        <div className='flex items-center gap-3'>
-                                                            <div className='w-10 h-10 rounded-full overflow-hidden bg-primary-100 flex items-center justify-center'>
-                                                                {user.avatar ? (
-                                                                    <img src={user.avatar} alt={user.name} className='w-full h-full object-cover' />
-                                                                ) : (
-                                                                    <span className='text-primary-200 font-semibold text-lg'>
-                                                                        {user.name?.charAt(0)?.toUpperCase()}
-                                                                    </span>
-                                                                )}
-                                                            </div>
-                                                            <div>
-                                                                <div className='font-medium text-gray-900'>{user.name}</div>
-                                                                <div className='text-gray-500 text-sm'>{user.email}</div>
-                                                                {user.mobile && (
-                                                                    <div className='text-gray-500 text-sm'>{user.mobile}</div>
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className='px-4 py-3'>
-                                                        <div className='flex items-center gap-2'>
-                                                            {getRoleIcon(user.role)}
-                                                            <span className={`font-medium ${user.role === 'ADMIN' ? 'text-blue-600' : 'text-gray-600'}`}>
-                                                                {user.role || 'USER'}
-                                                            </span>
-                                                        </div>
-                                                    </td>
-                                                    <td className='px-4 py-3'>
-                                                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(user.status)}`}>
-                                                            {user.status}
-                                                        </span>
-                                                    </td>
-                                                    <td className='px-4 py-3'>
-                                                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                                            user.verify_email ? 'text-green-600 bg-green-100' : 'text-red-600 bg-red-100'
-                                                        }`}>
-                                                            {user.verify_email ? 'Verified' : 'Not Verified'}
-                                                        </span>
-                                                    </td>
-                                                    <td className='px-4 py-3'>
-                                                        <div className='flex items-center gap-2'>
-                                                            {hasSecurityIssues(user) && (
-                                                                <FaExclamationTriangle className="text-red-500" title="Security Issues Detected" />
-                                                            )}
-                                                            <button
-                                                                onClick={() => setSecurityUser(user)}
-                                                                className='p-1 text-orange-600 hover:bg-orange-100 rounded transition-colors text-sm'
-                                                                title='View Security Details'
-                                                            >
-                                                                <MdSecurity size={14} />
-                                                            </button>
-                                                            {hasSecurityIssues(user) && (
-                                                                <button
-                                                                    onClick={() => resetUserSecurity(user._id)}
-                                                                    className='p-1 text-blue-600 hover:bg-blue-100 rounded transition-colors text-sm'
-                                                                    title='Reset Security Issues'
-                                                                >
-                                                                    <MdRefresh size={14} />
-                                                                </button>
-                                                            )}
-                                                        </div>
-                                                    </td>
-                                                    <td className='px-4 py-3 text-gray-600'>
-                                                        {user.last_login_date ? formatDate(user.last_login_date) : 'Never'}
-                                                    </td>
-                                                    <td className='px-4 py-3 text-gray-600'>
-                                                        {formatDate(user.createdAt)}
-                                                    </td>
-                                                    <td className='px-4 py-3'>
-                                                        <div className='flex justify-center gap-2'>
-                                                            <button
-                                                                onClick={() => setEditUser(user)}
-                                                                className='p-2 text-blue-600 hover:bg-blue-100 rounded transition-colors'
-                                                                title='Edit User'
-                                                            >
-                                                                <MdEdit size={16} />
-                                                            </button>
-                                                            {user.role !== 'ADMIN' && (
-                                                                <button
-                                                                    onClick={() => handleDeleteUser(user._id, user.name)}
-                                                                    className='p-2 text-red-600 hover:bg-red-100 rounded transition-colors'
-                                                                    title='Delete User'
-                                                                >
-                                                                    <MdDelete size={16} />
-                                                                </button>
-                                                            )}
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                    
-                                    <div className='flex justify-between items-center p-4 border-t'>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            {/* Enhanced Pagination */}
+                            {totalPageCount > 1 && (
+                                <div className='border-t border-gray-200 dark:border-gray-700 p-4'>
+                                    <div className='flex items-center justify-between'>
                                         <button
                                             onClick={handlePrevious}
                                             disabled={page === 1}
-                                            className={`px-4 py-2 rounded ${
+                                            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                                                 page === 1 
-                                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                                                    : 'border border-primary-200 hover:bg-primary-200'
+                                                    ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed' 
+                                                    : 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 border border-blue-200 dark:border-blue-800'
                                             }`}
                                         >
-                                            Previous
+                                            <FaChevronLeft className='text-sm' />
+                                            <span>Previous</span>
                                         </button>
-                                        <span className='text-sm text-gray-600'>
-                                            Page {page} of {totalPageCount}
-                                        </span>
+                                        
+                                        <div className='flex items-center gap-4'>
+                                            <span className='text-sm text-gray-600 dark:text-gray-300'>
+                                                Page {page} of {totalPageCount} • {totalUsers} total users
+                                            </span>
+                                        </div>
+                                        
                                         <button
                                             onClick={handleNext}
                                             disabled={page === totalPageCount}
-                                            className={`px-4 py-2 rounded ${
+                                            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                                                 page === totalPageCount 
-                                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                                    : 'border border-primary-200 hover:bg-primary-200'
+                                                    ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                                                    : 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 border border-blue-200 dark:border-blue-800'
                                             }`}
                                         >
-                                            Next
+                                            <span>Next</span>
+                                            <FaChevronRight className='text-sm' />
                                         </button>
                                     </div>
-                                </>
-                            ) : (
-                                <div className='text-center py-12'>
-                                    <p className='text-gray-500'>No users found</p>
                                 </div>
                             )}
+                        </>
+                    ) : (
+                        <div className='p-12 text-center'>
+                            <div className='w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4'>
+                                <FaUsers className='text-3xl text-gray-400 dark:text-gray-500' />
+                            </div>
+                            <h3 className='text-xl font-semibold text-gray-900 dark:text-white mb-2'>
+                                {search ? 'No Users Found' : 'No Users Available'}
+                            </h3>
+                            <p className='text-gray-600 dark:text-gray-300'>
+                                {search 
+                                    ? `No users match "${search}". Try a different search term.`
+                                    : 'No users have registered yet.'
+                                }
+                            </p>
                         </div>
                     )}
                 </div>
             </div>
 
+            {/* Modals */}
             {editUser && (
                 <UserEditModal
                     user={editUser}
@@ -335,7 +371,7 @@ const UserManagement = () => {
                     onReset={fetchUsers}
                 />
             )}
-        </section>
+        </div>
     )
 }
 

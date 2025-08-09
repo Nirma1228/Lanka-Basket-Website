@@ -8,6 +8,9 @@ import EditCategory from '../components/EditCategory'
 import CofirmBox from '../components/CofirmBox'
 import toast from 'react-hot-toast'
 import AxiosToastError from '../utils/AxiosToastError'
+import { FaPlus, FaEdit, FaTrash, FaImages, FaLayerGroup } from 'react-icons/fa'
+import { HiOutlineViewGrid } from 'react-icons/hi'
+import LoadingSpinner from '../components/LoadingSpinner'
 
 const CategoryPage = () => {
     const [openUploadCategory,setOpenUploadCategory] = useState(false)
@@ -71,71 +74,135 @@ const CategoryPage = () => {
     }
 
   return (
-    <section className=''>
-        <div className='p-2   bg-white shadow-md flex items-center justify-between'>
-            <h2 className='font-semibold'>Category</h2>
-            <button onClick={()=>setOpenUploadCategory(true)} className='text-sm border border-primary-200 hover:bg-primary-200 px-3 py-1 rounded'>Add Category</button>
+    <div className='min-h-screen bg-gray-50 dark:bg-gray-900'>
+      {/* Modern Header */}
+      <div className='bg-white dark:bg-gray-800 shadow-lg border-b border-gray-200 dark:border-gray-700'>
+        <div className='px-6 py-4'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center gap-3'>
+              <div className='w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md'>
+                <FaLayerGroup className='text-white text-lg' />
+              </div>
+              <div>
+                <h1 className='text-2xl font-bold text-gray-900 dark:text-white'>Categories</h1>
+                <p className='text-sm text-gray-600 dark:text-gray-300'>
+                  Manage product categories ({categoryData.length} total)
+                </p>
+              </div>
+            </div>
+            
+            <button 
+              onClick={() => setOpenUploadCategory(true)} 
+              className='inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg'
+            >
+              <FaPlus className='text-sm' />
+              <span>Add Category</span>
+            </button>
+          </div>
         </div>
-        {
-            !categoryData[0] && !loading && (
-                <NoData/>
-            )
-        }
+      </div>
 
-        <div className='p-4 grid  grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2'>
-            {
-                categoryData.map((category)=>{
-                    return(
-                        <div className='w-32 h-56 rounded shadow-md' key={category._id}>
-                            <img 
-                                alt={category.name}
-                                src={category.image}
-                                className='w-full object-scale-down'
-                            />
-                            <div className='items-center h-9 flex gap-2'>
-                                <button onClick={()=>{
-                                    setOpenEdit(true)
-                                    setEditData(category)
-                                }} className='flex-1 bg-green-100 hover:bg-green-200 text-green-600 font-medium py-1 rounded'>
-                                    Edit
-                                </button>
-                                <button onClick={()=>{
-                                    setOpenConfirmBoxDelete(true)
-                                    setDeleteCategory(category)
-                                }} className='flex-1 bg-red-100 hover:bg-red-200 text-red-600 font-medium py-1 rounded'>
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
-                    )
-                })
-            }
-        </div>
+      {/* Content Area */}
+      <div className='p-6'>
+        {!categoryData[0] && !loading ? (
+          <div className='bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-12 text-center border border-gray-200 dark:border-gray-700'>
+            <div className='w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4'>
+              <FaImages className='text-3xl text-gray-400 dark:text-gray-500' />
+            </div>
+            <h3 className='text-xl font-semibold text-gray-900 dark:text-white mb-2'>No Categories Found</h3>
+            <p className='text-gray-600 dark:text-gray-300 mb-6'>
+              Get started by adding your first product category
+            </p>
+            <button 
+              onClick={() => setOpenUploadCategory(true)}
+              className='inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg'
+            >
+              <FaPlus className='text-sm' />
+              <span>Add First Category</span>
+            </button>
+          </div>
+        ) : (
+          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6'>
+            {categoryData.map((category) => (
+              <div 
+                key={category._id}
+                className='group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700 overflow-hidden'
+              >
+                {/* Image Section */}
+                <div className='relative overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800'>
+                  <div className='aspect-square p-4'>
+                    <img 
+                      alt={category.name}
+                      src={category.image}
+                      className='w-full h-full object-contain group-hover:scale-110 transition-transform duration-300'
+                    />
+                  </div>
+                  <div className='absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
+                </div>
 
-        {
-            loading && (
-                <Loading/>
-            )
-        }
+                {/* Content Section */}
+                <div className='p-4'>
+                  <h3 className='font-semibold text-gray-900 dark:text-white text-center mb-4 truncate' title={category.name}>
+                    {category.name}
+                  </h3>
+                  
+                  {/* Action Buttons */}
+                  <div className='flex gap-2'>
+                    <button 
+                      onClick={() => {
+                        setOpenEdit(true)
+                        setEditData(category)
+                      }} 
+                      className='flex-1 flex items-center justify-center gap-2 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 text-green-700 dark:text-green-400 py-2 px-3 rounded-lg font-medium transition-all duration-200 border border-green-200 dark:border-green-800'
+                    >
+                      <FaEdit className='text-sm' />
+                      <span className='text-sm'>Edit</span>
+                    </button>
+                    <button 
+                      onClick={() => {
+                        setOpenConfirmBoxDelete(true)
+                        setDeleteCategory(category)
+                      }} 
+                      className='flex-1 flex items-center justify-center gap-2 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-700 dark:text-red-400 py-2 px-3 rounded-lg font-medium transition-all duration-200 border border-red-200 dark:border-red-800'
+                    >
+                      <FaTrash className='text-sm' />
+                      <span className='text-sm'>Delete</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
-        {
-            openUploadCategory && (
-                <UploadCategoryModel fetchData={fetchCategory} close={()=>setOpenUploadCategory(false)}/>
-            )
-        }
+        {/* Loading State */}
+        {loading && (
+          <div className='bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-12 text-center border border-gray-200 dark:border-gray-700'>
+            <div className='flex flex-col items-center gap-4'>
+              <LoadingSpinner size="xl" />
+              <p className='text-gray-600 dark:text-gray-300 font-medium'>Loading categories...</p>
+            </div>
+          </div>
+        )}
+      </div>
 
-        {
-            openEdit && (
-                <EditCategory data={editData} close={()=>setOpenEdit(false)} fetchData={fetchCategory}/>
-            )
-        }
+      {/* Modals */}
+      {openUploadCategory && (
+        <UploadCategoryModel fetchData={fetchCategory} close={() => setOpenUploadCategory(false)}/>
+      )}
 
-        {
-           openConfimBoxDelete && (
-            <CofirmBox close={()=>setOpenConfirmBoxDelete(false)} cancel={()=>setOpenConfirmBoxDelete(false)} confirm={handleDeleteCategory}/>
-           ) 
-        }
-    </section>
+      {openEdit && (
+        <EditCategory data={editData} close={() => setOpenEdit(false)} fetchData={fetchCategory}/>
+      )}
+
+      {openConfimBoxDelete && (
+        <CofirmBox 
+          close={() => setOpenConfirmBoxDelete(false)} 
+          cancel={() => setOpenConfirmBoxDelete(false)} 
+          confirm={handleDeleteCategory}
+        />
+      )}
+    </div>
   )
 }
 
