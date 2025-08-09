@@ -117,7 +117,7 @@ const AddToCartButton = ({ data }) => {
                             onClick={decreaseQty} 
                             className='bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white p-2 flex items-center justify-center transform hover:scale-110 transition-all duration-200 active:scale-95'
                         >
-                            <FaMinus className="text-xs" />
+                            <FaMinus className='text-xs' />
                         </button>
 
                         <div className='flex-1 bg-green-50 py-2 px-3 text-center'>
@@ -128,7 +128,7 @@ const AddToCartButton = ({ data }) => {
                             onClick={increaseQty} 
                             className='bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white p-2 flex items-center justify-center transform hover:scale-110 transition-all duration-200 active:scale-95'
                         >
-                            <FaPlus className="text-xs" />
+                            <FaPlus className='text-xs' />
                         </button>
                     </div>
                 ) : (
@@ -138,14 +138,14 @@ const AddToCartButton = ({ data }) => {
                         className='group w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold px-4 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2'
                     >
                         {loading ? (
-                            <div className="flex items-center gap-2">
+                            <div className='flex items-center gap-2'>
                                 <Loading />
-                                <span className="text-xs">Adding...</span>
+                                <span className='text-xs'>Adding...</span>
                             </div>
                         ) : (
                             <>
-                                <BsCart4 className="group-hover:animate-bounce text-sm" />
-                                <span className="text-sm">Add to Cart</span>
+                                <BsCart4 className='group-hover:animate-bounce text-sm' />
+                                <span className='text-sm'>Add to Cart</span>
                             </>
                         )}
                     </button>

@@ -128,36 +128,36 @@ const ProductDisplayPage = () => {
 
   if (loading) {
     return (
-      <div className='min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center'>
+      <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
         <div className='text-center'>
           <LoadingSpinner size="xl" />
-          <p className='mt-4 text-gray-600 dark:text-gray-300'>Loading product details...</p>
+          <p className='mt-4 text-gray-600'>Loading product details...</p>
         </div>
       </div>
     )
   }
   return (
-    <div className='min-h-screen bg-gray-50 dark:bg-gray-900'>
+    <div className='min-h-screen bg-gray-50'>
       {/* Breadcrumb */}
-      <div className='bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30'>
+      <div className='bg-white border-b border-gray-200 sticky top-0 z-30'>
         <div className='container mx-auto px-4 py-3'>
-          <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300'>
+          <div className='flex items-center gap-2 text-sm text-gray-600'>
             <button 
               onClick={() => navigate('/')}
-              className='hover:text-green-600 dark:hover:text-green-400 transition-colors duration-200'
+              className='hover:text-green-600 transition-colors duration-200'
             >
               Home
             </button>
             <MdChevronRight />
             {data.category && data.category[0] && (
               <>
-                <span className='hover:text-green-600 dark:hover:text-green-400 cursor-pointer transition-colors duration-200'>
+                <span className='hover:text-green-600 cursor-pointer transition-colors duration-200'>
                   {data.category[0].name}
                 </span>
                 <MdChevronRight />
               </>
             )}
-            <span className='text-gray-900 dark:text-white font-medium truncate'>{data.name}</span>
+            <span className='text-gray-900 font-medium truncate'>{data.name}</span>
           </div>
         </div>
       </div>
@@ -167,7 +167,7 @@ const ProductDisplayPage = () => {
           {/* Image Section */}
           <div className='space-y-4'>
             {/* Main Image */}
-            <div className='relative bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-lg'>
+            <div className='relative bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-lg'>
               <div className='aspect-square lg:aspect-[4/3] p-6 flex items-center justify-center'>
                 <img
                   src={data.image[image]}
@@ -179,9 +179,9 @@ const ProductDisplayPage = () => {
                 {/* Zoom button */}
                 <button
                   onClick={() => openImageModal(image)}
-                  className='absolute top-4 right-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-2 rounded-full hover:bg-white dark:hover:bg-gray-800 transition-colors duration-200 shadow-lg'
+                  className='absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-colors duration-200 shadow-lg'
                 >
-                  <MdZoomIn className='text-xl text-gray-700 dark:text-gray-300' />
+                  <MdZoomIn className='text-xl text-gray-700' />
                 </button>
 
                 {/* Discount badge */}
@@ -202,7 +202,7 @@ const ProductDisplayPage = () => {
                     className={`w-2 h-2 rounded-full transition-all duration-200 ${
                       index === image 
                         ? 'bg-green-600 w-8' 
-                        : 'bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500'
+                        : 'bg-gray-300 hover:bg-gray-400 :bg-gray-500'
                     }`}
                   />
                 ))}
@@ -222,13 +222,13 @@ const ProductDisplayPage = () => {
                     className={`relative flex-shrink-0 w-20 h-20 rounded-xl border-2 overflow-hidden transition-all duration-200 ${
                       index === image 
                         ? 'border-green-500 shadow-lg' 
-                        : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
+                        : 'border-gray-200 hover:border-gray-300 :border-gray-500'
                     }`}
                   >
                     <img
                       src={img}
                       alt={`${data.name} ${index + 1}`}
-                      className='w-full h-full object-contain bg-white dark:bg-gray-800 p-1'
+                      className='w-full h-full object-contain bg-white p-1'
                     />
                   </button>
                 ))}
@@ -239,15 +239,15 @@ const ProductDisplayPage = () => {
                 <div className='absolute inset-y-0 flex items-center justify-between w-full pointer-events-none'>
                   <button
                     onClick={handleScrollLeft}
-                    className='pointer-events-auto bg-white dark:bg-gray-800 shadow-lg p-2 rounded-full hover:scale-110 transition-transform duration-200 -ml-4'
+                    className='pointer-events-auto bg-white shadow-lg p-2 rounded-full hover:scale-110 transition-transform duration-200 -ml-4'
                   >
-                    <FaAngleLeft className='text-gray-600 dark:text-gray-300' />
+                    <FaAngleLeft className='text-gray-600' />
                   </button>
                   <button
                     onClick={handleScrollRight}
-                    className='pointer-events-auto bg-white dark:bg-gray-800 shadow-lg p-2 rounded-full hover:scale-110 transition-transform duration-200 -mr-4'
+                    className='pointer-events-auto bg-white shadow-lg p-2 rounded-full hover:scale-110 transition-transform duration-200 -mr-4'
                   >
-                    <FaAngleRight className='text-gray-600 dark:text-gray-300' />
+                    <FaAngleRight className='text-gray-600' />
                   </button>
                 </div>
               )}
@@ -259,10 +259,10 @@ const ProductDisplayPage = () => {
             {/* Product Title and Actions */}
             <div className='flex items-start justify-between gap-4'>
               <div className='flex-1'>
-                <h1 className='text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white leading-tight'>
+                <h1 className='text-2xl lg:text-3xl font-bold text-gray-900 leading-tight'>
                   {data.name}
                 </h1>
-                <p className='text-gray-600 dark:text-gray-400 mt-1 font-medium'>{data.unit}</p>
+                <p className='text-gray-600 mt-1 font-medium'>{data.unit}</p>
                 
                 {/* Mock rating */}
                 <div className='flex items-center gap-3 mt-2'>
@@ -271,25 +271,25 @@ const ProductDisplayPage = () => {
                       <FaStar key={i} className='text-sm' />
                     ))}
                   </div>
-                  <span className='text-sm text-gray-600 dark:text-gray-400'>(4.5) • 127 reviews</span>
+                  <span className='text-sm text-gray-600'>(4.5) • 127 reviews</span>
                 </div>
               </div>
               
               <div className='flex gap-2'>
-                <button className='p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200'>
-                  <FaHeart className='text-gray-600 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400' />
+                <button className='p-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors duration-200'>
+                  <FaHeart className='text-gray-600 hover:text-red-500' />
                 </button>
-                <button className='p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200'>
-                  <FaShare className='text-gray-600 dark:text-gray-400' />
+                <button className='p-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors duration-200'>
+                  <FaShare className='text-gray-600' />
                 </button>
               </div>
             </div>
 
             {/* Price Section */}
-            <div className='bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm'>
+            <div className='bg-white rounded-2xl p-6 border border-gray-200 shadow-sm'>
               <div className='space-y-4'>
                 <div className='flex items-center gap-4'>
-                  <div className='text-3xl font-bold text-gray-900 dark:text-white'>
+                  <div className='text-3xl font-bold text-gray-900'>
                     {DisplayPriceInRupees(discountPrice)}
                   </div>
                   {data.discount > 0 && (
@@ -298,14 +298,14 @@ const ProductDisplayPage = () => {
                     </div>
                   )}
                   {data.discount > 0 && (
-                    <div className='bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-3 py-1 rounded-full text-sm font-semibold'>
+                    <div className='bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold'>
                       {data.discount}% OFF
                     </div>
                   )}
                 </div>
                 
                 {savings > 0 && (
-                  <p className='text-green-600 dark:text-green-400 font-medium'>
+                  <p className='text-green-600 font-medium'>
                     You save {DisplayPriceInRupees(savings)}!
                   </p>
                 )}
@@ -313,12 +313,12 @@ const ProductDisplayPage = () => {
                 {/* Stock status */}
                 <div className='flex items-center gap-2'>
                   {data.stock > 0 ? (
-                    <div className='flex items-center gap-2 text-green-600 dark:text-green-400'>
+                    <div className='flex items-center gap-2 text-green-600'>
                       <HiOutlineBadgeCheck className='text-lg' />
                       <span className='font-medium'>In Stock ({data.stock} available)</span>
                     </div>
                   ) : (
-                    <div className='flex items-center gap-2 text-red-600 dark:text-red-400'>
+                    <div className='flex items-center gap-2 text-red-600'>
                       <span className='font-medium'>Out of Stock</span>
                     </div>
                   )}
@@ -335,7 +335,7 @@ const ProductDisplayPage = () => {
                   </div>
                 </div>
               ) : (
-                <button className='w-full bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 py-4 rounded-xl font-semibold cursor-not-allowed'>
+                <button className='w-full bg-gray-100 text-gray-400 py-4 rounded-xl font-semibold cursor-not-allowed'>
                   Out of Stock
                 </button>
               )}
@@ -343,58 +343,58 @@ const ProductDisplayPage = () => {
 
             {/* Features */}
             <div className='grid grid-cols-2 lg:grid-cols-4 gap-4'>
-              <div className='flex items-center gap-3 bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700'>
-                <FaTruck className='text-green-600 dark:text-green-400 text-xl' />
+              <div className='flex items-center gap-3 bg-white p-4 rounded-xl border border-gray-200'>
+                <FaTruck className='text-green-600 text-xl' />
                 <div>
-                  <div className='font-semibold text-gray-900 dark:text-white text-sm'>Fast Delivery</div>
-                  <div className='text-xs text-gray-600 dark:text-gray-400'>30 mins</div>
+                  <div className='font-semibold text-gray-900 text-sm'>Fast Delivery</div>
+                  <div className='text-xs text-gray-600'>30 mins</div>
                 </div>
               </div>
-              <div className='flex items-center gap-3 bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700'>
-                <FaShieldAlt className='text-blue-600 dark:text-blue-400 text-xl' />
+              <div className='flex items-center gap-3 bg-white p-4 rounded-xl border border-gray-200'>
+                <FaShieldAlt className='text-blue-600 text-xl' />
                 <div>
-                  <div className='font-semibold text-gray-900 dark:text-white text-sm'>100% Fresh</div>
-                  <div className='text-xs text-gray-600 dark:text-gray-400'>Quality</div>
+                  <div className='font-semibold text-gray-900 text-sm'>100% Fresh</div>
+                  <div className='text-xs text-gray-600'>Quality</div>
                 </div>
               </div>
-              <div className='flex items-center gap-3 bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700'>
-                <FaUndo className='text-orange-600 dark:text-orange-400 text-xl' />
+              <div className='flex items-center gap-3 bg-white p-4 rounded-xl border border-gray-200'>
+                <FaUndo className='text-orange-600 text-xl' />
                 <div>
-                  <div className='font-semibold text-gray-900 dark:text-white text-sm'>Easy Returns</div>
-                  <div className='text-xs text-gray-600 dark:text-gray-400'>7 days</div>
+                  <div className='font-semibold text-gray-900 text-sm'>Easy Returns</div>
+                  <div className='text-xs text-gray-600'>7 days</div>
                 </div>
               </div>
-              <div className='flex items-center gap-3 bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700'>
-                <FaHeadset className='text-purple-600 dark:text-purple-400 text-xl' />
+              <div className='flex items-center gap-3 bg-white p-4 rounded-xl border border-gray-200'>
+                <FaHeadset className='text-purple-600 text-xl' />
                 <div>
-                  <div className='font-semibold text-gray-900 dark:text-white text-sm'>Support</div>
-                  <div className='text-xs text-gray-600 dark:text-gray-400'>24/7</div>
+                  <div className='font-semibold text-gray-900 text-sm'>Support</div>
+                  <div className='text-xs text-gray-600'>24/7</div>
                 </div>
               </div>
             </div>
 
             {/* Product Details */}
-            <div className='bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 space-y-4'>
-              <h3 className='text-lg font-semibold text-gray-900 dark:text-white'>Product Details</h3>
+            <div className='bg-white rounded-2xl p-6 border border-gray-200 space-y-4'>
+              <h3 className='text-lg font-semibold text-gray-900'>Product Details</h3>
               
               <div className='space-y-3'>
                 <div>
-                  <h4 className='font-semibold text-gray-900 dark:text-white mb-2'>Description</h4>
-                  <p className='text-gray-600 dark:text-gray-300 leading-relaxed'>{data.description}</p>
+                  <h4 className='font-semibold text-gray-900 mb-2'>Description</h4>
+                  <p className='text-gray-600 leading-relaxed'>{data.description}</p>
                 </div>
                 
                 <div>
-                  <h4 className='font-semibold text-gray-900 dark:text-white mb-2'>Unit</h4>
-                  <p className='text-gray-600 dark:text-gray-300'>{data.unit}</p>
+                  <h4 className='font-semibold text-gray-900 mb-2'>Unit</h4>
+                  <p className='text-gray-600'>{data.unit}</p>
                 </div>
                 
                 {/* Additional details */}
                 {data.more_details && Object.keys(data.more_details).map((key) => (
                   <div key={key}>
-                    <h4 className='font-semibold text-gray-900 dark:text-white mb-2 capitalize'>
+                    <h4 className='font-semibold text-gray-900 mb-2 capitalize'>
                       {key.replace('_', ' ')}
                     </h4>
-                    <p className='text-gray-600 dark:text-gray-300'>{data.more_details[key]}</p>
+                    <p className='text-gray-600'>{data.more_details[key]}</p>
                   </div>
                 ))}
               </div>
@@ -406,10 +406,10 @@ const ProductDisplayPage = () => {
         {similarProducts.length > 0 && (
           <div className='mt-16'>
             <div className='flex items-center justify-between mb-8'>
-              <h2 className='text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white'>
+              <h2 className='text-2xl lg:text-3xl font-bold text-gray-900'>
                 Similar Products
               </h2>
-              <p className='text-gray-600 dark:text-gray-400'>
+              <p className='text-gray-600'>
                 You might also like these items
               </p>
             </div>

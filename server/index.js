@@ -100,10 +100,14 @@ const startServer = async () => {
     try {
         // Import connectDB after dotenv is configured
         const { default: connectDB } = await import('./config/connectDB.js');
+        const { ensureSearchIndexes } = await import('./utils/createIndexes.js');
 
         // Connect to database first
         await connectDB();
         console.log("Database connected successfully");
+
+        // Ensure search indexes are created
+        await ensureSearchIndexes();
 
         // Then start the server
         app.listen(PORT, () => {

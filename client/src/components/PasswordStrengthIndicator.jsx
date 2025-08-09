@@ -9,16 +9,16 @@ const PasswordStrengthIndicator = ({ password, showIndicator = true }) => {
     const strengthText = getPasswordStrengthText(validation.strengthScore, validation.totalCriteria)
 
     return (
-        <div className="mt-2 p-3 bg-gray-50 rounded-lg border">
-            <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Password Strength:</span>
+        <div className='mt-2 p-3 bg-gray-50 rounded-lg border'>
+            <div className='flex items-center justify-between mb-2'>
+                <span className='text-sm font-medium'>Password Strength:</span>
                 <span className={`text-sm font-bold ${strengthColor}`}>
                     {strengthText} ({validation.strengthScore}/{validation.totalCriteria})
                 </span>
             </div>
             
             {/* Progress bar */}
-            <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
+            <div className='w-full bg-gray-200 rounded-full h-2 mb-3'>
                 <div 
                     className={`h-2 rounded-full transition-all duration-300 ${
                         validation.strengthScore < 3 ? 'bg-red-500' :
@@ -32,7 +32,7 @@ const PasswordStrengthIndicator = ({ password, showIndicator = true }) => {
             </div>
 
             {/* Criteria list */}
-            <div className="space-y-1">
+            <div className='space-y-1'>
                 {validation.criteria.map((criterion) => (
                     <div 
                         key={criterion.key} 
@@ -40,7 +40,7 @@ const PasswordStrengthIndicator = ({ password, showIndicator = true }) => {
                             criterion.passed ? 'text-green-600' : 'text-red-500'
                         }`}
                     >
-                        <span className="mr-2">
+                        <span className='mr-2'>
                             {criterion.passed ? '✅' : '❌'}
                         </span>
                         <span>{criterion.message}</span>
@@ -49,7 +49,7 @@ const PasswordStrengthIndicator = ({ password, showIndicator = true }) => {
             </div>
 
             {!validation.isValid && (
-                <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded text-red-700 text-xs">
+                <div className='mt-2 p-2 bg-red-50 border border-red-200 rounded text-red-700 text-xs'>
                     <strong>Password is not strong enough!</strong> Please ensure all criteria are met.
                 </div>
             )}

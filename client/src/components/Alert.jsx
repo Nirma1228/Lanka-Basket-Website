@@ -31,28 +31,28 @@ const Alert = ({
 
   const alertStyles = {
     success: {
-      bg: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800',
-      text: 'text-green-800 dark:text-green-200',
+      bg: 'bg-green-50 border-green-200',
+      text: 'text-green-800',
       icon: FaCheckCircle,
-      iconColor: 'text-green-600 dark:text-green-400'
+      iconColor: 'text-green-600'
     },
     error: {
-      bg: 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800',
-      text: 'text-red-800 dark:text-red-200',
+      bg: 'bg-red-50 border-red-200',
+      text: 'text-red-800',
       icon: FaExclamationCircle,
-      iconColor: 'text-red-600 dark:text-red-400'
+      iconColor: 'text-red-600'
     },
     warning: {
-      bg: 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800',
-      text: 'text-yellow-800 dark:text-yellow-200',
+      bg: 'bg-yellow-50 border-yellow-200',
+      text: 'text-yellow-800',
       icon: FaExclamationTriangle,
-      iconColor: 'text-yellow-600 dark:text-yellow-400'
+      iconColor: 'text-yellow-600'
     },
     info: {
-      bg: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800',
-      text: 'text-blue-800 dark:text-blue-200',
+      bg: 'bg-blue-50 border-blue-200',
+      text: 'text-blue-800',
       icon: FaInfoCircle,
-      iconColor: 'text-blue-600 dark:text-blue-400'
+      iconColor: 'text-blue-600'
     }
   }
 

@@ -74,9 +74,9 @@ const CategoryPage = () => {
     }
 
   return (
-    <div className='min-h-screen bg-gray-50 dark:bg-gray-900'>
+    <div className='min-h-screen bg-gray-50'>
       {/* Modern Header */}
-      <div className='bg-white dark:bg-gray-800 shadow-lg border-b border-gray-200 dark:border-gray-700'>
+      <div className='bg-white shadow-lg border-b border-gray-200'>
         <div className='px-6 py-4'>
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-3'>
@@ -84,8 +84,8 @@ const CategoryPage = () => {
                 <FaLayerGroup className='text-white text-lg' />
               </div>
               <div>
-                <h1 className='text-2xl font-bold text-gray-900 dark:text-white'>Categories</h1>
-                <p className='text-sm text-gray-600 dark:text-gray-300'>
+                <h1 className='text-2xl font-bold text-gray-900'>Categories</h1>
+                <p className='text-sm text-gray-600'>
                   Manage product categories ({categoryData.length} total)
                 </p>
               </div>
@@ -105,12 +105,12 @@ const CategoryPage = () => {
       {/* Content Area */}
       <div className='p-6'>
         {!categoryData[0] && !loading ? (
-          <div className='bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-12 text-center border border-gray-200 dark:border-gray-700'>
-            <div className='w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4'>
-              <FaImages className='text-3xl text-gray-400 dark:text-gray-500' />
+          <div className='bg-white rounded-2xl shadow-lg p-12 text-center border border-gray-200'>
+            <div className='w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4'>
+              <FaImages className='text-3xl text-gray-400' />
             </div>
-            <h3 className='text-xl font-semibold text-gray-900 dark:text-white mb-2'>No Categories Found</h3>
-            <p className='text-gray-600 dark:text-gray-300 mb-6'>
+            <h3 className='text-xl font-semibold text-gray-900 mb-2'>No Categories Found</h3>
+            <p className='text-gray-600 mb-6'>
               Get started by adding your first product category
             </p>
             <button 
@@ -126,10 +126,10 @@ const CategoryPage = () => {
             {categoryData.map((category) => (
               <div 
                 key={category._id}
-                className='group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700 overflow-hidden'
+                className='group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 overflow-hidden'
               >
                 {/* Image Section */}
-                <div className='relative overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800'>
+                <div className='relative overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100'>
                   <div className='aspect-square p-4'>
                     <img 
                       alt={category.name}
@@ -142,7 +142,7 @@ const CategoryPage = () => {
 
                 {/* Content Section */}
                 <div className='p-4'>
-                  <h3 className='font-semibold text-gray-900 dark:text-white text-center mb-4 truncate' title={category.name}>
+                  <h3 className='font-semibold text-gray-900 text-center mb-4 truncate' title={category.name}>
                     {category.name}
                   </h3>
                   
@@ -153,7 +153,7 @@ const CategoryPage = () => {
                         setOpenEdit(true)
                         setEditData(category)
                       }} 
-                      className='flex-1 flex items-center justify-center gap-2 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 text-green-700 dark:text-green-400 py-2 px-3 rounded-lg font-medium transition-all duration-200 border border-green-200 dark:border-green-800'
+                      className='flex-1 flex items-center justify-center gap-2 bg-green-50 hover:bg-green-100 text-green-700 py-2 px-3 rounded-lg font-medium transition-all duration-200 border border-green-200'
                     >
                       <FaEdit className='text-sm' />
                       <span className='text-sm'>Edit</span>
@@ -163,7 +163,7 @@ const CategoryPage = () => {
                         setOpenConfirmBoxDelete(true)
                         setDeleteCategory(category)
                       }} 
-                      className='flex-1 flex items-center justify-center gap-2 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-700 dark:text-red-400 py-2 px-3 rounded-lg font-medium transition-all duration-200 border border-red-200 dark:border-red-800'
+                      className='flex-1 flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-700 py-2 px-3 rounded-lg font-medium transition-all duration-200 border border-red-200'
                     >
                       <FaTrash className='text-sm' />
                       <span className='text-sm'>Delete</span>
@@ -177,10 +177,10 @@ const CategoryPage = () => {
 
         {/* Loading State */}
         {loading && (
-          <div className='bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-12 text-center border border-gray-200 dark:border-gray-700'>
+          <div className='bg-white rounded-2xl shadow-lg p-12 text-center border border-gray-200'>
             <div className='flex flex-col items-center gap-4'>
               <LoadingSpinner size="xl" />
-              <p className='text-gray-600 dark:text-gray-300 font-medium'>Loading categories...</p>
+              <p className='text-gray-600 font-medium'>Loading categories...</p>
             </div>
           </div>
         )}

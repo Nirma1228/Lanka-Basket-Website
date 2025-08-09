@@ -98,21 +98,21 @@ const ResetPassword = () => {
 }
 
   return (
-    <section className='min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center px-4 py-8'>
+    <section className='min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 flex items-center justify-center px-4 py-8'>
       <div className='w-full max-w-md'>
         {/* Back Button */}
         <Link 
           to="/verification-otp" 
-          className='inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition-colors duration-200 mb-6 group'
+          className='inline-flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors duration-200 mb-6 group'
         >
           <FaArrowLeft className='group-hover:-translate-x-1 transition-transform duration-200' />
           <span className='font-medium'>Back</span>
         </Link>
 
         {/* Main Card */}
-        <div className='bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 dark:border-gray-700/50 p-8 relative overflow-hidden'>
+        <div className='bg-white/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 p-8 relative overflow-hidden'>
           {/* Background Pattern */}
-          <div className='absolute inset-0 opacity-5 dark:opacity-10'>
+          <div className='absolute inset-0 opacity-5'>
             <div className='absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full -translate-y-16 translate-x-16'></div>
             <div className='absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-br from-green-500 to-blue-500 rounded-full translate-y-12 -translate-x-12'></div>
           </div>
@@ -123,10 +123,10 @@ const ResetPassword = () => {
               <FaKey className='text-2xl text-white' />
             </div>
             
-            <h1 className='text-2xl font-bold text-gray-900 dark:text-white mb-2'>
+            <h1 className='text-2xl font-bold text-gray-900 mb-2'>
               Reset Password
             </h1>
-            <p className='text-gray-600 dark:text-gray-300 leading-relaxed'>
+            <p className='text-gray-600 leading-relaxed'>
               Create a strong, secure password for your account
             </p>
           </div>
@@ -135,7 +135,7 @@ const ResetPassword = () => {
           <form className='space-y-6 relative z-10' onSubmit={handleSubmit}>
             {/* New Password */}
             <div>
-              <label htmlFor='newPassword' className='block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2'>
+              <label htmlFor='newPassword' className='block text-sm font-semibold text-gray-700 mb-2'>
                 New Password
               </label>
               <div className='relative group'>
@@ -145,7 +145,7 @@ const ResetPassword = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   id='newPassword'
-                  className='w-full pl-10 pr-12 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl outline-none focus:border-purple-500 dark:focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400'
+                  className='w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200 text-gray-900 placeholder-gray-500'
                   name='newPassword'
                   value={data.newPassword}
                   onChange={handleChange}
@@ -172,7 +172,7 @@ const ResetPassword = () => {
 
             {/* Confirm Password */}
             <div>
-              <label htmlFor='confirmPassword' className='block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2'>
+              <label htmlFor='confirmPassword' className='block text-sm font-semibold text-gray-700 mb-2'>
                 Confirm Password
               </label>
               <div className='relative group'>
@@ -186,12 +186,12 @@ const ResetPassword = () => {
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   id='confirmPassword'
-                  className={`w-full pl-10 pr-12 py-3 bg-gray-50 dark:bg-gray-700/50 border rounded-xl outline-none focus:ring-2 transition-all duration-200 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 ${
+                  className={`w-full pl-10 pr-12 py-3 bg-gray-50 border rounded-xl outline-none focus:ring-2 transition-all duration-200 text-gray-900 placeholder-gray-500 ${
                     data.confirmPassword && data.newPassword !== data.confirmPassword
                       ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20'
                       : data.confirmPassword && data.newPassword === data.confirmPassword
                       ? 'border-green-300 focus:border-green-500 focus:ring-green-500/20'
-                      : 'border-gray-200 dark:border-gray-600 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-purple-500/20'
+                      : 'border-gray-200 focus:border-purple-500 :border-purple-400 focus:ring-purple-500/20'
                   }`}
                   name='confirmPassword'
                   value={data.confirmPassword}
@@ -212,12 +212,12 @@ const ResetPassword = () => {
               {data.confirmPassword && (
                 <div className='mt-2'>
                   {data.newPassword === data.confirmPassword ? (
-                    <div className='flex items-center gap-2 text-green-600 dark:text-green-400 text-sm'>
+                    <div className='flex items-center gap-2 text-green-600 text-sm'>
                       <FaCheckCircle className='text-xs' />
                       <span>Passwords match</span>
                     </div>
                   ) : (
-                    <div className='flex items-center gap-2 text-red-600 dark:text-red-400 text-sm'>
+                    <div className='flex items-center gap-2 text-red-600 text-sm'>
                       <span className='w-3 h-3 rounded-full bg-red-500'></span>
                       <span>Passwords do not match</span>
                     </div>
@@ -233,7 +233,7 @@ const ResetPassword = () => {
               className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition-all duration-200 transform ${
                 valideValue && !loading && data.newPassword === data.confirmPassword
                   ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg hover:shadow-xl hover:-translate-y-0.5' 
-                  : 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
+                  : 'bg-gray-400 cursor-not-allowed'
               }`}
             >
               {loading ? (
@@ -251,12 +251,12 @@ const ResetPassword = () => {
           </form>
 
           {/* Security Tips */}
-          <div className='mt-6 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-200 dark:border-purple-800 relative z-10'>
-            <h4 className='font-medium text-purple-800 dark:text-purple-300 text-sm mb-2 flex items-center gap-2'>
+          <div className='mt-6 p-4 bg-purple-50 rounded-xl border border-purple-200 relative z-10'>
+            <h4 className='font-medium text-purple-800 text-sm mb-2 flex items-center gap-2'>
               <FaLock className='text-xs' />
               Security Tips
             </h4>
-            <ul className='text-purple-700 dark:text-purple-400 text-xs space-y-1'>
+            <ul className='text-purple-700 text-xs space-y-1'>
               <li>• Use a unique password you haven't used elsewhere</li>
               <li>• Make it at least 8 characters with mixed case, numbers & symbols</li>
               <li>• Avoid personal information like names or dates</li>
@@ -265,11 +265,11 @@ const ResetPassword = () => {
 
           {/* Footer */}
           <div className='text-center mt-8 relative z-10'>
-            <p className='text-gray-600 dark:text-gray-400 text-sm'>
+            <p className='text-gray-600 text-sm'>
               Remember your password? {' '}
               <Link 
                 to="/login" 
-                className='font-semibold text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors duration-200'
+                className='font-semibold text-green-600 hover:text-green-700 transition-colors duration-200'
               >
                 Sign In
               </Link>

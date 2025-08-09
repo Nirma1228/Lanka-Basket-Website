@@ -44,7 +44,7 @@ const UserMenu = ({close}) => {
       }
    }
   return (
-    <div className='bg-white dark:bg-gray-800 rounded-2xl shadow-xl border dark:border-gray-700 overflow-hidden min-w-80 animate-slide-in-up'>
+    <div className='bg-white rounded-2xl shadow-xl border overflow-hidden min-w-80 animate-slide-in-up'>
       {/* User Profile Header */}
       <div className='bg-gradient-to-r from-green-500 to-emerald-600 p-6 text-white relative overflow-hidden'>
         {/* Background Pattern */}
@@ -97,11 +97,18 @@ const UserMenu = ({close}) => {
         {/* Admin Section */}
         {isAdmin(user.role) && (
           <div className='mb-4'>
-            <div className='px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center gap-2'>
+            <div className='px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2'>
               <MdDashboard className='text-sm' />
               Admin Panel
             </div>
             <div className='space-y-1'>
+              <MenuLink
+                to="/dashboard/orders"
+                onClick={handleClose}
+                icon={<HiOutlineShoppingBag />}
+                label="Orders"
+                description="Manage customer orders"
+              />
               <MenuLink
                 to="/dashboard/category"
                 onClick={handleClose}
@@ -138,24 +145,26 @@ const UserMenu = ({close}) => {
                 description="Manage user accounts"
               />
             </div>
-            <div className='border-t dark:border-gray-700 my-3'></div>
+            <div className='border-t my-3'></div>
           </div>
         )}
 
         {/* User Section */}
         <div className='mb-2'>
-          <div className='px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center gap-2'>
+          <div className='px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2'>
             <HiOutlineUser className='text-sm' />
             My Account
           </div>
           <div className='space-y-1'>
-            <MenuLink
-              to="/dashboard/myorders"
-              onClick={handleClose}
-              icon={<HiOutlineShoppingBag />}
-              label="My Orders"
-              description="Track your orders"
-            />
+            {!isAdmin(user.role) && (
+              <MenuLink
+                to="/dashboard/myorders"
+                onClick={handleClose}
+                icon={<HiOutlineShoppingBag />}
+                label="My Orders"
+                description="Track your orders"
+              />
+            )}
             <MenuLink
               to="/dashboard/address"
               onClick={handleClose}
@@ -167,15 +176,15 @@ const UserMenu = ({close}) => {
         </div>
 
         {/* Logout Section */}
-        <div className='border-t dark:border-gray-700 pt-2'>
+        <div className='border-t pt-2'>
           <button
             onClick={handleLogout}
-            className='w-full flex items-center gap-3 px-4 py-3 text-left text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all duration-200 group'
+            className='w-full flex items-center gap-3 px-4 py-3 text-left text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200 group'
           >
             <HiOutlineLogout className='text-lg group-hover:scale-110 transition-transform duration-200' />
             <div>
               <div className='font-medium'>Sign Out</div>
-              <div className='text-xs text-red-500 dark:text-red-400'>Log out of your account</div>
+              <div className='text-xs text-red-500'>Log out of your account</div>
             </div>
           </button>
         </div>
@@ -189,14 +198,14 @@ const MenuLink = ({ to, onClick, icon, label, description }) => (
   <Link
     to={to}
     onClick={onClick}
-    className='flex items-center gap-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 dark:hover:text-green-400 rounded-xl transition-all duration-200 group'
+    className='flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 rounded-xl transition-all duration-200 group'
   >
     <div className='text-lg group-hover:scale-110 transition-transform duration-200'>
       {icon}
     </div>
     <div>
       <div className='font-medium'>{label}</div>
-      <div className='text-xs text-gray-500 dark:text-gray-400'>{description}</div>
+      <div className='text-xs text-gray-500'>{description}</div>
     </div>
   </Link>
 )

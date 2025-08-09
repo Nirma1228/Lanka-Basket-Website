@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "build": "echo 'No build step needed'"
+    "build": "echo 'No build step needed'",
+    "create-indexes": "node create-search-indexes.js"
   },
   "author": "",
   "license": "ISC",

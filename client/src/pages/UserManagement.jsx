@@ -103,7 +103,7 @@ const UserManagement = () => {
     }
 
     const getRoleIcon = (role) => {
-        return role === 'ADMIN' ? <FaUserShield className="text-blue-600" /> : <FaUser className="text-gray-600" />
+        return role === 'ADMIN' ? <FaUserShield className='text-blue-600' /> : <FaUser className='text-gray-600' />
     }
 
     const hasSecurityIssues = (user) => {
@@ -142,9 +142,9 @@ const UserManagement = () => {
     }
 
     return (
-        <div className='min-h-screen bg-gray-50 dark:bg-gray-900'>
+        <div className='min-h-screen bg-gray-50'>
             {/* Modern Header */}
-            <div className='bg-white dark:bg-gray-800 shadow-lg border-b border-gray-200 dark:border-gray-700'>
+            <div className='bg-white shadow-lg border-b border-gray-200'>
                 <div className='px-6 py-4'>
                     <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
                         <div className='flex items-center gap-3'>
@@ -152,20 +152,20 @@ const UserManagement = () => {
                                 <FaUsers className='text-white text-lg' />
                             </div>
                             <div>
-                                <h1 className='text-2xl font-bold text-gray-900 dark:text-white'>User Management</h1>
-                                <p className='text-sm text-gray-600 dark:text-gray-300'>
+                                <h1 className='text-2xl font-bold text-gray-900'>User Management</h1>
+                                <p className='text-sm text-gray-600'>
                                     Manage registered users • Total: {totalUsers} users
                                 </p>
                             </div>
                         </div>
                         
                         {/* Search Bar */}
-                        <div className='flex items-center gap-3 bg-gray-50 dark:bg-gray-700 rounded-xl px-4 py-2 border border-gray-200 dark:border-gray-600 max-w-md w-full focus-within:border-blue-500 dark:focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all duration-200'>
-                            <IoSearchOutline className='text-xl text-gray-400 dark:text-gray-500' />
+                        <div className='flex items-center gap-3 bg-gray-50 rounded-xl px-4 py-2 border border-gray-200 max-w-md w-full focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all duration-200'>
+                            <IoSearchOutline className='text-xl text-gray-400' />
                             <input
                                 type='text'
                                 placeholder='Search by name or email...'
-                                className='flex-1 bg-transparent outline-none text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400'
+                                className='flex-1 bg-transparent outline-none text-gray-900 placeholder-gray-500'
                                 value={search}
                                 onChange={handleSearch}
                             />
@@ -176,12 +176,12 @@ const UserManagement = () => {
 
             {/* Content Area */}
             <div className='p-6'>
-                <div className='bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden'>
+                <div className='bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden'>
                     {loading ? (
                         <div className='p-12 text-center'>
                             <div className='flex flex-col items-center gap-4'>
                                 <LoadingSpinner size="xl" />
-                                <p className='text-gray-600 dark:text-gray-300 font-medium'>Loading users...</p>
+                                <p className='text-gray-600 font-medium'>Loading users...</p>
                             </div>
                         </div>
                     ) : users.length > 0 ? (
@@ -189,29 +189,29 @@ const UserManagement = () => {
                             {/* Table */}
                             <div className='overflow-x-auto'>
                                 <table className='w-full text-sm'>
-                                    <thead className='bg-gray-50 dark:bg-gray-700/50'>
+                                    <thead className='bg-gray-50'>
                                         <tr>
-                                            <th className='px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300'>User</th>
-                                            <th className='px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300'>Role</th>
-                                            <th className='px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300'>Status</th>
-                                            <th className='px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300'>Email Verified</th>
-                                            <th className='px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300'>Security</th>
-                                            <th className='px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300'>Last Login</th>
-                                            <th className='px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300'>Joined</th>
-                                            <th className='px-6 py-4 text-center font-semibold text-gray-700 dark:text-gray-300'>Actions</th>
+                                            <th className='px-6 py-4 text-left font-semibold text-gray-700'>User</th>
+                                            <th className='px-6 py-4 text-left font-semibold text-gray-700'>Role</th>
+                                            <th className='px-6 py-4 text-left font-semibold text-gray-700'>Status</th>
+                                            <th className='px-6 py-4 text-left font-semibold text-gray-700'>Email Verified</th>
+                                            <th className='px-6 py-4 text-left font-semibold text-gray-700'>Security</th>
+                                            <th className='px-6 py-4 text-left font-semibold text-gray-700'>Last Login</th>
+                                            <th className='px-6 py-4 text-left font-semibold text-gray-700'>Joined</th>
+                                            <th className='px-6 py-4 text-center font-semibold text-gray-700'>Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
+                                    <tbody className='divide-y divide-gray-200'>
                                         {users.map((user) => (
-                                            <tr key={user._id} className='hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors duration-150'>
+                                            <tr key={user._id} className='hover:bg-gray-50 transition-colors duration-150'>
                                                 <td className='px-6 py-4'>
                                                     <div className='flex items-center gap-3'>
                                                         <UserAvatar user={user} size="md" />
                                                         <div>
-                                                            <div className='font-semibold text-gray-900 dark:text-white'>{user.name}</div>
-                                                            <div className='text-gray-500 dark:text-gray-400 text-sm'>{user.email}</div>
+                                                            <div className='font-semibold text-gray-900'>{user.name}</div>
+                                                            <div className='text-gray-500 text-sm'>{user.email}</div>
                                                             {user.mobile && (
-                                                                <div className='text-gray-500 dark:text-gray-400 text-sm'>{user.mobile}</div>
+                                                                <div className='text-gray-500 text-sm'>{user.mobile}</div>
                                                             )}
                                                         </div>
                                                     </div>
@@ -219,7 +219,7 @@ const UserManagement = () => {
                                                 <td className='px-6 py-4'>
                                                     <div className='flex items-center gap-2'>
                                                         {getRoleIcon(user.role)}
-                                                        <span className={`font-semibold ${user.role === 'ADMIN' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'}`}>
+                                                        <span className={`font-semibold ${user.role === 'ADMIN' ? 'text-blue-600 ' : 'text-gray-600 '}`}>
                                                             {user.role || 'USER'}
                                                         </span>
                                                     </div>
@@ -232,8 +232,8 @@ const UserManagement = () => {
                                                 <td className='px-6 py-4'>
                                                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
                                                         user.verify_email 
-                                                            ? 'text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-800' 
-                                                            : 'text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800'
+                                                            ? 'text-green-700 bg-green-100 border border-green-200 ' 
+                                                            : 'text-red-700 bg-red-100 border border-red-200 '
                                                     }`}>
                                                         {user.verify_email ? 'Verified' : 'Not Verified'}
                                                     </span>
@@ -241,13 +241,13 @@ const UserManagement = () => {
                                                 <td className='px-6 py-4'>
                                                     <div className='flex items-center gap-2'>
                                                         {hasSecurityIssues(user) && (
-                                                            <div className='p-1 bg-red-100 dark:bg-red-900/30 rounded-full'>
-                                                                <FaExclamationTriangle className="text-red-600 dark:text-red-400 text-sm" title="Security Issues Detected" />
+                                                            <div className='p-1 bg-red-100 rounded-full'>
+                                                                <FaExclamationTriangle className='text-red-600 text-sm' title="Security Issues Detected" />
                                                             </div>
                                                         )}
                                                         <button
                                                             onClick={() => setSecurityUser(user)}
-                                                            className='p-2 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/30 rounded-lg transition-colors duration-200 border border-orange-200 dark:border-orange-800'
+                                                            className='p-2 text-orange-600 hover:bg-orange-100 rounded-lg transition-colors duration-200 border border-orange-200'
                                                             title='View Security Details'
                                                         >
                                                             <MdSecurity size={16} />
@@ -255,7 +255,7 @@ const UserManagement = () => {
                                                         {hasSecurityIssues(user) && (
                                                             <button
                                                                 onClick={() => resetUserSecurity(user._id)}
-                                                                className='p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200 border border-blue-200 dark:border-blue-800'
+                                                                className='p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors duration-200 border border-blue-200'
                                                                 title='Reset Security Issues'
                                                             >
                                                                 <MdRefresh size={16} />
@@ -263,19 +263,19 @@ const UserManagement = () => {
                                                         )}
                                                     </div>
                                                 </td>
-                                                <td className='px-6 py-4 text-gray-600 dark:text-gray-300'>
+                                                <td className='px-6 py-4 text-gray-600'>
                                                     {user.last_login_date ? formatDate(user.last_login_date) : (
-                                                        <span className='text-gray-400 dark:text-gray-500 italic'>Never</span>
+                                                        <span className='text-gray-400 italic'>Never</span>
                                                     )}
                                                 </td>
-                                                <td className='px-6 py-4 text-gray-600 dark:text-gray-300'>
+                                                <td className='px-6 py-4 text-gray-600'>
                                                     {formatDate(user.createdAt)}
                                                 </td>
                                                 <td className='px-6 py-4'>
                                                     <div className='flex justify-center gap-2'>
                                                         <button
                                                             onClick={() => setEditUser(user)}
-                                                            className='p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200 border border-blue-200 dark:border-blue-800'
+                                                            className='p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors duration-200 border border-blue-200'
                                                             title='Edit User'
                                                         >
                                                             <MdEdit size={16} />
@@ -283,7 +283,7 @@ const UserManagement = () => {
                                                         {user.role !== 'ADMIN' && (
                                                             <button
                                                                 onClick={() => handleDeleteUser(user._id, user.name)}
-                                                                className='p-2 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors duration-200 border border-red-200 dark:border-red-800'
+                                                                className='p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors duration-200 border border-red-200'
                                                                 title='Delete User'
                                                             >
                                                                 <MdDelete size={16} />
@@ -299,15 +299,15 @@ const UserManagement = () => {
                             
                             {/* Enhanced Pagination */}
                             {totalPageCount > 1 && (
-                                <div className='border-t border-gray-200 dark:border-gray-700 p-4'>
+                                <div className='border-t border-gray-200 p-4'>
                                     <div className='flex items-center justify-between'>
                                         <button
                                             onClick={handlePrevious}
                                             disabled={page === 1}
                                             className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                                                 page === 1 
-                                                    ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed' 
-                                                    : 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 border border-blue-200 dark:border-blue-800'
+                                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                                                    : 'bg-blue-50 text-blue-700 hover:bg-blue-100 :bg-blue-900/50 border border-blue-200 '
                                             }`}
                                         >
                                             <FaChevronLeft className='text-sm' />
@@ -315,7 +315,7 @@ const UserManagement = () => {
                                         </button>
                                         
                                         <div className='flex items-center gap-4'>
-                                            <span className='text-sm text-gray-600 dark:text-gray-300'>
+                                            <span className='text-sm text-gray-600'>
                                                 Page {page} of {totalPageCount} • {totalUsers} total users
                                             </span>
                                         </div>
@@ -325,8 +325,8 @@ const UserManagement = () => {
                                             disabled={page === totalPageCount}
                                             className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                                                 page === totalPageCount 
-                                                    ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                                                    : 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 border border-blue-200 dark:border-blue-800'
+                                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                                    : 'bg-blue-50 text-blue-700 hover:bg-blue-100 :bg-blue-900/50 border border-blue-200 '
                                             }`}
                                         >
                                             <span>Next</span>
@@ -338,13 +338,13 @@ const UserManagement = () => {
                         </>
                     ) : (
                         <div className='p-12 text-center'>
-                            <div className='w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4'>
-                                <FaUsers className='text-3xl text-gray-400 dark:text-gray-500' />
+                            <div className='w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4'>
+                                <FaUsers className='text-3xl text-gray-400' />
                             </div>
-                            <h3 className='text-xl font-semibold text-gray-900 dark:text-white mb-2'>
+                            <h3 className='text-xl font-semibold text-gray-900 mb-2'>
                                 {search ? 'No Users Found' : 'No Users Available'}
                             </h3>
-                            <p className='text-gray-600 dark:text-gray-300'>
+                            <p className='text-gray-600'>
                                 {search 
                                     ? `No users match "${search}". Try a different search term.`
                                     : 'No users have registered yet.'

@@ -61,7 +61,7 @@ const ProductCardAdmin = ({ data, fetchProductData }) => {
 
         {
           openDelete && (
-            <section className='fixed top-0 left-0 right-0 bottom-0 bg-neutral-600 z-50 bg-opacity-70 p-4 flex justify-center items-center '>
+            <section className='fixed top-0 left-0 right-0 bottom-0 bg-neutral-600 z-50 bg-opacity-70 p-4 flex justify-center items-center'>
                 <div className='bg-white p-4 w-full max-w-md rounded-md'>
                     <div className='flex items-center justify-between gap-4'>
 

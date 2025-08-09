@@ -105,7 +105,7 @@ const UserSecurityModal = ({ user, close, onReset }) => {
             <div className='bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto'>
                 <div className='flex justify-between items-center p-4 border-b'>
                     <div className='flex items-center gap-2'>
-                        <MdSecurity className="text-orange-600" size={20} />
+                        <MdSecurity className='text-orange-600' size={20} />
                         <h2 className='text-lg font-semibold'>Security Status</h2>
                     </div>
                     <button
@@ -143,7 +143,7 @@ const UserSecurityModal = ({ user, close, onReset }) => {
                     ) : error ? (
                         <div className='text-center py-8'>
                             <div className='text-red-500 mb-2'>
-                                <FaExclamationTriangle size={24} className="mx-auto" />
+                                <FaExclamationTriangle size={24} className='mx-auto' />
                             </div>
                             <p className='text-red-600 mb-2'>Error loading security data</p>
                             <p className='text-sm text-gray-600 mb-4'>{error}</p>
@@ -165,7 +165,7 @@ const UserSecurityModal = ({ user, close, onReset }) => {
                             {securityData.isTemporarilySuspended ? (
                                 <div className='p-4 bg-red-50 border border-red-200 rounded'>
                                     <div className='flex items-center gap-2 mb-2'>
-                                        <FaExclamationTriangle className="text-red-500" />
+                                        <FaExclamationTriangle className='text-red-500' />
                                         <h3 className='font-medium text-red-800'>Account Temporarily Suspended</h3>
                                     </div>
                                     <p className='text-red-700 text-sm mb-2'>{securityData.suspensionReason}</p>
@@ -183,7 +183,7 @@ const UserSecurityModal = ({ user, close, onReset }) => {
                             ) : (
                                 <div className='p-4 bg-green-50 border border-green-200 rounded'>
                                     <div className='flex items-center gap-2'>
-                                        <FaCheckCircle className="text-green-500" />
+                                        <FaCheckCircle className='text-green-500' />
                                         <h3 className='font-medium text-green-800'>Account Active</h3>
                                     </div>
                                     <p className='text-green-700 text-sm'>No current suspensions</p>

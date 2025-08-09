@@ -70,7 +70,7 @@ const CategoryWiseProductDisplay = ({ id, name }) => {
     if (!data.length && !loading) return null
 
     return (
-        <div className='mb-12 bg-gradient-to-r from-white via-gray-50 to-white dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 rounded-3xl p-6 shadow-sm hover:shadow-md dark:shadow-gray-900/20 transition-all duration-300'>
+        <div className='mb-12 bg-gradient-to-r from-white via-gray-50 to-white rounded-3xl p-6 shadow-sm hover:shadow-md transition-all duration-300'>
             {/* Modern Header */}
             <div className='container mx-auto flex items-center justify-between mb-8'>
                 <div className='flex items-center gap-4'>
@@ -79,10 +79,10 @@ const CategoryWiseProductDisplay = ({ id, name }) => {
                             <IoSparkles className='text-white text-lg' />
                         </div>
                         <div>
-                            <h3 className='font-bold text-2xl md:text-3xl text-gray-900 dark:text-white mb-1'>
+                            <h3 className='font-bold text-2xl md:text-3xl text-gray-900 mb-1'>
                                 {name}
                             </h3>
-                            <p className='text-gray-600 dark:text-gray-300 text-sm flex items-center gap-1'>
+                            <p className='text-gray-600 text-sm flex items-center gap-1'>
                                 <MdTrendingUp className='text-orange-500 animate-pulse' />
                                 Trending in {name}
                             </p>

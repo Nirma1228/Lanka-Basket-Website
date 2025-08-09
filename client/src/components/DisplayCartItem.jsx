@@ -28,7 +28,7 @@ const DisplayCartItem = ({close}) => {
     }
   return (
     <section className='bg-neutral-900 fixed top-0 bottom-0 right-0 left-0 bg-opacity-70 z-[60]'>
-        <div className='bg-white dark:bg-gray-800 w-full max-w-sm min-h-screen max-h-screen ml-auto shadow-2xl'>
+        <div className='bg-white w-full max-w-sm min-h-screen max-h-screen ml-auto shadow-2xl'>
             <div className='flex items-center p-4 shadow-md gap-3 justify-between'>
                 <h2 className='font-semibold'>Cart</h2>
                 <Link to={"/"} className='lg:hidden'>
@@ -53,7 +53,7 @@ const DisplayCartItem = ({close}) => {
                                         cartItem[0] && (
                                             cartItem.map((item)=>{
                                                 return(
-                                                    <div key={item?._id+"cartItemDisplay"} className='flex  w-full gap-4'>
+                                                    <div key={item?._id+"cartItemDisplay"} className='flex w-full gap-4'>
                                                         <div className='w-16 h-16 min-h-16 min-w-16 bg-red-500 border rounded'>
                                                             <img
                                                                 src={item?.productId?.image[0]}

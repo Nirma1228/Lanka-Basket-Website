@@ -152,7 +152,7 @@ const EditProductAdmin = ({ close, data: propsData, fetchProductData }) => {
     <section className='fixed top-0 right-0 left-0 bottom-0 bg-black z-50 bg-opacity-70 p-4'>
       <div className='bg-white w-full p-4 max-w-2xl mx-auto rounded overflow-y-auto h-full max-h-[95vh]'>
         <section className=''>
-          <div className='p-2   bg-white shadow-md flex items-center justify-between'>
+          <div className='p-2 bg-white shadow-md flex items-center justify-between'>
             <h2 className='font-semibold'>Upload Product</h2>
             <button onClick={close}>
               <IoClose size={20} />
@@ -409,7 +409,7 @@ const EditProductAdmin = ({ close, data: propsData, fetchProductData }) => {
                 })
               }
 
-              <div onClick={() => setOpenAddField(true)} className=' hover:bg-primary-200 bg-white py-1 px-3 w-32 text-center font-semibold border border-primary-200 hover:text-neutral-900 cursor-pointer rounded'>
+              <div onClick={() => setOpenAddField(true)} className='hover:bg-primary-200 bg-white py-1 px-3 w-32 text-center font-semibold border border-primary-200 hover:text-neutral-900 cursor-pointer rounded'>
                 Add Fields
               </div>
 

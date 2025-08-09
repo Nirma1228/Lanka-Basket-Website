@@ -15,7 +15,7 @@ const CardProduct = ({data}) => {
     return (
         <Link 
             to={url} 
-            className='group relative bg-white dark:bg-gray-800 rounded-2xl shadow-md hover:shadow-2xl border border-gray-100 dark:border-gray-700 hover:border-green-200 dark:hover:border-green-400 overflow-hidden transform hover:scale-105 transition-all duration-300 hover-lift min-w-72'
+            className='group relative bg-white rounded-2xl shadow-md hover:shadow-2xl border border-gray-100 hover:border-green-200 overflow-hidden transform hover:scale-105 transition-all duration-300 hover-lift min-w-72'
         >
             {/* Discount Badge */}
             {hasDiscount && (
@@ -45,12 +45,12 @@ const CardProduct = ({data}) => {
             {/* Product Details */}
             <div className='p-4 space-y-3'>
                 {/* Product Name */}
-                <h3 className='font-semibold text-gray-900 dark:text-white text-sm lg:text-base line-clamp-2 group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors duration-300 leading-tight'>
+                <h3 className='font-semibold text-gray-900 text-sm lg:text-base line-clamp-2 group-hover:text-green-600 transition-colors duration-300 leading-tight'>
                     {data.name}
                 </h3>
 
                 {/* Unit */}
-                <p className='text-gray-600 dark:text-gray-400 text-xs lg:text-sm font-medium bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-lg w-fit'>
+                <p className='text-gray-600 text-xs lg:text-sm font-medium bg-gray-100 px-2 py-1 rounded-lg w-fit'>
                     {data.unit}
                 </p>
 
@@ -68,17 +68,17 @@ const CardProduct = ({data}) => {
                 <div className='flex items-center justify-between pt-2'>
                     <div className='space-y-1'>
                         <div className='flex items-center gap-2'>
-                            <span className='font-bold text-lg text-gray-900 dark:text-white'>
+                            <span className='font-bold text-lg text-gray-900'>
                                 {DisplayPriceInRupees(discountPrice)}
                             </span>
                             {hasDiscount && (
-                                <span className='text-sm text-gray-500 dark:text-gray-400 line-through'>
+                                <span className='text-sm text-gray-500 line-through'>
                                     {DisplayPriceInRupees(data.price)}
                                 </span>
                             )}
                         </div>
                         {hasDiscount && (
-                            <div className='flex items-center gap-1 text-green-600 dark:text-green-400 text-xs font-medium'>
+                            <div className='flex items-center gap-1 text-green-600 text-xs font-medium'>
                                 <MdLocalOffer />
                                 Save {DisplayPriceInRupees(data.price - discountPrice)}
                             </div>
@@ -87,7 +87,7 @@ const CardProduct = ({data}) => {
                     
                     <div className='flex-shrink-0'>
                         {data.stock === 0 ? (
-                            <button className='bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 px-4 py-2 rounded-lg font-medium cursor-not-allowed'>
+                            <button className='bg-gray-100 text-gray-400 px-4 py-2 rounded-lg font-medium cursor-not-allowed'>
                                 Sold Out
                             </button>
                         ) : (
@@ -100,7 +100,7 @@ const CardProduct = ({data}) => {
             </div>
 
             {/* Hover overlay effect */}
-            <div className='absolute inset-0 border-2 border-green-400 dark:border-green-500 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none'></div>
+            <div className='absolute inset-0 border-2 border-green-400 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none'></div>
         </Link>
     )
 }

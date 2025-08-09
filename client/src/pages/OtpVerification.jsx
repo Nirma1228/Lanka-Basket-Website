@@ -100,21 +100,21 @@ const OtpVerification = () => {
     }
 
     return (
-        <section className='min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center px-4 py-8'>
+        <section className='min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 flex items-center justify-center px-4 py-8'>
             <div className='w-full max-w-md'>
                 {/* Back Button */}
                 <Link 
                     to="/forgot-password" 
-                    className='inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition-colors duration-200 mb-6 group'
+                    className='inline-flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors duration-200 mb-6 group'
                 >
                     <FaArrowLeft className='group-hover:-translate-x-1 transition-transform duration-200' />
                     <span className='font-medium'>Back</span>
                 </Link>
 
                 {/* Main Card */}
-                <div className='bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 dark:border-gray-700/50 p-8 relative overflow-hidden'>
+                <div className='bg-white/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 p-8 relative overflow-hidden'>
                     {/* Background Pattern */}
-                    <div className='absolute inset-0 opacity-5 dark:opacity-10'>
+                    <div className='absolute inset-0 opacity-5'>
                         <div className='absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full -translate-y-16 translate-x-16'></div>
                         <div className='absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-br from-green-500 to-teal-500 rounded-full translate-y-12 -translate-x-12'></div>
                     </div>
@@ -125,15 +125,15 @@ const OtpVerification = () => {
                             <FaShieldAlt className='text-2xl text-white' />
                         </div>
                         
-                        <h1 className='text-2xl font-bold text-gray-900 dark:text-white mb-2'>
+                        <h1 className='text-2xl font-bold text-gray-900 mb-2'>
                             Verify Your Email
                         </h1>
-                        <p className='text-gray-600 dark:text-gray-300 leading-relaxed mb-4'>
+                        <p className='text-gray-600 leading-relaxed mb-4'>
                             We've sent a 6-digit verification code to
                         </p>
-                        <div className='inline-flex items-center gap-2 bg-green-50 dark:bg-green-900/20 px-3 py-2 rounded-lg'>
-                            <FaEnvelope className='text-green-600 dark:text-green-400 text-sm' />
-                            <span className='font-semibold text-green-700 dark:text-green-300 text-sm'>
+                        <div className='inline-flex items-center gap-2 bg-green-50 px-3 py-2 rounded-lg'>
+                            <FaEnvelope className='text-green-600 text-sm' />
+                            <span className='font-semibold text-green-700 text-sm'>
                                 {location?.state?.email}
                             </span>
                         </div>
@@ -143,7 +143,7 @@ const OtpVerification = () => {
                     {timer > 0 && (
                         <div className='flex items-center justify-center gap-2 mb-6 relative z-10'>
                             <FaClock className='text-orange-500 text-sm' />
-                            <span className='text-orange-600 dark:text-orange-400 font-medium text-sm'>
+                            <span className='text-orange-600 font-medium text-sm'>
                                 Code expires in {formatTime(timer)}
                             </span>
                         </div>
@@ -152,7 +152,7 @@ const OtpVerification = () => {
                     {/* Form */}
                     <form className='space-y-6 relative z-10' onSubmit={handleSubmit}>
                         <div>
-                            <label className='block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 text-center'>
+                            <label className='block text-sm font-semibold text-gray-700 mb-4 text-center'>
                                 Enter Verification Code
                             </label>
                             <div className='flex items-center justify-center gap-3'>
@@ -187,7 +187,7 @@ const OtpVerification = () => {
                                                     }
                                                 }}
                                                 maxLength={1}
-                                                className='w-12 h-12 bg-gray-50 dark:bg-gray-700/50 border-2 border-gray-200 dark:border-gray-600 rounded-xl outline-none focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 text-center font-bold text-lg text-gray-900 dark:text-white transition-all duration-200'
+                                                className='w-12 h-12 bg-gray-50 border-2 border-gray-200 rounded-xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-center font-bold text-lg text-gray-900 transition-all duration-200'
                                             />
                                         )
                                     })
@@ -202,7 +202,7 @@ const OtpVerification = () => {
                             className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition-all duration-200 transform ${
                                 valideValue && !loading
                                     ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl hover:-translate-y-0.5' 
-                                    : 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
+                                    : 'bg-gray-400 cursor-not-allowed'
                             }`}
                         >
                             {loading ? (
@@ -222,14 +222,14 @@ const OtpVerification = () => {
                     {/* Resend Section */}
                     <div className='text-center mt-6 relative z-10'>
                         {timer > 0 ? (
-                            <p className='text-gray-500 dark:text-gray-400 text-sm'>
+                            <p className='text-gray-500 text-sm'>
                                 Didn't receive the code? Please wait {formatTime(timer)}
                             </p>
                         ) : (
                             <button
                                 onClick={handleResendOTP}
                                 disabled={resendLoading}
-                                className='inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-200 font-semibold text-sm'
+                                className='inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 transition-colors duration-200 font-semibold text-sm'
                             >
                                 {resendLoading ? (
                                     <>
@@ -248,11 +248,11 @@ const OtpVerification = () => {
 
                     {/* Footer */}
                     <div className='text-center mt-8 relative z-10'>
-                        <p className='text-gray-600 dark:text-gray-400 text-sm'>
+                        <p className='text-gray-600 text-sm'>
                             Remember your password? {' '}
                             <Link 
                                 to="/login" 
-                                className='font-semibold text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors duration-200'
+                                className='font-semibold text-green-600 hover:text-green-700 transition-colors duration-200'
                             >
                                 Sign In
                             </Link>
