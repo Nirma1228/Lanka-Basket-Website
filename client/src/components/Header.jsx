@@ -123,10 +123,8 @@ const Header = () => {
                                                     </div>
                                                     {
                                                         openUserMenu && (
-                                                            <div className='absolute right-0 top-12'>
-                                                                <div className='bg-white dark:bg-gray-800 rounded p-4 min-w-52 lg:shadow-lg border dark:border-gray-700'>
-                                                                    <UserMenu close={handleCloseUserMenu}/>
-                                                                </div>
+                                                            <div className='absolute right-0 top-12 z-50'>
+                                                                <UserMenu close={handleCloseUserMenu}/>
                                                             </div>
                                                         )
                                                     }
