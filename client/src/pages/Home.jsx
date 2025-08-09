@@ -59,7 +59,7 @@ const Home = () => {
     },
     {
       title: "Premium Quality Products",
-      subtitle: "Handpicked fresh products from trusted farmers and suppliers",
+      subtitle: "Handpicked fresh products from trusted farmers and suppliers across Sri Lanka",
       highlight: "100% Fresh",
       bgGradient: "from-blue-500 via-purple-500 to-indigo-500",
       icon: <FaLeaf className="animate-bounce" />
@@ -79,18 +79,18 @@ const Home = () => {
         </div>
             
         {/* Hero Content */}
-        <div className='relative z-10 max-w-6xl mx-auto'>
+        <div className='relative z-10 max-w-6xl mx-auto px-4'>
           <div className='text-center mb-12'>
             <div className='inline-flex items-center gap-2 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/50 dark:to-emerald-900/50 px-4 py-2 rounded-full mb-6 animate-pulse'>
               <IoSparkles className="text-green-600 dark:text-green-400" />
               <span className='text-green-700 dark:text-green-300 font-medium text-sm'>Sri Lanka's #1 Online Grocery Store</span>
             </div>
             
-            <h1 className='text-4xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-gray-900 via-blue-900 to-green-900 dark:from-white dark:via-blue-200 dark:to-green-200 bg-clip-text text-transparent animate-fade-in'>
+            <h1 className='text-4xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-yellow-200 to-white bg-clip-text text-transparent animate-fade-in drop-shadow-lg'>
               Lanka Basket
             </h1>
             
-            <div className='relative h-24 lg:h-32 mb-8 overflow-hidden'>
+            <div className='relative h-28 lg:h-36 mb-8 overflow-hidden'>
               {heroSlides.map((slide, index) => (
                 <div
                   key={index}
@@ -102,16 +102,20 @@ const Home = () => {
                         : 'translate-y-full opacity-0'
                   }`}
                 >
-                  <div className={`bg-gradient-to-r ${slide.bgGradient} bg-clip-text text-transparent`}>
-                    <h2 className='text-2xl lg:text-4xl font-bold mb-2'>
+                  <div className='text-center'>
+                    <h2 className='text-2xl lg:text-4xl font-bold mb-2 bg-gradient-to-r from-white via-yellow-100 to-white bg-clip-text text-transparent'>
                       {slide.title}
                     </h2>
-                    <p className='text-lg lg:text-xl text-gray-700 dark:text-gray-300 mb-2'>
+                    <p className='text-base lg:text-xl text-white/90 mb-3 px-4'>
                       {slide.subtitle}
                     </p>
-                    <div className='flex items-center justify-center gap-2 text-2xl'>
-                      {slide.icon}
-                      <span className='font-bold text-orange-600 dark:text-orange-400'>{slide.highlight}</span>
+                    <div className='flex items-center justify-center gap-2 text-xl lg:text-2xl'>
+                      <span className='text-yellow-400 animate-bounce'>
+                        {slide.icon}
+                      </span>
+                      <span className='font-bold text-yellow-300 bg-white/10 backdrop-blur-sm px-4 py-1 rounded-full'>
+                        {slide.highlight}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -119,36 +123,36 @@ const Home = () => {
             </div>
 
             {/* CTA Buttons */}
-            <div className='flex flex-col sm:flex-row items-center justify-center gap-4 mb-12'>
+            <div className='flex flex-col sm:flex-row items-center justify-center gap-4 mb-12 px-4'>
               <button 
                 onClick={() => navigate('/search')}
-                className='group bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2'
+                className='group bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 lg:px-8 py-3 lg:py-4 rounded-xl font-semibold text-base lg:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2 w-full sm:w-auto'
               >
-                <BsCart4 className="group-hover:animate-bounce" />
+                <BsCart4 className="group-hover:animate-bounce text-lg lg:text-xl" />
                 Start Shopping
-                <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
+                <FaArrowRight className="group-hover:translate-x-1 transition-transform text-sm lg:text-base" />
               </button>
               
-              <button className='group border-2 border-gray-300 dark:border-gray-600 hover:border-green-500 text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-green-50 dark:hover:bg-green-900/20 transform hover:scale-105 transition-all duration-300 flex items-center gap-2'>
-                <MdTrendingUp className="group-hover:animate-pulse" />
+              <button className='group border-2 border-white/30 hover:border-white/50 text-white hover:text-white px-6 lg:px-8 py-3 lg:py-4 rounded-xl font-semibold text-base lg:text-lg hover:bg-white/10 backdrop-blur-sm transform hover:scale-105 transition-all duration-300 flex items-center gap-2 w-full sm:w-auto'>
+                <MdTrendingUp className="group-hover:animate-pulse text-lg lg:text-xl" />
                 View Offers
               </button>
             </div>
 
             {/* Stats */}
-            <div className='grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto'>
+            <div className='grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 max-w-5xl mx-auto px-4'>
               {[
-                { icon: <BsTruck />, value: "30 Min", label: "Delivery" },
-                { icon: <BsShield />, value: "100%", label: "Fresh" },
-                { icon: <BsStar />, value: "5000+", label: "Products" },
-                { icon: <MdOutlineLocalOffer />, value: "50%", label: "Off" }
+                { icon: <BsTruck className="text-2xl lg:text-3xl" />, value: "30 Min", label: "Fast Delivery" },
+                { icon: <BsShield className="text-2xl lg:text-3xl" />, value: "100%", label: "Fresh Products" },
+                { icon: <BsStar className="text-2xl lg:text-3xl" />, value: "5000+", label: "Products" },
+                { icon: <MdOutlineLocalOffer className="text-2xl lg:text-3xl" />, value: "Up to 50%", label: "Discount" }
               ].map((stat, index) => (
-                <div key={index} className='bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300'>
-                  <div className='text-3xl text-green-600 dark:text-green-400 mb-2 flex justify-center animate-pulse'>
+                <div key={index} className='bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-2xl p-4 lg:p-6 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 text-center min-h-[120px] flex flex-col justify-center'>
+                  <div className='text-green-600 dark:text-green-400 mb-2 flex justify-center animate-pulse'>
                     {stat.icon}
                   </div>
-                  <div className='text-2xl font-bold text-gray-900 dark:text-white mb-1'>{stat.value}</div>
-                  <div className='text-sm text-gray-600 dark:text-gray-400'>{stat.label}</div>
+                  <div className='text-xl lg:text-2xl font-bold text-gray-900 dark:text-white mb-1 leading-tight'>{stat.value}</div>
+                  <div className='text-xs lg:text-sm text-gray-600 dark:text-gray-400 font-medium'>{stat.label}</div>
                 </div>
               ))}
             </div>
