@@ -30,7 +30,7 @@ const LoadingSpinner = ({ size = 'md', color = 'primary', className = '' }) => {
 }
 
 export const PageLoader = ({ message = 'Loading...' }) => (
-  <div className='fixed inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm z-50 flex items-center justify-center'>
+  <div className='fixed inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm z-[80] flex items-center justify-center'>
     <div className='bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 flex flex-col items-center gap-4 border dark:border-gray-700'>
       <LoadingSpinner size="xl" />
       <p className='text-gray-600 dark:text-gray-300 font-medium'>{message}</p>
