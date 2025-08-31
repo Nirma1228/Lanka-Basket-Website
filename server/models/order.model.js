@@ -26,6 +26,15 @@ const orderSchema = new mongoose.Schema({
         type : String,
         default : ""
     },
+    packing_status : {
+        type : String,
+        enum : ["pending", "packed", "shipped", "delivered"],
+        default : "pending"
+    },
+    packing_completed_at : {
+        type : Date,
+        default : null
+    },
     delivery_address : {
         type : mongoose.Schema.ObjectId,
         ref : 'address'

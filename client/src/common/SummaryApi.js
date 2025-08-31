@@ -166,6 +166,10 @@ const SummaryApi = {
         url: '/api/order/admin/get-all-orders',
         method: 'post'
     },
+    updatePackingStatus: {
+        url: '/api/order/admin/update-packing-status',
+        method: 'put'
+    },
     // Admin user management
     getAllUsers: {
         url: '/api/user/admin/get-all-users',

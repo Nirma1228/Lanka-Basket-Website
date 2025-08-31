@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { FaShoppingCart, FaCalendarAlt, FaFilter, FaSearch, FaTruck, FaCreditCard, FaMoneyBillWave, FaEye, FaChevronLeft, FaChevronRight, FaClipboardList, FaBoxOpen } from 'react-icons/fa'
+import { FaShoppingCart, FaCalendarAlt, FaFilter, FaSearch, FaTruck, FaCreditCard, FaMoneyBillWave, FaEye, FaChevronLeft, FaChevronRight, FaClipboardList, FaBoxOpen, FaCheck, FaCheckCircle } from 'react-icons/fa'
 import { HiOutlineShoppingBag, HiOutlineCalendar, HiOutlineCurrencyRupee } from 'react-icons/hi'
-import { MdAccessTime, MdLocationOn, MdPhone, MdEmail, MdShoppingCart } from 'react-icons/md'
+import { MdAccessTime, MdLocationOn, MdPhone, MdEmail, MdShoppingCart, MdVerified } from 'react-icons/md'
 import Axios from '../utils/Axios'
 import SummaryApi from '../common/SummaryApi'
 import AxiosToastError from '../utils/AxiosToastError'
 import { DisplayPriceInRupees } from '../utils/DisplayPriceInRupees'
 import LoadingSpinner from '../components/LoadingSpinner'
+import toast from 'react-hot-toast'
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState([])
@@ -22,6 +23,7 @@ const AdminOrders = () => {
   const [summary, setSummary] = useState({})
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [showPackingDetails, setShowPackingDetails] = useState(false)
+  const [packingLoading, setPackingLoading] = useState(false)
 
   const dateOptions = [
     { value: 'today', label: 'Today' },
@@ -114,6 +116,54 @@ const AdminOrders = () => {
       hour: '2-digit',
       minute: '2-digit'
     })
+  }
+
+  const handlePackingConfirmation = async (orderId, status = 'packed') => {
+    try {
+      setPackingLoading(true)
+      
+      const response = await Axios({
+        ...SummaryApi.updatePackingStatus,
+        data: {
+          orderId: orderId,
+          status: status
+        }
+      })
+
+      if (response.data.success) {
+        toast.success(`Order packing ${status === 'packed' ? 'completed successfully!' : 'status updated!'}`)
+        
+        // Update the selected order in state
+        if (selectedOrder && selectedOrder.orderId === orderId) {
+          setSelectedOrder(prev => ({
+            ...prev,
+            packing_status: status,
+            packing_completed_at: status === 'packed' ? new Date() : prev.packing_completed_at
+          }))
+        }
+        
+        // Refresh the orders list
+        fetchOrders()
+      }
+    } catch (error) {
+      console.error('Packing update error:', error)
+      AxiosToastError(error)
+    } finally {
+      setPackingLoading(false)
+    }
+  }
+
+  const getPackingStatusColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'packed':
+        return 'bg-green-100 text-green-800 border-green-200'
+      case 'shipped':
+        return 'bg-blue-100 text-blue-800 border-blue-200'
+      case 'delivered':
+        return 'bg-purple-100 text-purple-800 border-purple-200'
+      default:
+        return 'bg-orange-100 text-orange-800 border-orange-200'
+    }
   }
 
   return (
@@ -257,7 +307,8 @@ const AdminOrders = () => {
                       <th className='px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider'>Customer</th>
                       <th className='px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider'>Items</th>
                       <th className='px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider'>Order Value</th>
-                      <th className='px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider'>Status</th>
+                      <th className='px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider'>Payment Status</th>
+                      <th className='px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider'>Packing Status</th>
                       <th className='px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider'>Actions</th>
                     </tr>
                   </thead>
@@ -345,7 +396,7 @@ const AdminOrders = () => {
                           </div>
                         </td>
                         
-                        {/* Status */}
+                        {/* Payment Status */}
                         <td className='px-6 py-4'>
                           <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(order.payment_status)}`}>
                             {order.payment_status === 'CASH ON DELIVERY' ? (
@@ -357,6 +408,27 @@ const AdminOrders = () => {
                             )}
                             {order.payment_status}
                           </span>
+                        </td>
+                        
+                        {/* Packing Status */}
+                        <td className='px-6 py-4'>
+                          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${getPackingStatusColor(order.packing_status)}`}>
+                            {order.packing_status === 'packed' ? (
+                              <FaCheckCircle className='text-xs' />
+                            ) : order.packing_status === 'shipped' ? (
+                              <FaTruck className='text-xs' />
+                            ) : order.packing_status === 'delivered' ? (
+                              <MdVerified className='text-xs' />
+                            ) : (
+                              <FaBoxOpen className='text-xs' />
+                            )}
+                            {order.packing_status || 'pending'}
+                          </span>
+                          {order.packing_completed_at && (
+                            <p className='text-xs text-gray-500 mt-1'>
+                              {formatDate(order.packing_completed_at)}
+                            </p>
+                          )}
                         </td>
                         
                         {/* Actions */}
@@ -532,6 +604,23 @@ const AdminOrders = () => {
                       <div className='text-right'>
                         <p className='text-sm text-green-600'>Order Time</p>
                         <p className='font-medium text-green-800'>{formatDate(selectedOrder.createdAt)}</p>
+                        
+                        {/* Packing Status Display */}
+                        <div className='mt-2'>
+                          <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium border ${getPackingStatusColor(selectedOrder.packing_status)}`}>
+                            {selectedOrder.packing_status === 'packed' ? (
+                              <FaCheckCircle className='text-xs' />
+                            ) : (
+                              <FaBoxOpen className='text-xs' />
+                            )}
+                            {selectedOrder.packing_status || 'pending'}
+                          </span>
+                          {selectedOrder.packing_completed_at && (
+                            <p className='text-xs text-gray-500 mt-1'>
+                              Packed: {formatDate(selectedOrder.packing_completed_at)}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -625,6 +714,63 @@ const AdminOrders = () => {
                         <div>
                           <p className='text-gray-600'>Customer:</p>
                           <p className='font-medium text-gray-900'>{selectedOrder.userId?.name || 'Unknown'}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Packing Confirmation Actions */}
+                  <div className='border-t border-gray-200 pt-6'>
+                    <div className='bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-6 border border-green-200'>
+                      <div className='flex items-center justify-between'>
+                        <div>
+                          <h5 className='font-bold text-gray-900 mb-2 flex items-center gap-2'>
+                            <FaBoxOpen className='text-green-600' />
+                            Packing Confirmation
+                          </h5>
+                          <p className='text-sm text-gray-600 mb-3'>
+                            Confirm that all items have been packed and are ready for delivery
+                          </p>
+                          
+                          {selectedOrder.packing_status === 'packed' && (
+                            <div className='flex items-center gap-2 text-green-700 text-sm mb-2'>
+                              <FaCheckCircle />
+                              <span>Order packed successfully on {formatDate(selectedOrder.packing_completed_at)}</span>
+                            </div>
+                          )}
+                        </div>
+                        
+                        <div className='flex flex-col sm:flex-row gap-3'>
+                          {selectedOrder.packing_status !== 'packed' ? (
+                            <button
+                              onClick={() => handlePackingConfirmation(selectedOrder.orderId, 'packed')}
+                              disabled={packingLoading}
+                              className='group relative bg-gradient-to-r from-green-600 via-green-700 to-emerald-700 hover:from-green-700 hover:via-green-800 hover:to-emerald-800 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed'
+                            >
+                              {packingLoading ? (
+                                <>
+                                  <div className='w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin'></div>
+                                  <span>Confirming...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <FaCheck className='group-hover:scale-110 transition-transform' />
+                                  <span>Confirm Packing</span>
+                                </>
+                              )}
+                            </button>
+                          ) : (
+                            <div className='flex flex-col gap-2'>
+                              <button
+                                onClick={() => handlePackingConfirmation(selectedOrder.orderId, 'shipped')}
+                                disabled={packingLoading}
+                                className='group bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold text-sm shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2 disabled:opacity-50'
+                              >
+                                <FaTruck className='group-hover:scale-110 transition-transform' />
+                                <span>Mark as Shipped</span>
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>

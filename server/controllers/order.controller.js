@@ -322,6 +322,8 @@ export async function getAllOrdersController(request,response){
                 userId: order.userId,
                 createdAt: order.createdAt,
                 payment_status: order.payment_status,
+                packing_status: order.packing_status,
+                packing_completed_at: order.packing_completed_at,
                 paymentId: order.paymentId,
                 delivery_address: order.delivery_address,
                 items: relatedOrders.map(o => ({
@@ -405,6 +407,73 @@ export async function getAllOrdersController(request,response){
             message : error.message || error,
             error : true,
             success : false
+        })
+    }
+}
+
+// Admin: Update packing status
+export async function updatePackingStatusController(request, response) {
+    try {
+        const { orderId, status } = request.body
+        
+        if (!orderId || !status) {
+            return response.status(400).json({
+                message: "Order ID and status are required",
+                error: true,
+                success: false
+            })
+        }
+
+        const validStatuses = ["pending", "packed", "shipped", "delivered"]
+        if (!validStatuses.includes(status)) {
+            return response.status(400).json({
+                message: "Invalid packing status",
+                error: true,
+                success: false
+            })
+        }
+
+        // Find all orders with the same orderId (grouped orders)
+        const orders = await OrderModel.find({ orderId: orderId })
+        
+        if (orders.length === 0) {
+            return response.status(404).json({
+                message: "Order not found",
+                error: true,
+                success: false
+            })
+        }
+
+        // Update packing status for all related orders
+        const updateData = {
+            packing_status: status
+        }
+
+        if (status === "packed") {
+            updateData.packing_completed_at = new Date()
+        }
+
+        const updatedOrders = await OrderModel.updateMany(
+            { orderId: orderId },
+            updateData
+        )
+
+        return response.json({
+            message: `Order packing status updated to ${status}`,
+            data: {
+                orderId,
+                status,
+                updatedCount: updatedOrders.modifiedCount
+            },
+            error: false,
+            success: true
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
         })
     }
 }
