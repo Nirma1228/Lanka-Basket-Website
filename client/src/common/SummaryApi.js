@@ -161,6 +161,14 @@ const SummaryApi = {
         url: '/api/order/order-list',
         method: 'get'
     },
+    getOrderById: {
+        url: '/api/order/order',
+        method: 'get'
+    },
+    confirmOrderDelivery: {
+        url: '/api/order/confirm-delivery',
+        method: 'put'
+    },
     // Admin order management
     getAllOrders: {
         url: '/api/order/admin/get-all-orders',
@@ -168,6 +176,10 @@ const SummaryApi = {
     },
     updatePackingStatus: {
         url: '/api/order/admin/update-packing-status',
+        method: 'put'
+    },
+    updateShippingDetails: {
+        url: '/api/order/admin/update-shipping-details',
         method: 'put'
     },
     // Admin user management

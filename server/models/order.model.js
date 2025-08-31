@@ -35,6 +35,36 @@ const orderSchema = new mongoose.Schema({
         type : Date,
         default : null
     },
+    shipping_details : {
+        courier_name : {
+            type : String,
+            default : ""
+        },
+        tracking_number : {
+            type : String,
+            default : ""
+        },
+        handover_date : {
+            type : Date,
+            default : null
+        },
+        expected_delivery_date : {
+            type : Date,
+            default : null
+        },
+        shipped_at : {
+            type : Date,
+            default : null
+        },
+        delivered_at : {
+            type : Date,
+            default : null
+        },
+        confirmed_by_customer : {
+            type : Boolean,
+            default : false
+        }
+    },
     delivery_address : {
         type : mongoose.Schema.ObjectId,
         ref : 'address'

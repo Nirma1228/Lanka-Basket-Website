@@ -324,6 +324,7 @@ export async function getAllOrdersController(request,response){
                 payment_status: order.payment_status,
                 packing_status: order.packing_status,
                 packing_completed_at: order.packing_completed_at,
+                shipping_details: order.shipping_details,
                 paymentId: order.paymentId,
                 delivery_address: order.delivery_address,
                 items: relatedOrders.map(o => ({
@@ -465,6 +466,183 @@ export async function updatePackingStatusController(request, response) {
                 status,
                 updatedCount: updatedOrders.modifiedCount
             },
+            error: false,
+            success: true
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
+
+// Admin: Update shipping details
+export async function updateShippingDetailsController(request, response) {
+    try {
+        const { orderId, shippingDetails } = request.body
+        
+        if (!orderId || !shippingDetails) {
+            return response.status(400).json({
+                message: "Order ID and shipping details are required",
+                error: true,
+                success: false
+            })
+        }
+
+        const requiredFields = ['courier_name', 'tracking_number', 'handover_date', 'expected_delivery_date']
+        for (const field of requiredFields) {
+            if (!shippingDetails[field]) {
+                return response.status(400).json({
+                    message: `${field} is required`,
+                    error: true,
+                    success: false
+                })
+            }
+        }
+
+        // Find all orders with the same orderId (grouped orders)
+        const orders = await OrderModel.find({ orderId: orderId })
+        
+        if (orders.length === 0) {
+            return response.status(404).json({
+                message: "Order not found",
+                error: true,
+                success: false
+            })
+        }
+
+        // Update shipping details and packing status for all related orders
+        const updateData = {
+            packing_status: "shipped",
+            shipping_details: {
+                courier_name: shippingDetails.courier_name,
+                tracking_number: shippingDetails.tracking_number,
+                handover_date: new Date(shippingDetails.handover_date),
+                expected_delivery_date: new Date(shippingDetails.expected_delivery_date),
+                shipped_at: new Date()
+            }
+        }
+
+        const updatedOrders = await OrderModel.updateMany(
+            { orderId: orderId },
+            updateData
+        )
+
+        return response.json({
+            message: "Order shipped successfully with courier details",
+            data: {
+                orderId,
+                shippingDetails: updateData.shipping_details,
+                updatedCount: updatedOrders.modifiedCount
+            },
+            error: false,
+            success: true
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
+
+// Customer: Confirm order delivery
+export async function confirmOrderDeliveryController(request, response) {
+    try {
+        const userId = request.userId
+        const { orderId } = request.body
+        
+        if (!orderId) {
+            return response.status(400).json({
+                message: "Order ID is required",
+                error: true,
+                success: false
+            })
+        }
+
+        // Find all orders with the same orderId and verify they belong to the user
+        const orders = await OrderModel.find({ 
+            orderId: orderId, 
+            userId: userId 
+        })
+        
+        if (orders.length === 0) {
+            return response.status(404).json({
+                message: "Order not found or unauthorized",
+                error: true,
+                success: false
+            })
+        }
+
+        // Check if order is in shipped status
+        const firstOrder = orders[0]
+        if (firstOrder.packing_status !== 'shipped') {
+            return response.status(400).json({
+                message: "Order must be shipped before confirming delivery",
+                error: true,
+                success: false
+            })
+        }
+
+        // Update all related orders to delivered status
+        const updateData = {
+            packing_status: "delivered",
+            "shipping_details.delivered_at": new Date(),
+            "shipping_details.confirmed_by_customer": true
+        }
+
+        const updatedOrders = await OrderModel.updateMany(
+            { orderId: orderId, userId: userId },
+            updateData
+        )
+
+        return response.json({
+            message: "Order delivery confirmed successfully",
+            data: {
+                orderId,
+                deliveredAt: new Date(),
+                updatedCount: updatedOrders.modifiedCount
+            },
+            error: false,
+            success: true
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
+
+// Get single order by ID for customer tracking
+export async function getOrderByIdController(request, response) {
+    try {
+        const userId = request.userId
+        const { orderId } = request.params
+
+        const order = await OrderModel.findOne({ 
+            _id: orderId, 
+            userId: userId 
+        }).populate('delivery_address')
+
+        if (!order) {
+            return response.status(404).json({
+                message: "Order not found",
+                error: true,
+                success: false
+            })
+        }
+
+        return response.json({
+            message: "Order details",
+            data: order,
             error: false,
             success: true
         })

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { FaShoppingCart, FaCalendarAlt, FaFilter, FaSearch, FaTruck, FaCreditCard, FaMoneyBillWave, FaEye, FaChevronLeft, FaChevronRight, FaClipboardList, FaBoxOpen, FaCheck, FaCheckCircle } from 'react-icons/fa'
+import { FaShoppingCart, FaCalendarAlt, FaFilter, FaSearch, FaTruck, FaCreditCard, FaMoneyBillWave, FaEye, FaChevronLeft, FaChevronRight, FaClipboardList, FaBoxOpen, FaCheck, FaCheckCircle, FaClock } from 'react-icons/fa'
 import { HiOutlineShoppingBag, HiOutlineCalendar, HiOutlineCurrencyRupee } from 'react-icons/hi'
 import { MdAccessTime, MdLocationOn, MdPhone, MdEmail, MdShoppingCart, MdVerified } from 'react-icons/md'
 import Axios from '../utils/Axios'
@@ -24,6 +24,19 @@ const AdminOrders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [showPackingDetails, setShowPackingDetails] = useState(false)
   const [packingLoading, setPackingLoading] = useState(false)
+  const [showShippingModal, setShowShippingModal] = useState(false)
+  const [shippingLoading, setShippingLoading] = useState(false)
+
+  // Sri Lankan courier companies
+  const courierOptions = [
+    { value: 'Pronto Lanka', label: 'Pronto Lanka' },
+    { value: 'Kapruka', label: 'Kapruka' },
+    { value: 'DHL Express', label: 'DHL Express' },
+    { value: 'FedEx', label: 'FedEx' },
+    { value: 'Aramex', label: 'Aramex' },
+    { value: 'TCS Lanka', label: 'TCS Lanka' },
+    { value: 'Quick Service Lanka', label: 'Quick Service Lanka' }
+  ]
 
   const dateOptions = [
     { value: 'today', label: 'Today' },
@@ -164,6 +177,224 @@ const AdminOrders = () => {
       default:
         return 'bg-orange-100 text-orange-800 border-orange-200'
     }
+  }
+
+  const handleShippingSubmit = async (formData) => {
+    try {
+      setShippingLoading(true)
+      
+      const response = await Axios({
+        ...SummaryApi.updateShippingDetails,
+        data: {
+          orderId: selectedOrder.orderId,
+          shippingDetails: formData
+        }
+      })
+
+      if (response.data.success) {
+        toast.success('Order marked as shipped with courier details!')
+        
+        // Update the selected order in state
+        if (selectedOrder) {
+          setSelectedOrder(prev => ({
+            ...prev,
+            packing_status: 'shipped',
+            shipping_details: response.data.data.shippingDetails
+          }))
+        }
+        
+        setShowShippingModal(false)
+        // Refresh the orders list
+        fetchOrders()
+      }
+    } catch (error) {
+      console.error('Shipping update error:', error)
+      AxiosToastError(error)
+    } finally {
+      setShippingLoading(false)
+    }
+  }
+
+  // Shipping Details Modal Component
+  const ShippingDetailsModal = ({ order, isOpen, onClose, onSubmit, loading }) => {
+    const [formData, setFormData] = useState({
+      courier_name: '',
+      tracking_number: '',
+      handover_date: '',
+      expected_delivery_date: ''
+    })
+
+    const handleInputChange = (e) => {
+      const { name, value } = e.target
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }))
+    }
+
+    const handleSubmit = (e) => {
+      e.preventDefault()
+      
+      // Validation
+      if (!formData.courier_name || !formData.tracking_number || !formData.handover_date || !formData.expected_delivery_date) {
+        toast.error('Please fill in all required fields')
+        return
+      }
+
+      // Validate dates
+      const handoverDate = new Date(formData.handover_date)
+      const expectedDate = new Date(formData.expected_delivery_date)
+      const today = new Date()
+      
+      if (handoverDate > today) {
+        toast.error('Handover date cannot be in the future')
+        return
+      }
+      
+      if (expectedDate <= handoverDate) {
+        toast.error('Expected delivery date must be after handover date')
+        return
+      }
+
+      onSubmit(formData)
+    }
+
+    const resetForm = () => {
+      setFormData({
+        courier_name: '',
+        tracking_number: '',
+        handover_date: '',
+        expected_delivery_date: ''
+      })
+    }
+
+    useEffect(() => {
+      if (!isOpen) {
+        resetForm()
+      }
+    }, [isOpen])
+
+    if (!isOpen) return null
+
+    return (
+      <div className='fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4'>
+        <div className='bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto'>
+          <div className='p-6 border-b border-gray-200'>
+            <div className='flex items-center justify-between'>
+              <div>
+                <h3 className='text-xl font-bold text-gray-900'>Shipping Details</h3>
+                <p className='text-sm text-gray-600'>Order #{order?.orderId}</p>
+              </div>
+              <button
+                onClick={onClose}
+                className='p-2 hover:bg-gray-100 rounded-lg transition-colors'
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+          
+          <form onSubmit={handleSubmit} className='p-6 space-y-6'>
+            {/* Courier Selection */}
+            <div>
+              <label className='block text-sm font-semibold text-gray-700 mb-2'>
+                Courier Company *
+              </label>
+              <select
+                name="courier_name"
+                value={formData.courier_name}
+                onChange={handleInputChange}
+                required
+                className='w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+              >
+                <option value="">Select Courier Company</option>
+                {courierOptions.map(courier => (
+                  <option key={courier.value} value={courier.value}>
+                    {courier.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Tracking Number */}
+            <div>
+              <label className='block text-sm font-semibold text-gray-700 mb-2'>
+                Tracking Number *
+              </label>
+              <input
+                type="text"
+                name="tracking_number"
+                value={formData.tracking_number}
+                onChange={handleInputChange}
+                placeholder="Enter tracking number"
+                required
+                className='w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+              />
+            </div>
+
+            {/* Handover Date */}
+            <div>
+              <label className='block text-sm font-semibold text-gray-700 mb-2'>
+                Date of Handover *
+              </label>
+              <input
+                type="date"
+                name="handover_date"
+                value={formData.handover_date}
+                onChange={handleInputChange}
+                max={new Date().toISOString().split('T')[0]}
+                required
+                className='w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+              />
+            </div>
+
+            {/* Expected Delivery Date */}
+            <div>
+              <label className='block text-sm font-semibold text-gray-700 mb-2'>
+                Expected Delivery Date *
+              </label>
+              <input
+                type="date"
+                name="expected_delivery_date"
+                value={formData.expected_delivery_date}
+                onChange={handleInputChange}
+                min={formData.handover_date || new Date().toISOString().split('T')[0]}
+                required
+                className='w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+              />
+            </div>
+
+            {/* Submit Buttons */}
+            <div className='flex flex-col sm:flex-row gap-3 pt-4'>
+              <button
+                type="button"
+                onClick={onClose}
+                className='w-full sm:w-auto px-6 py-3 border border-gray-300 rounded-xl font-semibold text-gray-700 hover:bg-gray-50 transition-colors'
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className='w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2'
+              >
+                {loading ? (
+                  <>
+                    <div className='w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin'></div>
+                    <span>Processing...</span>
+                  </>
+                ) : (
+                  <>
+                    <FaTruck />
+                    <span>Mark as Shipped</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -414,19 +645,29 @@ const AdminOrders = () => {
                         <td className='px-6 py-4'>
                           <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${getPackingStatusColor(order.packing_status)}`}>
                             {order.packing_status === 'packed' ? (
-                              <FaCheckCircle className='text-xs' />
+                              <FaBoxOpen className='text-xs' />
                             ) : order.packing_status === 'shipped' ? (
                               <FaTruck className='text-xs' />
                             ) : order.packing_status === 'delivered' ? (
-                              <MdVerified className='text-xs' />
+                              <FaCheckCircle className='text-xs' />
                             ) : (
-                              <FaBoxOpen className='text-xs' />
+                              <FaClock className='text-xs' />
                             )}
                             {order.packing_status || 'pending'}
                           </span>
-                          {order.packing_completed_at && (
+                          {order.packing_status === 'shipped' && order.shipping_details?.tracking_number && (
                             <p className='text-xs text-gray-500 mt-1'>
-                              {formatDate(order.packing_completed_at)}
+                              #{order.shipping_details.tracking_number}
+                            </p>
+                          )}
+                          {order.packing_status === 'delivered' && order.shipping_details?.confirmed_by_customer && (
+                            <p className='text-xs text-green-600 mt-1 font-medium'>
+                              ✓ Customer Confirmed
+                            </p>
+                          )}
+                          {order.packing_status === 'delivered' && !order.shipping_details?.confirmed_by_customer && (
+                            <p className='text-xs text-orange-600 mt-1'>
+                              Awaiting confirmation
                             </p>
                           )}
                         </td>
@@ -697,7 +938,7 @@ const AdminOrders = () => {
                   {/* Packing Summary */}
                   <div className='border-t border-gray-200 pt-4'>
                     <div className='bg-gray-50 rounded-lg p-4'>
-                      <h5 className='font-semibold text-gray-900 mb-3'>Packing Summary</h5>
+                      <h5 className='font-semibold text-gray-900 mb-3'>Order Status Summary</h5>
                       <div className='grid grid-cols-2 gap-4 text-sm'>
                         <div>
                           <p className='text-gray-600'>Total Items:</p>
@@ -715,6 +956,45 @@ const AdminOrders = () => {
                           <p className='text-gray-600'>Customer:</p>
                           <p className='font-medium text-gray-900'>{selectedOrder.userId?.name || 'Unknown'}</p>
                         </div>
+                        {selectedOrder.shipping_details?.courier_name && (
+                          <>
+                            <div>
+                              <p className='text-gray-600'>Courier:</p>
+                              <p className='font-medium text-gray-900'>{selectedOrder.shipping_details.courier_name}</p>
+                            </div>
+                            <div>
+                              <p className='text-gray-600'>Tracking:</p>
+                              <p className='font-medium text-gray-900'>#{selectedOrder.shipping_details.tracking_number}</p>
+                            </div>
+                          </>
+                        )}
+                        {selectedOrder.shipping_details?.handover_date && (
+                          <div>
+                            <p className='text-gray-600'>Handed Over:</p>
+                            <p className='font-medium text-gray-900'>{formatDate(selectedOrder.shipping_details.handover_date)}</p>
+                          </div>
+                        )}
+                        {selectedOrder.packing_status === 'delivered' && (
+                          <div>
+                            <p className='text-gray-600'>Customer Confirmation:</p>
+                            {selectedOrder.shipping_details?.confirmed_by_customer ? (
+                              <p className='font-medium text-green-700 flex items-center gap-1'>
+                                <FaCheckCircle className='text-xs' />
+                                Confirmed
+                                {selectedOrder.shipping_details?.delivered_at && (
+                                  <span className='text-xs text-gray-500 ml-1'>
+                                    ({formatDate(selectedOrder.shipping_details.delivered_at)})
+                                  </span>
+                                )}
+                              </p>
+                            ) : (
+                              <p className='font-medium text-orange-600 flex items-center gap-1'>
+                                <FaClock className='text-xs' />
+                                Pending
+                              </p>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -762,8 +1042,8 @@ const AdminOrders = () => {
                           ) : (
                             <div className='flex flex-col gap-2'>
                               <button
-                                onClick={() => handlePackingConfirmation(selectedOrder.orderId, 'shipped')}
-                                disabled={packingLoading}
+                                onClick={() => setShowShippingModal(true)}
+                                disabled={packingLoading || shippingLoading}
                                 className='group bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold text-sm shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2 disabled:opacity-50'
                               >
                                 <FaTruck className='group-hover:scale-110 transition-transform' />
@@ -851,6 +1131,63 @@ const AdminOrders = () => {
                         <p className='text-sm'><span className='font-medium'>Payment ID:</span> {selectedOrder.paymentId}</p>
                       )}
                       <p className='text-sm'><span className='font-medium'>Order Date:</span> {formatDate(selectedOrder.createdAt)}</p>
+                      
+                      {/* Shipping Status */}
+                      <div className='mt-3 pt-2 border-t border-gray-300'>
+                        <p className='font-medium text-sm mb-2 flex items-center gap-2'>
+                          <FaTruck className='text-blue-600' />
+                          Shipping Status
+                        </p>
+                        <div className='text-sm space-y-1'>
+                          <p>
+                            <span className='font-medium'>Status:</span>
+                            <span className={`ml-2 px-2 py-1 rounded-full text-xs ${
+                              selectedOrder.packing_status === 'delivered' ? 'bg-green-100 text-green-800' :
+                              selectedOrder.packing_status === 'shipped' ? 'bg-blue-100 text-blue-800' :
+                              selectedOrder.packing_status === 'packed' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-gray-100 text-gray-800'
+                            }`}>
+                              {selectedOrder.packing_status || 'pending'}
+                            </span>
+                          </p>
+                          
+                          {selectedOrder.shipping_details?.courier_name && (
+                            <>
+                              <p><span className='font-medium'>Courier:</span> {selectedOrder.shipping_details.courier_name}</p>
+                              <p><span className='font-medium'>Tracking #:</span> {selectedOrder.shipping_details.tracking_number}</p>
+                              {selectedOrder.shipping_details.handover_date && (
+                                <p><span className='font-medium'>Handed Over:</span> {formatDate(selectedOrder.shipping_details.handover_date)}</p>
+                              )}
+                              {selectedOrder.shipping_details.expected_delivery_date && (
+                                <p><span className='font-medium'>Expected Delivery:</span> {formatDate(selectedOrder.shipping_details.expected_delivery_date)}</p>
+                              )}
+                            </>
+                          )}
+                          
+                          {selectedOrder.packing_status === 'delivered' && (
+                            <div className='mt-2 pt-2 border-t border-gray-300'>
+                              <p className='font-medium text-sm'>Customer Delivery Confirmation:</p>
+                              {selectedOrder.shipping_details?.confirmed_by_customer ? (
+                                <div className='flex items-center gap-2 text-green-700 mt-1'>
+                                  <FaCheckCircle className='text-sm' />
+                                  <span className='text-sm font-medium'>Confirmed by Customer</span>
+                                  {selectedOrder.shipping_details?.delivered_at && (
+                                    <span className='text-xs text-gray-500'>
+                                      on {formatDate(selectedOrder.shipping_details.delivered_at)}
+                                    </span>
+                                  )}
+                                </div>
+                              ) : (
+                                <div className='flex items-center gap-2 text-orange-600 mt-1'>
+                                  <FaClock className='text-sm' />
+                                  <span className='text-sm'>Awaiting customer confirmation</span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      
                       {selectedOrder.delivery_address && (
                         <div className='mt-3'>
                           <p className='font-medium text-sm mb-2'>Delivery Address:</p>
@@ -872,6 +1209,15 @@ const AdminOrders = () => {
           </div>
         </div>
       )}
+
+      {/* Shipping Details Modal */}
+      <ShippingDetailsModal
+        order={selectedOrder}
+        isOpen={showShippingModal}
+        onClose={() => setShowShippingModal(false)}
+        onSubmit={handleShippingSubmit}
+        loading={shippingLoading}
+      />
     </div>
   )
 }
