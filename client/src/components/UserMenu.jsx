@@ -144,6 +144,13 @@ const UserMenu = ({close}) => {
                 label="User Management"
                 description="Manage user accounts"
               />
+              <MenuLink
+                to="/dashboard/stock-management"
+                onClick={handleClose}
+                icon={<MdInventory />}
+                label="Stock Management"
+                description="Monitor inventory levels"
+              />
             </div>
             <div className='border-t my-3'></div>
           </div>

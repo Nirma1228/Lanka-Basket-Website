@@ -24,6 +24,12 @@ const AddToCartButton = ({ data }) => {
         e.preventDefault()
         e.stopPropagation()
 
+        // Check if product is in stock
+        if (!data?.stock || data.stock === 0) {
+            toast.error("This product is currently out of stock")
+            return
+        }
+
         // Check if user is logged in
         if (!user?._id) {
             toast.error("Please login to add items to cart")
@@ -79,6 +85,12 @@ const AddToCartButton = ({ data }) => {
             return
         }
 
+        // Check if increasing quantity would exceed available stock
+        if (data?.stock && qty >= data.stock) {
+            toast.error(`Only ${data.stock} units available in stock`)
+            return
+        }
+
        const response = await  updateCartItem(cartItemDetails?._id,qty+1)
         
        if(response.success){
@@ -110,7 +122,12 @@ const AddToCartButton = ({ data }) => {
     
     return (
         <div className='w-full max-w-[140px]'>
-            {
+            {/* Check if product is out of stock */}
+            {(!data?.stock || data.stock === 0) ? (
+                <div className='w-full bg-gray-100 text-gray-500 font-semibold px-4 py-2.5 rounded-lg text-center border border-gray-200'>
+                    <span className='text-sm'>Out of Stock</span>
+                </div>
+            ) : (
                 isAvailableCart ? (
                     <div className='flex items-center bg-white border border-green-500 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300'>
                         <button 
@@ -126,7 +143,12 @@ const AddToCartButton = ({ data }) => {
 
                         <button 
                             onClick={increaseQty} 
-                            className='bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white p-2 flex items-center justify-center transform hover:scale-110 transition-all duration-200 active:scale-95'
+                            disabled={data?.stock && qty >= data.stock}
+                            className={`p-2 flex items-center justify-center transform hover:scale-110 transition-all duration-200 active:scale-95 text-white ${
+                                data?.stock && qty >= data.stock 
+                                    ? 'bg-gray-400 cursor-not-allowed' 
+                                    : 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600'
+                            }`}
                         >
                             <FaPlus className='text-xs' />
                         </button>
@@ -150,7 +172,7 @@ const AddToCartButton = ({ data }) => {
                         )}
                     </button>
                 )
-            }
+            )}
         </div>
     )
 }

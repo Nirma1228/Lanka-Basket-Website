@@ -2,10 +2,13 @@ import React, { useState } from 'react'
 import EditProductAdmin from './EditProductAdmin'
 import CofirmBox from './CofirmBox'
 import { IoClose } from 'react-icons/io5'
+import { MdWarning, MdCheckCircle } from 'react-icons/md'
+import { FaExclamationTriangle } from 'react-icons/fa'
 import SummaryApi from '../common/SummaryApi'
 import Axios from '../utils/Axios'
 import AxiosToastError from '../utils/AxiosToastError'
 import toast from 'react-hot-toast'
+import { DisplayPriceInRupees } from '../utils/DisplayPriceInRupees'
 
 const ProductCardAdmin = ({ data, fetchProductData }) => {
   const [editOpen,setEditOpen]= useState(false)
@@ -37,20 +40,105 @@ const ProductCardAdmin = ({ data, fetchProductData }) => {
       AxiosToastError(error)
     }
   }
+
+  // Get stock status
+  const getStockStatus = () => {
+    if (data.stock === 0) {
+      return { 
+        status: 'Out of Stock', 
+        color: 'text-red-600', 
+        bg: 'bg-red-50', 
+        border: 'border-red-200',
+        icon: <MdWarning className='text-red-500' />
+      }
+    } else if (data.stock <= 10) {
+      return { 
+        status: 'Low Stock', 
+        color: 'text-yellow-600', 
+        bg: 'bg-yellow-50', 
+        border: 'border-yellow-200',
+        icon: <FaExclamationTriangle className='text-yellow-500' />
+      }
+    } else {
+      return { 
+        status: 'In Stock', 
+        color: 'text-green-600', 
+        bg: 'bg-green-50', 
+        border: 'border-green-200',
+        icon: <MdCheckCircle className='text-green-500' />
+      }
+    }
+  }
+
+  const stockStatus = getStockStatus()
+
   return (
-    <div className='w-36 p-4 bg-white rounded'>
-        <div>
-            <img
-               src={data?.image[0]}  
-               alt={data?.name}
-               className='w-full h-full object-scale-down'
-            />
+    <div className='bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1'>
+        {/* Stock Status Badge */}
+        <div className={`${stockStatus.bg} ${stockStatus.border} border-b px-3 py-2`}>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center gap-1'>
+              {stockStatus.icon}
+              <span className={`text-xs font-medium ${stockStatus.color}`}>
+                {stockStatus.status}
+              </span>
+            </div>
+            <span className={`text-xs font-bold ${stockStatus.color}`}>
+              {data.stock} units
+            </span>
+          </div>
         </div>
-        <p className='text-ellipsis line-clamp-2 font-medium'>{data?.name}</p>
-        <p className='text-slate-400'>{data?.unit}</p>
-        <div className='grid grid-cols-2 gap-3 py-2'>
-          <button onClick={()=>setEditOpen(true)} className='border px-1 py-1 text-sm border-green-600 bg-green-100 text-green-800 hover:bg-green-200 rounded'>Edit</button>
-          <button onClick={()=>setOpenDelete(true)} className='border px-1 py-1 text-sm border-red-600 bg-red-100 text-red-600 hover:bg-red-200 rounded'>Delete</button>
+
+        {/* Product Image */}
+        <div className='p-4'>
+          <div className='relative'>
+            <img
+               src={data?.image[0] || '/api/placeholder/200/200'}  
+               alt={data?.name}
+               className='w-full h-32 object-cover rounded-lg'
+            />
+            {data.stock === 0 && (
+              <div className='absolute inset-0 bg-black bg-opacity-50 rounded-lg flex items-center justify-center'>
+                <span className='text-white font-bold text-sm'>OUT OF STOCK</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Product Info */}
+        <div className='px-4 pb-4'>
+          <h3 className='font-semibold text-gray-900 text-sm line-clamp-2 mb-1'>
+            {data?.name}
+          </h3>
+          <p className='text-gray-500 text-xs mb-2'>{data?.unit}</p>
+          
+          {/* Price */}
+          <div className='mb-3'>
+            <p className='font-bold text-green-600'>
+              {DisplayPriceInRupees(data?.price)}
+            </p>
+            {data?.discount > 0 && (
+              <p className='text-xs text-orange-600'>
+                {data.discount}% off
+              </p>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <div className='grid grid-cols-2 gap-2'>
+            <button 
+              onClick={() => setEditOpen(true)} 
+              className='px-3 py-2 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition-colors'
+            >
+              Edit
+            </button>
+            <button 
+              onClick={() => setOpenDelete(true)} 
+              className='px-3 py-2 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg transition-colors'
+            >
+              Delete
+            </button>
+          </div>
         </div>
 
         {

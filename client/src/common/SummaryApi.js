@@ -117,6 +117,18 @@ const SummaryApi = {
         url: '/api/product/search-product',
         method: 'post'
     },
+    bulkUpdateStock: {
+        url: '/api/product/bulk-update-stock',
+        method: 'put'
+    },
+    getLowStockProducts: {
+        url: '/api/product/low-stock-products',
+        method: 'post'
+    },
+    getStockAnalytics: {
+        url: '/api/product/stock-analytics',
+        method: 'get'
+    },
     addTocart: {
         url: "/api/cart/create",
         method: 'post'

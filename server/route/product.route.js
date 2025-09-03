@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import auth from '../middleware/auth.js'
-import { createProductController, deleteProductDetails, getProductByCategory, getProductByCategoryAndSubCategory, getProductController, getProductDetails, searchProduct, updateProductDetails } from '../controllers/product.controller.js'
+import { createProductController, deleteProductDetails, getProductByCategory, getProductByCategoryAndSubCategory, getProductController, getProductDetails, searchProduct, updateProductDetails, bulkUpdateStock, getLowStockProducts, getStockAnalytics } from '../controllers/product.controller.js'
 import { admin } from '../middleware/Admin.js'
 
 const productRouter = Router()
@@ -19,5 +19,10 @@ productRouter.delete('/delete-product',auth,admin,deleteProductDetails)
 
 //search product 
 productRouter.post('/search-product',searchProduct)
+
+// Stock management routes
+productRouter.put('/bulk-update-stock', auth, admin, bulkUpdateStock)
+productRouter.post('/low-stock-products', auth, admin, getLowStockProducts)
+productRouter.get('/stock-analytics', auth, admin, getStockAnalytics)
 
 export default productRouter
