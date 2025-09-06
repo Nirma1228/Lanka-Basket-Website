@@ -52,29 +52,27 @@ export async function registerUserController(request,response){
         const salt = await bcryptjs.genSalt(10)
         const hashPassword = await bcryptjs.hash(password,salt)
 
-        // Generate verification token
-        const verificationToken = generateVerificationToken()
-        const verificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours from now
+        // Generate verification OTP
+        const verificationOtp = generatedOtp()
+        const verificationOtpExpiry = new Date(Date.now() + 15 * 60 * 1000) // 15 minutes from now
 
         const payload = {
             name,
             email,
             password : hashPassword,
-            verify_email_token: verificationToken,
-            verify_email_token_expiry: verificationTokenExpiry
+            verify_email_otp: verificationOtp,
+            verify_email_otp_expiry: verificationOtpExpiry
         }
 
         const newUser = new UserModel(payload)
         const save = await newUser.save()
-
-        const VerifyEmailUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`
 
         const verifyEmail = await sendEmail({
             sendTo : email,
             subject : "Verify your email - Lanka Basket",
             html : verifyEmailTemplate({
                 name,
-                url : VerifyEmailUrl
+                otp : verificationOtp
             })
         })
 
@@ -89,7 +87,7 @@ export async function registerUserController(request,response){
         }
 
         return response.json({
-            message : "User registered successfully. Please check your email to verify your account.",
+            message : "Check your email for the 6-digit OTP code to verify your account",
             error : false,
             success : true,
             data : {
@@ -111,24 +109,25 @@ export async function registerUserController(request,response){
 
 export async function verifyEmailController(request,response){
     try {
-        const { token } = request.body
+        const { email, otp } = request.body
 
-        if(!token){
+        if(!email || !otp){
             return response.status(400).json({
-                message : "Verification token is required",
+                message : "Email and OTP are required",
                 error : true,
                 success : false
             })
         }
 
         const user = await UserModel.findOne({ 
-            verify_email_token: token,
-            verify_email_token_expiry: { $gt: new Date() } // Token not expired
+            email: email,
+            verify_email_otp: otp,
+            verify_email_otp_expiry: { $gt: new Date() } // OTP not expired
         })
 
         if(!user){
             return response.status(400).json({
-                message : "Invalid or expired verification token",
+                message : "Invalid or expired OTP",
                 error : true,
                 success : false
             })
@@ -145,8 +144,8 @@ export async function verifyEmailController(request,response){
 
         const updateUser = await UserModel.updateOne({ _id : user._id },{
             verify_email : true,
-            verify_email_token: "",
-            verify_email_token_expiry: null
+            verify_email_otp: "",
+            verify_email_otp_expiry: null
         })
 
         return response.json({
@@ -235,23 +234,21 @@ export async function resendVerificationEmailController(request,response){
             })
         }
 
-        // Generate new verification token
-        const verificationToken = generateVerificationToken()
-        const verificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours from now
+        // Generate new verification OTP
+        const verificationOtp = generatedOtp()
+        const verificationOtpExpiry = new Date(Date.now() + 15 * 60 * 1000) // 15 minutes from now
 
         await UserModel.updateOne({ _id: user._id }, {
-            verify_email_token: verificationToken,
-            verify_email_token_expiry: verificationTokenExpiry
+            verify_email_otp: verificationOtp,
+            verify_email_otp_expiry: verificationOtpExpiry
         })
-
-        const VerifyEmailUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`
 
         const verifyEmail = await sendEmail({
             sendTo : email,
             subject : "Verify your email - Lanka Basket",
             html : verifyEmailTemplate({
                 name: user.name,
-                url : VerifyEmailUrl
+                otp : verificationOtp
             })
         })
 
@@ -266,7 +263,7 @@ export async function resendVerificationEmailController(request,response){
         }
 
         return response.json({
-            message : "Verification email sent successfully. Please check your email.",
+            message : "Verification OTP sent successfully. Please check your email.",
             error : false,
             success : true,
             attemptsRemaining: limitCheck.attemptsRemaining

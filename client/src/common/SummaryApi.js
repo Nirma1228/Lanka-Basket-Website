@@ -5,7 +5,7 @@ const SummaryApi = {
         url: '/api/user/register',
         method: 'post'
     },
-    verifyEmail: {
+    verifyEmailOtp: {
         url: '/api/user/verify-email',
         method: 'post'
     },

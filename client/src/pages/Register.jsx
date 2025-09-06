@@ -64,17 +64,14 @@ const Register = () => {
 
             if(response.data.success){
                 toast.success(response.data.message)
+                // Navigate to OTP verification page with email
+                navigate("/verify-email", { state: { email: data.email } })
                 setData({
                     name : "",
                     email : "",
                     password : "",
                     confirmPassword : ""
                 })
-                // Show verification message instead of redirecting immediately
-                toast.success("Please check your email and click the verification link to activate your account.", {
-                    duration: 6000
-                })
-                navigate("/login")
             }
 
         } catch (error) {
