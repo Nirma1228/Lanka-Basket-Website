@@ -1,4 +1,4 @@
-import rateLimit from 'express-rate-limit'
+import rateLimit, { MemoryStore } from 'express-rate-limit'
 // Temporarily disable MongoDB store to fix connection issues
 // import MongoStore from 'rate-limit-mongo'
 
@@ -39,21 +39,20 @@ export const authRateLimit = rateLimit({
     // })
 })
 
-// Rate limiting for sensitive operations (password reset, email verification)
+// Enhanced rate limiting for sensitive operations (password resets, email verification)
 export const sensitiveRateLimit = rateLimit({
-    windowMs: 60 * 60 * 1000, // 1 hour
-    max: 3, // limit each IP to 3 requests per hour
-    message: {
-        message: "Too many requests for this operation, please try again in an hour",
-        error: true,
-        success: false
-    },
-    // Using memory store instead of MongoDB for now
-    // store: new MongoStore({
-    //     uri: process.env.MONGODB_URI,
-    //     collectionName: 'sensitive_rate_limits',
-    //     expireTimeMs: 60 * 60 * 1000
-    // })
+  windowMs: 15 * 60 * 1000, // 15 minutes window (reduced from 1 hour)
+  max: 5, // Allow 5 requests per 15 minutes for OTP operations
+  message: {
+    error: true,
+    message: "Too many requests for this operation, please try again in 15 minutes"
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  // Skip successful requests from the count
+  skipSuccessfulRequests: true,
+  // Store in memory (upgrade to Redis for production)
+  store: new MemoryStore()
 })
 
 // Rate limiting for file uploads
