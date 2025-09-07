@@ -28,7 +28,7 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
-      
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -51,16 +51,15 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_94F7944958C1435B8A2B671EADA56AA5 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_FDEDE2E173ED4BDFB8D19CF43372CB12 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_1320414B05044665BCCF33A6AF78552C }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_1926565E85114796ABADA586FD35C401 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_60C0AD36999F46F0A8048FC7E659CA00 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_BB55EE813E4A4F90A2AE8A7878C24412 }}
 
       - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
         with:
           app-name: 'lankabasket'
           slot-name: 'Production'
           package: .
-
           
