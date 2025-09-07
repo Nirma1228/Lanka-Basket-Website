@@ -306,7 +306,7 @@ const TrackOrder = () => {
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-600">Total:</span>
                           <span className="font-bold text-green-600">
-                            ₹{orderGroup.totalAmount.toLocaleString()}
+                            LKR {orderGroup.totalAmount.toLocaleString()}
                           </span>
                         </div>
                       </div>
@@ -528,7 +528,7 @@ const TrackOrder = () => {
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Total Amount:</span>
                     <span className="font-bold text-lg text-green-600">
-                      ₹{selectedOrder.totalAmt?.toLocaleString()}
+                      LKR {selectedOrder.totalAmt?.toLocaleString()}
                     </span>
                   </div>
                 </div>
@@ -607,7 +607,7 @@ const TrackOrder = () => {
                       <p className="text-xs text-gray-500">Qty: 1</p>
                     </div>
                     <span className="font-medium text-green-600">
-                      ₹{selectedOrder.totalAmt?.toLocaleString()}
+                      LKR {selectedOrder.totalAmt?.toLocaleString()}
                     </span>
                   </div>
                 </div>
