@@ -23,7 +23,7 @@ import addressRouter from './route/address.route.js'
 import orderRouter from './route/order.route.js'
 
 const app = express()
-const frontendUrl = process.env.FRONTEND_URL || 'https://lively-river-02e6bc000.1.azurestaticapps.net';
+const frontendUrl = process.env.FRONTEND_URL || 'https://icy-ocean-0c506f900.2.azurestaticapps.net';
 app.use(cors({
     credentials: true,
     origin: frontendUrl
