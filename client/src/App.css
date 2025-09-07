@@ -1,0 +1,263 @@
+/* Z-Index Layering System for Lanka Basket */
+/* 
+  Z-Index Hierarchy:
+  - 10-19: Background decorative elements
+  - 20-29: Content overlays (hover effects, etc.)
+  - 30-39: Sticky content (breadcrumbs, etc.)
+  - 40-49: Bottom sticky elements (mobile cart)
+  - 50-59: Navigation header and dropdowns
+  - 60-69: Shopping cart sidebar
+  - 70-79: Modal dialogs
+  - 80-89: Loading overlays
+  - 90-99: Toast notifications and alerts
+*/
+
+/* Smooth transitions for better UX */
+* {
+  transition: z-index 0s ease-in-out;
+}
+
+/* Ensure proper stacking context for main elements */
+.header-nav {
+  z-index: 50;
+}
+
+.dropdown-menu {
+  z-index: 55;
+}
+
+.cart-sidebar {
+  z-index: 60;
+}
+
+.modal-overlay {
+  z-index: 70;
+}
+
+.loading-overlay {
+  z-index: 80;
+}
+
+.toast-notifications {
+  z-index: 90;
+}
+
+/* Scrollbar styling for better visual consistency */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Custom scrollbar styling */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.7);
+}
+
+/* Removed dark mode scrollbar styles */
+
+/* Backdrop blur support check */
+@supports (backdrop-filter: blur(10px)) {
+  .backdrop-blur-fallback {
+    backdrop-filter: blur(10px);
+  }
+}
+
+@supports not (backdrop-filter: blur(10px)) {
+  .backdrop-blur-fallback {
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+}
+
+/* Animation for dropdown menus */
+.animate-slide-in-up {
+  animation: slideInUp 0.2s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fix for mobile viewport height issues */
+.min-h-screen-mobile {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+/* Prevent horizontal scroll on mobile */
+.overflow-x-hidden {
+  overflow-x: hidden;
+}
+
+/* Ensure proper focus styles for accessibility */
+.focus-ring:focus {
+  outline: 2px solid #10b981;
+  outline-offset: 2px;
+}
+
+/* Loading animation improvements */
+.animate-pulse-slow {
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Better button hover effects */
+.button-hover {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button-hover:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Image loading placeholder */
+.image-placeholder {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Modern Header Styles */
+.header-glass {
+  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.header-gradient-bg {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+/* Enhanced Cart Button Animation */
+@keyframes cart-bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -8px, 0);
+  }
+  70% {
+    transform: translate3d(0, -4px, 0);
+  }
+  90% {
+    transform: translate3d(0, -2px, 0);
+  }
+}
+
+.cart-bounce {
+  animation: cart-bounce 1s ease-in-out;
+}
+
+/* Mobile Menu Slide Animation */
+.mobile-menu-enter {
+  transform: translateX(-100%);
+}
+
+.mobile-menu-enter-active {
+  transform: translateX(0);
+  transition: transform 300ms ease-in-out;
+}
+
+.mobile-menu-exit {
+  transform: translateX(0);
+}
+
+.mobile-menu-exit-active {
+  transform: translateX(-100%);
+  transition: transform 300ms ease-in-out;
+}
+
+/* Search Enhancement */
+.search-focus-ring {
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Notification Badge Pulse */
+@keyframes notification-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.notification-pulse {
+  animation: notification-pulse 2s ease-in-out infinite;
+}
+
+/* Hover Effects for Interactive Elements */
+.header-icon-hover {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.header-icon-hover:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+/* Smooth Transitions */
+.header-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Glass morphism effect for dropdown */
+.dropdown-glass {
+  backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Floating action button style for mobile cart */
+.mobile-cart-fab {
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-cart-fab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+}

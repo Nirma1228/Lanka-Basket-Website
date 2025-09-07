@@ -106,7 +106,7 @@ const AddAddress = ({close}) => {
                     />
                 </div>
 
-                <button type='submit' className='bg-primary-200 w-full  py-2 font-semibold mt-4 hover:bg-primary-100'>Submit</button>
+                <button type='submit' className='bg-primary-200 w-full py-2 font-semibold mt-4 hover:bg-primary-100'>Submit</button>
             </form>
         </div>
     </section>

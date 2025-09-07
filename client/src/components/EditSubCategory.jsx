@@ -100,7 +100,7 @@ const EditSubCategory = ({close,data,fetchData}) => {
                             name='name'
                             value={subCategoryData.name}
                             onChange={handleChange}
-                            className='p-3 bg-blue-50 border outline-none focus-within:border-primary-200 rounded '
+                            className='p-3 bg-blue-50 border outline-none focus-within:border-primary-200 rounded'
                         />
                     </div>
                     <div className='grid gap-1'>
@@ -120,7 +120,7 @@ const EditSubCategory = ({close,data,fetchData}) => {
                                 }
                             </div>
                             <label htmlFor='uploadSubCategoryImage'>
-                                <div className='px-4 py-1 border border-primary-100 text-primary-200 rounded hover:bg-primary-200 hover:text-neutral-900 cursor-pointer  '>
+                                <div className='px-4 py-1 border border-primary-100 text-primary-200 rounded hover:bg-primary-200 hover:text-neutral-900 cursor-pointer'>
                                     Upload Image
                                 </div>
                                 <input 

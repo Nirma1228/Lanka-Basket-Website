@@ -1,228 +1,485 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import SummaryApi from '../common/SummaryApi'
 import Axios from '../utils/Axios'
 import AxiosToastError from '../utils/AxiosToastError'
-import { FaAngleRight,FaAngleLeft } from "react-icons/fa6";
+import { FaAngleRight, FaAngleLeft, FaHeart, FaShare, FaStar, FaShieldAlt, FaTruck, FaUndo, FaHeadset } from "react-icons/fa"
+import { MdLocalOffer, MdZoomIn, MdClose, MdChevronRight } from "react-icons/md"
+import { HiOutlineBadgeCheck } from "react-icons/hi"
 import { DisplayPriceInRupees } from '../utils/DisplayPriceInRupees'
-import Divider from '../components/Divider'
-import image1 from '../assets/minute_delivery.png'
-import image2 from '../assets/Best_Prices_Offers.png'
-import image3 from '../assets/Wide_Assortment.png'
 import { pricewithDiscount } from '../utils/PriceWithDiscount'
 import AddToCartButton from '../components/AddToCartButton'
+import CardProduct from '../components/CardProduct'
+import LoadingSpinner from '../components/LoadingSpinner'
 
 const ProductDisplayPage = () => {
   const params = useParams()
+  const navigate = useNavigate()
   let productId = params?.product?.split("-")?.slice(-1)[0]
-  const [data,setData] = useState({
-    name : "",
-    image : []
+  
+  const [data, setData] = useState({
+    name: "",
+    image: [],
+    category: [],
+    price: 0,
+    discount: 0,
+    stock: 0,
+    description: "",
+    unit: "",
+    more_details: {}
   })
-  const [image,setImage] = useState(0)
-  const [loading, setLoading] = useState(false)
+  const [image, setImage] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const [similarProducts, setSimilarProducts] = useState([])
+  const [similarLoading, setSimilarLoading] = useState(false)
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false)
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const imageContainer = useRef()
 
-  const fetchProductDetails = async()=>{
+  const discountPrice = pricewithDiscount(data.price, data.discount)
+  const savings = data.price - discountPrice
+
+  const fetchProductDetails = async() => {
     try {
-        const response = await Axios({
-          ...SummaryApi.getProductDetails,
-          data : {
-            productId : productId 
-          }
-        })
-
-        const { data : responseData } = response
-
-        if(responseData.success){
-          setData(responseData.data)
+      setLoading(true)
+      const response = await Axios({
+        ...SummaryApi.getProductDetails,
+        data: {
+          productId: productId 
         }
+      })
+
+      const { data: responseData } = response
+
+      if(responseData.success) {
+        setData(responseData.data)
+        // Fetch similar products after getting product details
+        if(responseData.data.category && responseData.data.category.length > 0) {
+          fetchSimilarProducts(responseData.data.category[0]._id, productId)
+        }
+      }
     } catch (error) {
       AxiosToastError(error)
-    }finally{
+    } finally {
       setLoading(false)
     }
   }
 
-  useEffect(()=>{
+  const fetchSimilarProducts = async(categoryId, currentProductId) => {
+    try {
+      setSimilarLoading(true)
+      const response = await Axios({
+        ...SummaryApi.getProductByCategory,
+        data: {
+          categoryId: categoryId,
+          page: 1,
+          limit: 8
+        }
+      })
+
+      const { data: responseData } = response
+
+      if(responseData.success) {
+        // Filter out current product and limit to 6 items
+        const filteredProducts = responseData.data
+          .filter(product => product._id !== currentProductId)
+          .slice(0, 6)
+        setSimilarProducts(filteredProducts)
+      }
+    } catch (error) {
+      console.error('Error fetching similar products:', error)
+    } finally {
+      setSimilarLoading(false)
+    }
+  }
+
+  useEffect(() => {
     fetchProductDetails()
-  },[params])
+  }, [params])
   
-  const handleScrollRight = ()=>{
+  const handleScrollRight = () => {
     imageContainer.current.scrollLeft += 100
   }
-  const handleScrollLeft = ()=>{
+  
+  const handleScrollLeft = () => {
     imageContainer.current.scrollLeft -= 100
   }
-  console.log("product data",data)
-  return (
-    <section className='container mx-auto p-4 grid lg:grid-cols-2 '>
-        <div className=''>
-            <div className='bg-white lg:min-h-[65vh] lg:max-h-[65vh] rounded min-h-56 max-h-56 h-full w-full'>
-                <img
-                    src={data.image[image]}
-                    className='w-full h-full object-scale-down'
-                /> 
-            </div>
-            <div className='flex items-center justify-center gap-3 my-2'>
-              {
-                data.image.map((img,index)=>{
-                  return(
-                    <div key={img+index+"point"} className={`bg-slate-200 w-3 h-3 lg:w-5 lg:h-5 rounded-full ${index === image && "bg-slate-300"}`}></div>
-                  )
-                })
-              }
-            </div>
-            <div className='grid relative'>
-                <div ref={imageContainer} className='flex gap-4 z-10 relative w-full overflow-x-auto scrollbar-none'>
-                      {
-                        data.image.map((img,index)=>{
-                          return(
-                            <div className='w-20 h-20 min-h-20 min-w-20 scr cursor-pointer shadow-md' key={img+index}>
-                              <img
-                                  src={img}
-                                  alt='min-product'
-                                  onClick={()=>setImage(index)}
-                                  className='w-full h-full object-scale-down' 
-                              />
-                            </div>
-                          )
-                        })
-                      }
-                </div>
-                <div className='w-full -ml-3 h-full hidden lg:flex justify-between absolute  items-center'>
-                    <button onClick={handleScrollLeft} className='z-10 bg-white relative p-1 rounded-full shadow-lg'>
-                        <FaAngleLeft/>
-                    </button>
-                    <button onClick={handleScrollRight} className='z-10 bg-white relative p-1 rounded-full shadow-lg'>
-                        <FaAngleRight/>
-                    </button>
-                </div>
-            </div>
-            <div>
-            </div>
 
-            <div className='my-4  hidden lg:grid gap-3 '>
-                <div>
-                    <p className='font-semibold'>Description</p>
-                    <p className='text-base'>{data.description}</p>
-                </div>
-                <div>
-                    <p className='font-semibold'>Unit</p>
-                    <p className='text-base'>{data.unit}</p>
-                </div>
-                {
-                  data?.more_details && Object.keys(data?.more_details).map((element,index)=>{
-                    return(
-                      <div>
-                          <p className='font-semibold'>{element}</p>
-                          <p className='text-base'>{data?.more_details[element]}</p>
-                      </div>
-                    )
-                  })
-                }
-            </div>
+  const openImageModal = (index) => {
+    setSelectedImageIndex(index)
+    setIsImageModalOpen(true)
+  }
+
+  const closeImageModal = () => {
+    setIsImageModalOpen(false)
+  }
+
+  const nextImage = () => {
+    setSelectedImageIndex((prev) => 
+      prev < data.image.length - 1 ? prev + 1 : 0
+    )
+  }
+
+  const prevImage = () => {
+    setSelectedImageIndex((prev) => 
+      prev > 0 ? prev - 1 : data.image.length - 1
+    )
+  }
+
+  if (loading) {
+    return (
+      <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
+        <div className='text-center'>
+          <LoadingSpinner size="xl" />
+          <p className='mt-4 text-gray-600'>Loading product details...</p>
         </div>
+      </div>
+    )
+  }
+  return (
+    <div className='min-h-screen bg-gray-50'>
+      {/* Breadcrumb */}
+      <div className='bg-white border-b border-gray-200 sticky top-0 z-30'>
+        <div className='container mx-auto px-4 py-3'>
+          <div className='flex items-center gap-2 text-sm text-gray-600'>
+            <button 
+              onClick={() => navigate('/')}
+              className='hover:text-green-600 transition-colors duration-200'
+            >
+              Home
+            </button>
+            <MdChevronRight />
+            {data.category && data.category[0] && (
+              <>
+                <span className='hover:text-green-600 cursor-pointer transition-colors duration-200'>
+                  {data.category[0].name}
+                </span>
+                <MdChevronRight />
+              </>
+            )}
+            <span className='text-gray-900 font-medium truncate'>{data.name}</span>
+          </div>
+        </div>
+      </div>
 
-
-        <div className='p-4 lg:pl-7 text-base lg:text-lg'>
-            <h2 className='text-lg font-semibold lg:text-3xl'>{data.name}</h2>  
-            <p className=''>{data.unit}</p> 
-            <Divider/>
-            <div>
-              <p className=''>Price</p> 
-              <div className='flex items-center gap-2 lg:gap-4'>
-                <div className='border border-green-600 px-4 py-2 rounded bg-green-50 w-fit'>
-                    <p className='font-semibold text-lg lg:text-xl'>{DisplayPriceInRupees(pricewithDiscount(data.price,data.discount))}</p>
-                </div>
-                {
-                  data.discount && (
-                    <p className='line-through'>{DisplayPriceInRupees(data.price)}</p>
-                  )
-                }
-                {
-                  data.discount && (
-                    <p className="font-bold text-green-600 lg:text-2xl">{data.discount}% <span className='text-base text-neutral-500'>Discount</span></p>
-                  )
-                }
+      <div className='container mx-auto px-4 py-8'>
+        <div className='grid lg:grid-cols-2 gap-8 lg:gap-12'>
+          {/* Image Section */}
+          <div className='space-y-4'>
+            {/* Main Image */}
+            <div className='relative bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-lg'>
+              <div className='aspect-square lg:aspect-[4/3] p-6 flex items-center justify-center'>
+                <img
+                  src={data.image[image]}
+                  alt={data.name}
+                  className='w-full h-full object-contain cursor-zoom-in hover:scale-105 transition-transform duration-300'
+                  onClick={() => openImageModal(image)}
+                />
                 
+                {/* Zoom button */}
+                <button
+                  onClick={() => openImageModal(image)}
+                  className='absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-colors duration-200 shadow-lg'
+                >
+                  <MdZoomIn className='text-xl text-gray-700' />
+                </button>
+
+                {/* Discount badge */}
+                {data.discount > 0 && (
+                  <div className='absolute top-4 left-4 bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-full font-bold shadow-lg animate-pulse'>
+                    <MdLocalOffer className='inline mr-1' />
+                    {data.discount}% OFF
+                  </div>
+                )}
               </div>
 
-            </div> 
+              {/* Image indicators */}
+              <div className='flex items-center justify-center gap-2 pb-4'>
+                {data.image.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setImage(index)}
+                    className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                      index === image 
+                        ? 'bg-green-600 w-8' 
+                        : 'bg-gray-300 hover:bg-gray-400 :bg-gray-500'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Thumbnail Images */}
+            <div className='relative'>
+              <div 
+                ref={imageContainer} 
+                className='flex gap-3 overflow-x-auto scrollbar-none pb-2'
+              >
+                {data.image.map((img, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setImage(index)}
+                    className={`relative flex-shrink-0 w-20 h-20 rounded-xl border-2 overflow-hidden transition-all duration-200 ${
+                      index === image 
+                        ? 'border-green-500 shadow-lg' 
+                        : 'border-gray-200 hover:border-gray-300 :border-gray-500'
+                    }`}
+                  >
+                    <img
+                      src={img}
+                      alt={`${data.name} ${index + 1}`}
+                      className='w-full h-full object-contain bg-white p-1'
+                    />
+                  </button>
+                ))}
+              </div>
               
-              {
-                data.stock === 0 ? (
-                  <p className='text-lg text-red-500 my-2'>Out of Stock</p>
-                ) 
-                : (
-                  // <button className='my-4 px-4 py-1 bg-green-600 hover:bg-green-700 text-white rounded'>Add</button>
-                  <div className='my-4'>
-                    <AddToCartButton data={data}/>
-                  </div>
-                )
-              }
-           
+              {/* Scroll buttons */}
+              {data.image.length > 4 && (
+                <div className='absolute inset-y-0 flex items-center justify-between w-full pointer-events-none'>
+                  <button
+                    onClick={handleScrollLeft}
+                    className='pointer-events-auto bg-white shadow-lg p-2 rounded-full hover:scale-110 transition-transform duration-200 -ml-4'
+                  >
+                    <FaAngleLeft className='text-gray-600' />
+                  </button>
+                  <button
+                    onClick={handleScrollRight}
+                    className='pointer-events-auto bg-white shadow-lg p-2 rounded-full hover:scale-110 transition-transform duration-200 -mr-4'
+                  >
+                    <FaAngleRight className='text-gray-600' />
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
 
-            <h2 className='font-semibold'>Why shop from Lanka Basket? </h2>
-            <div>
-                  <div className='flex  items-center gap-4 my-4'>
-                      <img
-                        src={image1}
-                        alt='super fast delivery'
-                        className='w-20 h-20'
-                      />
-                      <div className='text-sm'>
-                        <div className='font-semibold'>Super fast Delivery</div>
-                        <p>Get your orer delivered to your doorstep at the earliest from stores near you.</p>
-                      </div>
+          {/* Product Details */}
+          <div className='space-y-6'>
+            {/* Product Title and Actions */}
+            <div className='flex items-start justify-between gap-4'>
+              <div className='flex-1'>
+                <h1 className='text-2xl lg:text-3xl font-bold text-gray-900 leading-tight'>
+                  {data.name}
+                </h1>
+                <p className='text-gray-600 mt-1 font-medium'>{data.unit}</p>
+                
+                {/* Mock rating */}
+                <div className='flex items-center gap-3 mt-2'>
+                  <div className='flex text-yellow-400'>
+                    {[...Array(5)].map((_, i) => (
+                      <FaStar key={i} className='text-sm' />
+                    ))}
                   </div>
-                  <div className='flex  items-center gap-4 my-4'>
-                      <img
-                        src={image2}
-                        alt='Best prices offers'
-                        className='w-20 h-20'
-                      />
-                      <div className='text-sm'>
-                        <div className='font-semibold'>Best Prices & Offers</div>
-                        <p>Best price destination with offers directly from the manufacturers.</p>
-                      </div>
-                  </div>
-                  <div className='flex  items-center gap-4 my-4'>
-                      <img
-                        src={image3}
-                        alt='Wide Assortment'
-                        className='w-20 h-20'
-                      />
-                      <div className='text-sm'>
-                        <div className='font-semibold'>Wide Assortment</div>
-                        <p>Choose from 5000+ products across food, personal care, household & other categories.</p>
-                      </div>
-                  </div>
+                  <span className='text-sm text-gray-600'>(4.5) • 127 reviews</span>
+                </div>
+              </div>
+              
+              <div className='flex gap-2'>
+                <button className='p-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors duration-200'>
+                  <FaHeart className='text-gray-600 hover:text-red-500' />
+                </button>
+                <button className='p-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors duration-200'>
+                  <FaShare className='text-gray-600' />
+                </button>
+              </div>
             </div>
 
-            {/*only mobile */}
-            <div className='my-4 grid gap-3 '>
-                <div>
-                    <p className='font-semibold'>Description</p>
-                    <p className='text-base'>{data.description}</p>
+            {/* Price Section */}
+            <div className='bg-white rounded-2xl p-6 border border-gray-200 shadow-sm'>
+              <div className='space-y-4'>
+                <div className='flex items-center gap-4'>
+                  <div className='text-3xl font-bold text-gray-900'>
+                    {DisplayPriceInRupees(discountPrice)}
+                  </div>
+                  {data.discount > 0 && (
+                    <div className='text-lg text-gray-500 line-through'>
+                      {DisplayPriceInRupees(data.price)}
+                    </div>
+                  )}
+                  {data.discount > 0 && (
+                    <div className='bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold'>
+                      {data.discount}% OFF
+                    </div>
+                  )}
                 </div>
-                <div>
-                    <p className='font-semibold'>Unit</p>
-                    <p className='text-base'>{data.unit}</p>
+                
+                {savings > 0 && (
+                  <p className='text-green-600 font-medium'>
+                    You save {DisplayPriceInRupees(savings)}!
+                  </p>
+                )}
+                
+                {/* Stock status */}
+                <div className='flex items-center gap-2'>
+                  {data.stock > 0 ? (
+                    <div className='flex items-center gap-2 text-green-600'>
+                      <HiOutlineBadgeCheck className='text-lg' />
+                      <span className='font-medium'>In Stock ({data.stock} available)</span>
+                    </div>
+                  ) : (
+                    <div className='flex items-center gap-2 text-red-600'>
+                      <span className='font-medium'>Out of Stock</span>
+                    </div>
+                  )}
                 </div>
-                {
-                  data?.more_details && Object.keys(data?.more_details).map((element,index)=>{
-                    return(
-                      <div>
-                          <p className='font-semibold'>{element}</p>
-                          <p className='text-base'>{data?.more_details[element]}</p>
-                      </div>
-                    )
-                  })
-                }
+              </div>
             </div>
+
+            {/* Add to Cart Section */}
+            <div className='space-y-4'>
+              {data.stock > 0 ? (
+                <div className='flex gap-4'>
+                  <div className='flex-1'>
+                    <AddToCartButton data={data} />
+                  </div>
+                </div>
+              ) : (
+                <button className='w-full bg-gray-100 text-gray-400 py-4 rounded-xl font-semibold cursor-not-allowed'>
+                  Out of Stock
+                </button>
+              )}
+            </div>
+
+            {/* Features */}
+            <div className='grid grid-cols-2 lg:grid-cols-4 gap-4'>
+              <div className='flex items-center gap-3 bg-white p-4 rounded-xl border border-gray-200'>
+                <FaTruck className='text-green-600 text-xl' />
+                <div>
+                  <div className='font-semibold text-gray-900 text-sm'>Fast Delivery</div>
+                  <div className='text-xs text-gray-600'>30 mins</div>
+                </div>
+              </div>
+              <div className='flex items-center gap-3 bg-white p-4 rounded-xl border border-gray-200'>
+                <FaShieldAlt className='text-blue-600 text-xl' />
+                <div>
+                  <div className='font-semibold text-gray-900 text-sm'>100% Fresh</div>
+                  <div className='text-xs text-gray-600'>Quality</div>
+                </div>
+              </div>
+              <div className='flex items-center gap-3 bg-white p-4 rounded-xl border border-gray-200'>
+                <FaUndo className='text-orange-600 text-xl' />
+                <div>
+                  <div className='font-semibold text-gray-900 text-sm'>Easy Returns</div>
+                  <div className='text-xs text-gray-600'>7 days</div>
+                </div>
+              </div>
+              <div className='flex items-center gap-3 bg-white p-4 rounded-xl border border-gray-200'>
+                <FaHeadset className='text-purple-600 text-xl' />
+                <div>
+                  <div className='font-semibold text-gray-900 text-sm'>Support</div>
+                  <div className='text-xs text-gray-600'>24/7</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Product Details */}
+            <div className='bg-white rounded-2xl p-6 border border-gray-200 space-y-4'>
+              <h3 className='text-lg font-semibold text-gray-900'>Product Details</h3>
+              
+              <div className='space-y-3'>
+                <div>
+                  <h4 className='font-semibold text-gray-900 mb-2'>Description</h4>
+                  <p className='text-gray-600 leading-relaxed'>{data.description}</p>
+                </div>
+                
+                <div>
+                  <h4 className='font-semibold text-gray-900 mb-2'>Unit</h4>
+                  <p className='text-gray-600'>{data.unit}</p>
+                </div>
+                
+                {/* Additional details */}
+                {data.more_details && Object.keys(data.more_details).map((key) => (
+                  <div key={key}>
+                    <h4 className='font-semibold text-gray-900 mb-2 capitalize'>
+                      {key.replace('_', ' ')}
+                    </h4>
+                    <p className='text-gray-600'>{data.more_details[key]}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
-    </section>
+
+        {/* Similar Products Section */}
+        {similarProducts.length > 0 && (
+          <div className='mt-16'>
+            <div className='flex items-center justify-between mb-8'>
+              <h2 className='text-2xl lg:text-3xl font-bold text-gray-900'>
+                Similar Products
+              </h2>
+              <p className='text-gray-600'>
+                You might also like these items
+              </p>
+            </div>
+
+            {similarLoading ? (
+              <div className='flex justify-center py-12'>
+                <LoadingSpinner size="lg" />
+              </div>
+            ) : (
+              <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6'>
+                {similarProducts.map((product) => (
+                  <div key={product._id} className='transform hover:scale-105 transition-transform duration-200'>
+                    <CardProduct data={product} />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Image Modal */}
+      {isImageModalOpen && (
+        <div className='fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4'>
+          <div className='relative max-w-4xl max-h-full'>
+            <button
+              onClick={closeImageModal}
+              className='absolute top-4 right-4 z-10 bg-white/20 backdrop-blur-sm text-white p-2 rounded-full hover:bg-white/30 transition-colors duration-200'
+            >
+              <MdClose className='text-xl' />
+            </button>
+            
+            <img
+              src={data.image[selectedImageIndex]}
+              alt={data.name}
+              className='max-w-full max-h-full object-contain rounded-xl'
+            />
+            
+            {data.image.length > 1 && (
+              <>
+                <button
+                  onClick={prevImage}
+                  className='absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/30 transition-colors duration-200'
+                >
+                  <FaAngleLeft className='text-xl' />
+                </button>
+                <button
+                  onClick={nextImage}
+                  className='absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/30 transition-colors duration-200'
+                >
+                  <FaAngleRight className='text-xl' />
+                </button>
+              </>
+            )}
+            
+            <div className='absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2'>
+              {data.image.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSelectedImageIndex(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                    index === selectedImageIndex ? 'bg-white w-8' : 'bg-white/50'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
 

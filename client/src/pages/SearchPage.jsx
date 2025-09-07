@@ -5,7 +5,7 @@ import Axios from '../utils/Axios'
 import AxiosToastError from '../utils/AxiosToastError'
 import CardProduct from '../components/CardProduct'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { useLocation } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import noDataImage from '../assets/nothing here yet.webp'
 
 const SearchPage = () => {
@@ -14,8 +14,8 @@ const SearchPage = () => {
   const loadingArrayCard = new Array(10).fill(null)
   const [page,setPage] = useState(1)
   const [totalPage,setTotalPage] = useState(1)
-  const params = useLocation()
-  const searchText = params?.search?.slice(3)
+  const [searchParams] = useSearchParams()
+  const searchText = searchParams.get('q') || ''
 
   const fetchData = async() => {
     try {
@@ -23,7 +23,7 @@ const SearchPage = () => {
         const response = await Axios({
             ...SummaryApi.searchProduct,
             data : {
-              search : searchText ,
+              search : searchText,
               page : page,
             }
         })
@@ -52,7 +52,14 @@ const SearchPage = () => {
   }
 
   useEffect(()=>{
-    fetchData()
+    setPage(1)
+    setData([])
+  },[searchText])
+
+  useEffect(()=>{
+    if(searchText){
+      fetchData()
+    }
   },[page,searchText])
 
   console.log("page",page)
@@ -66,7 +73,11 @@ const SearchPage = () => {
   return (
     <section className='bg-white'>
       <div className='container mx-auto p-4'>
-        <p className='font-semibold'>Search Results: {data.length}  </p>
+        {searchText ? (
+          <p className='font-semibold'>Search Results for "{searchText}": {data.length} items found</p>
+        ) : (
+          <p className='font-semibold'>Enter a search term to find products</p>
+        )}
 
         <InfiniteScroll
               dataLength={data.length}
@@ -97,13 +108,13 @@ const SearchPage = () => {
 
               {
                 //no data 
-                !data[0] && !loading && (
+                !data[0] && !loading && searchText && (
                   <div className='flex flex-col justify-center items-center w-full mx-auto'>
                     <img
                       src={noDataImage} 
                       className='w-full h-full max-w-xs max-h-xs block'
                     />
-                    <p className='font-semibold my-2'>No Data found</p>
+                    <p className='font-semibold my-2'>No products found for "{searchText}"</p>
                   </div>
                 )
               }
