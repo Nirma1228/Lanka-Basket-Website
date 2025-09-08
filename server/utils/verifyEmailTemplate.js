@@ -1,4 +1,4 @@
-const verifyEmailTemplate = ({name,url})=>{
+const verifyEmailTemplate = ({name,otp})=>{
     return`
     <!DOCTYPE html>
     <html lang="en">
@@ -18,42 +18,38 @@ const verifyEmailTemplate = ({name,url})=>{
             
             <p style="color: #555; margin-bottom: 20px;">
                 Thank you for registering with Lanka Basket. To complete your registration and start shopping for fresh groceries, 
-                please verify your email address by clicking the button below.
+                please verify your email address using the OTP code below.
             </p>
             
             <div style="text-align: center; margin: 30px 0;">
-                <a href="${url}" style="
-                    background-color: #ffbf00;
+                <div style="
+                    background: linear-gradient(135deg, #ffbf00, #ff8800);
                     color: white;
-                    padding: 15px 30px;
-                    text-decoration: none;
-                    border-radius: 5px;
+                    padding: 20px 40px;
+                    border-radius: 10px;
+                    font-size: 32px;
                     font-weight: bold;
+                    letter-spacing: 8px;
                     display: inline-block;
                     margin: 10px 0;
-                    text-transform: uppercase;
-                    letter-spacing: 1px;
+                    box-shadow: 0 4px 15px rgba(255, 191, 0, 0.3);
                 ">
-                    Verify Email Address
-                </a>
+                    ${otp}
+                </div>
+                <p style="color: #666; font-size: 14px; margin-top: 15px;">
+                    Enter this 6-digit code on the verification page to activate your account.
+                </p>
             </div>
-            
-            <p style="color: #777; font-size: 14px; margin-top: 30px;">
-                If you can't click the button above, copy and paste this link into your browser:
-            </p>
-            <p style="background-color: #f8f8f8; padding: 10px; border-radius: 5px; word-break: break-all; font-size: 12px; color: #666;">
-                ${url}
-            </p>
             
             <div style="border-top: 1px solid #eee; margin-top: 30px; padding-top: 20px;">
                 <p style="color: #777; font-size: 12px; margin: 0;">
-                    <strong>Note:</strong> This verification link will expire in 24 hours for security reasons.
+                    <strong>Note:</strong> This verification code will expire in 15 minutes for security reasons.
                 </p>
                 <p style="color: #777; font-size: 12px; margin: 10px 0 0 0;">
                     If you didn't create an account with Lanka Basket, please ignore this email.
                 </p>
             </div>
-            
+
             <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
                 <p style="color: #999; font-size: 12px; margin: 0;">
                     © Lanka Basket - Your trusted grocery partner
