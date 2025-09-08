@@ -37,7 +37,7 @@ const Address = () => {
   }
   return (
     <div className=''>
-        <div className='bg-white shadow-lg px-2 py-2 flex justify-between gap-4 items-center '>
+        <div className='bg-white shadow-lg px-2 py-2 flex justify-between gap-4 items-center'>
             <h2 className='font-semibold text-ellipsis line-clamp-1'>Address</h2>
             <button onClick={()=>setOpenAddress(true)} className='border border-primary-200 text-primary-200 px-3 hover:bg-primary-200 hover:text-black py-1 rounded-full'>
                 Add Address
@@ -55,11 +55,11 @@ const Address = () => {
                             <p>{address.country} - {address.pincode}</p>
                             <p>{address.mobile}</p>
                           </div>
-                          <div className=' grid gap-10'>
+                          <div className='grid gap-10'>
                             <button onClick={()=>{
                               setOpenEdit(true)
                               setEditData(address)
-                            }} className='bg-green-200 p-1 rounded  hover:text-white hover:bg-green-600'>
+                            }} className='bg-green-200 p-1 rounded hover:text-white hover:bg-green-600'>
                               <MdEdit/>
                             </button>
                             <button onClick={()=>

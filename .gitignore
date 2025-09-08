@@ -1,1 +1,77 @@
+# Environment files - NEVER commit these!
 *.env
+.env
+.env.local
+.env.development
+.env.production
+.env.staging
+.env.test
+.env.*.local
+
+# Security logs and sensitive data
+server/logs/
+*.log
+logs/
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cert
+ssl/
+certs/
+secrets/
+keys/
+certificates/
+
+# Database files
+*.sql
+*.dump
+*.backup
+
+# Node modules
+node_modules/
+*/node_modules/
+
+# Build outputs
+dist/
+build/
+.next/
+.nuxt/
+.vite/
+out/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+ehthumbs.db
+Icon?
+Thumbs.db
+
+# Cache and temporary files
+.cache/
+*.tmp
+*.temp
+.parcel-cache/
+.npm/
+.yarn/
+yarn-error.log
+npm-debug.log*
+
+# Coverage and testing
+coverage/
+.coverage/
+*.lcov
+.nyc_output/
+
+# Backup files
+*.bak
+*.backup
+*~

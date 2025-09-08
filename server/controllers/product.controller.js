@@ -276,11 +276,36 @@ export const searchProduct = async(request,response)=>{
             limit  = 10
         }
 
-        const query = search ? {
-            $text : {
-                $search : search
+        let query = {}
+        
+        if(search && search.trim().length > 0){
+            const searchTerm = search.trim()
+            
+            // Enhanced regex search with word boundary and partial matching
+            const regexOptions = {
+                $regex: searchTerm,
+                $options: 'i' // case insensitive
             }
-        } : {}
+            
+            // Also search for individual words in the search term
+            const words = searchTerm.split(/\s+/).filter(word => word.length > 0)
+            const wordQueries = words.map(word => ({
+                $or: [
+                    { name: { $regex: word, $options: 'i' } },
+                    { description: { $regex: word, $options: 'i' } }
+                ]
+            }))
+            
+            query = {
+                $or: [
+                    // Exact phrase match (higher priority)
+                    { name: regexOptions },
+                    { description: regexOptions },
+                    // Individual word matches
+                    ...wordQueries
+                ]
+            }
+        }
 
         const skip = ( page - 1) * limit
 
@@ -306,6 +331,135 @@ export const searchProduct = async(request,response)=>{
             message : error.message || error,
             error : true,
             success : false
+        })
+    }
+}
+
+// Bulk stock update
+export const bulkUpdateStock = async(request, response) => {
+    try {
+        const { updates } = request.body // Array of {productId, stock}
+        
+        if (!updates || !Array.isArray(updates)) {
+            return response.status(400).json({
+                message: "Updates array is required",
+                error: true,
+                success: false
+            })
+        }
+
+        const bulkOperations = updates.map(update => ({
+            updateOne: {
+                filter: { _id: update.productId },
+                update: { stock: parseInt(update.stock) }
+            }
+        }))
+
+        const result = await ProductModel.bulkWrite(bulkOperations)
+
+        return response.json({
+            message: "Bulk stock update completed",
+            data: result,
+            error: false,
+            success: true
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
+
+// Get low stock products
+export const getLowStockProducts = async(request, response) => {
+    try {
+        const { threshold = 10 } = request.body
+        
+        const lowStockProducts = await ProductModel.find({
+            stock: { $lte: threshold, $gt: 0 }
+        }).populate('category').populate('subCategory')
+
+        const outOfStockProducts = await ProductModel.find({
+            stock: 0
+        }).populate('category').populate('subCategory')
+
+        return response.json({
+            message: "Low stock products retrieved",
+            data: {
+                lowStock: lowStockProducts,
+                outOfStock: outOfStockProducts,
+                threshold: threshold
+            },
+            error: false,
+            success: true
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
+
+// Get stock analytics
+export const getStockAnalytics = async(request, response) => {
+    try {
+        const totalProducts = await ProductModel.countDocuments()
+        
+        const stockAnalytics = await ProductModel.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalStock: { $sum: "$stock" },
+                    averageStock: { $avg: "$stock" },
+                    minStock: { $min: "$stock" },
+                    maxStock: { $max: "$stock" }
+                }
+            }
+        ])
+
+        const lowStockCount = await ProductModel.countDocuments({
+            stock: { $lte: 10, $gt: 0 }
+        })
+
+        const outOfStockCount = await ProductModel.countDocuments({
+            stock: 0
+        })
+
+        const inStockCount = await ProductModel.countDocuments({
+            stock: { $gt: 10 }
+        })
+
+        return response.json({
+            message: "Stock analytics retrieved",
+            data: {
+                totalProducts,
+                stockSummary: stockAnalytics[0] || {
+                    totalStock: 0,
+                    averageStock: 0,
+                    minStock: 0,
+                    maxStock: 0
+                },
+                stockDistribution: {
+                    inStock: inStockCount,
+                    lowStock: lowStockCount,
+                    outOfStock: outOfStockCount
+                }
+            },
+            error: false,
+            success: true
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
         })
     }
 }
