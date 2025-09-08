@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - lankabasket
+name: Build and deploy Node.js app to Azure Web App - Lanka-Basket-Backend
 
 on:
   push:
@@ -51,15 +51,15 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_1926565E85114796ABADA586FD35C401 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_60C0AD36999F46F0A8048FC7E659CA00 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_BB55EE813E4A4F90A2AE8A7878C24412 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_4FDC99A9CE7D419684E98454494E82CD }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_C034DE0DD4D845779B0F3BD28EFD6D18 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_FC4294C2479B41A8A8264FFBAA08AE13 }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'lankabasket'
+          app-name: 'Lanka-Basket-Backend'
           slot-name: 'Production'
           package: .
           

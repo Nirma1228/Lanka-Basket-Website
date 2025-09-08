@@ -31,21 +31,15 @@ import orderRouter from './route/order.route.js'
 // import { securityMonitoring, bruteForceProtection } from './middleware/securityLogging.js'
 // import { sessionSecurity } from './middleware/sessionSecurity.js'
 
-const app = express()
-const frontendUrl = process.env.FRONTEND_URL || 'https://lively-river-02e6bc000.1.azurestaticapps.net';
+const app = express();
 
-// Basic security middlewares (simplified for now)
-// Security middlewares temporarily disabled for debugging
-// app.use(validateHttpMethods) // Validate HTTP methods first
-// app.use(requestSizeLimit) // Limit request size
-// app.use(validateOrigin) // Validate request origin
-// app.use(validateUserAgent) // Check user agent
-// app.use(securityHeaders) // Set security headers
+const frontendUrl = process.env.FRONTEND_URL || 'https://icy-ocean-0c506f900.2.azurestaticapps.netz';
 
 app.use(helmet({
     crossOriginResourcePolicy: false,
     contentSecurityPolicy: false // We're handling CSP in securityHeaders
-}))
+}));
+
 
 // Rate limiting - temporarily disabled
 // app.use(generalRateLimit)
@@ -55,6 +49,7 @@ app.use(helmet({
 // app.use(securityMonitoring)
 
 // CORS configuration
+
 app.use(cors({
     credentials: true,
     origin: frontendUrl,
