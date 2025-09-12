@@ -29,6 +29,7 @@ import VerifyEmail from "../pages/VerifyEmail";
 import TrackOrder from "../pages/TrackOrder";
 import Help from "../pages/Help";
 import StockManagement from "../pages/StockManagement";
+import WishlistPage from "../pages/WishlistPage";
 
 const router = createBrowserRouter([
     {
@@ -78,6 +79,10 @@ const router = createBrowserRouter([
             {
                 path : "help",
                 element : <Help/>
+            },
+            {
+                path : "wishlist",
+                element : <WishlistPage/>
             },
             {
                 path : "dashboard",

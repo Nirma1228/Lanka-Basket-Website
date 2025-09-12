@@ -2,6 +2,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import './App.css'
 import Header from './components/Header'
 import Footer from './components/Footer'
+import StockNotificationSystem from './components/StockNotificationSystem'
 import { Toaster } from 'react-hot-toast';
 import { useEffect, useCallback } from 'react';
 import fetchUserDetails from './utils/fetchUserDetails';
@@ -73,6 +74,7 @@ function App() {
       </main>
       <Footer/>
       <Toaster/>
+      <StockNotificationSystem/>
       {
         location.pathname !== '/checkout' && (
           <CartMobileLink/>

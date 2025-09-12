@@ -214,6 +214,27 @@ const SummaryApi = {
     getUserSecurityStatus: {
         url: '/api/user/admin/security-status',
         method: 'get'
+    },
+    // Wishlist operations
+    addToWishlist: {
+        url: '/api/wishlist/add',
+        method: 'post'
+    },
+    getWishlist: {
+        url: '/api/wishlist/get',
+        method: 'get'
+    },
+    removeFromWishlist: {
+        url: '/api/wishlist/remove',
+        method: 'delete'
+    },
+    clearWishlist: {
+        url: '/api/wishlist/clear',
+        method: 'delete'
+    },
+    checkWishlistStockStatus: {
+        url: '/api/wishlist/check-stock',
+        method: 'post'
     }
 }
 

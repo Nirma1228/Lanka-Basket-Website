@@ -10,6 +10,7 @@ import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import useMobile from '../hooks/useMobile';
 import { useSelector } from 'react-redux';
 import UserMenu from './UserMenu';
+import WishlistIcon from './WishlistIcon';
 import { DisplayPriceInRupees } from '../utils/DisplayPriceInRupees';
 import { useGlobalContext } from '../provider/GlobalProvider';
 import DisplayCartItem from './DisplayCartItem';
@@ -63,88 +64,87 @@ const Header = () => {
 
     return (
         <>
-            {/* Main Header */}
+            {/* Compact Modern Header */}
             <header className={`sticky top-0 z-50 bg-white transition-all duration-300 ${
-                isScrolled ? 'shadow-lg backdrop-blur-md bg-white/95' : 'shadow-sm'
+                isScrolled ? 'shadow-lg backdrop-blur-md bg-white/98 border-b border-gray-200/50' : 'shadow-md'
             }`}>
                 
                 {/* Desktop Header */}
                 <div className="hidden lg:block">
-                    <div className="container mx-auto px-4">
-                        {/* Top Bar */}
+                    <div className="container mx-auto px-4 lg:px-6">
+                        {/* Compact Top Bar */}
                         <div className="flex items-center justify-between py-2 border-b border-gray-100">
-                            <div className="flex items-center space-x-4 text-sm text-gray-600">
-                                <span>📞 +94 11 123 4567</span>
-                                <span>✉️ hello@lankabasket.com</span>
+                            <div className="flex items-center space-x-4 text-sm">
+                                <div className="flex items-center gap-2 text-gray-600 hover:text-red-500 transition-colors cursor-pointer">
+                                    <div className="w-1.5 h-1.5 bg-yellow-500 rounded-full"></div>
+                                    <span>📞 +94 11 123 4567</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-gray-600 hover:text-yellow-600 transition-colors cursor-pointer">
+                                    <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+                                    <span>✉️ hello@lankabasket.com</span>
+                                </div>
                             </div>
                             <div className="flex items-center space-x-4 text-sm">
-                                <Link to="/track-order" className="text-gray-600 hover:text-green-600 transition-colors">
+                                <Link to="/track-order" className="text-gray-600 hover:text-red-600 transition-colors font-medium">
                                     Track Order
                                 </Link>
-                                <Link to="/help" className="text-gray-600 hover:text-green-600 transition-colors">
+                                <Link to="/help" className="text-gray-600 hover:text-yellow-600 transition-colors font-medium">
                                     Help & Support
                                 </Link>
                             </div>
                         </div>
 
-                        {/* Main Navigation */}
-                        <div className="flex items-center justify-between py-4">
-                            {/* Logo */}
-                            <Link to="/" className="flex items-center">
+                        {/* Compact Main Navigation */}
+                        <div className="flex items-center justify-between py-3">
+                            {/* Compact Logo */}
+                            <Link to="/" className="flex items-center hover:scale-105 transition-transform duration-300">
                                 <img 
                                     src={logo}
-                                    width={180}
-                                    height={65}
+                                    width={160}
+                                    height={55}
                                     alt="Lanka Basket"
-                                    className="h-12 w-auto"
+                                    className="h-10 w-auto"
                                 />
                             </Link>
 
-                            {/* Search Bar */}
-                            <div className="flex-1 max-w-2xl mx-8">
+                            {/* Compact Search Bar */}
+                            <div className="flex-1 max-w-2xl mx-6">
                                 <Search />
                             </div>
 
-                            {/* Right Side Actions */}
-                            <div className="flex items-center space-x-6">
+                            {/* Compact Right Side Actions */}
+                            <div className="flex items-center space-x-3">
                                 
-                                {/* Wishlist */}
-                                <button className="relative p-2 text-gray-700 hover:text-red-500 transition-colors">
-                                    <FaHeart size={20} />
-                                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                        0
-                                    </span>
-                                </button>
+                    
 
-                                {/* Notifications */}
-                                <button className="relative p-2 text-gray-700 hover:text-blue-500 transition-colors">
-                                    <IoNotificationsOutline size={22} />
-                                    <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                {/* Compact Notifications */}
+                                <button className="relative p-2 text-gray-700 hover:text-yellow-600 transition-colors rounded-lg hover:bg-yellow-50">
+                                    <IoNotificationsOutline size={20} />
+                                    <span className="absolute -top-1 -right-1 bg-gradient-to-r from-yellow-500 to-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                                         3
                                     </span>
                                 </button>
 
-                                {/* User Account */}
+                                {/* Compact User Account */}
                                 {user?._id ? (
                                     <div className="relative">
                                         <button
                                             onClick={() => setOpenUserMenu(!openUserMenu)}
                                             className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50 transition-colors"
                                         >
-                                            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                            <div className="w-8 h-8 bg-gradient-to-r from-yellow-100 to-red-100 rounded-full flex items-center justify-center">
                                                 {user.avatar ? (
                                                     <img src={user.avatar} alt="User" className="w-8 h-8 rounded-full" />
                                                 ) : (
-                                                    <FaRegCircleUser className="text-green-600" />
+                                                    <FaRegCircleUser className="text-red-600" />
                                                 )}
                                             </div>
                                             <div className="text-left">
-                                                <p className="text-sm font-medium text-gray-900">
+                                                <p className="text-sm font-semibold text-gray-900">
                                                     {user.name?.split(' ')[0] || 'User'}
                                                 </p>
-                                                <p className="text-xs text-gray-500">Account</p>
                                             </div>
-                                            {openUserMenu ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
+                                            {openUserMenu ? <MdKeyboardArrowUp size={16} /> : <MdKeyboardArrowDown size={16} />}
                                         </button>
 
                                         {/* User Dropdown Menu */}
@@ -154,7 +154,7 @@ const Header = () => {
                                                     className="fixed inset-0 z-40" 
                                                     onClick={() => setOpenUserMenu(false)}
                                                 />
-                                                <div className="absolute right-0 top-14 z-50 w-64 bg-white rounded-xl shadow-lg border border-gray-200 py-2">
+                                                <div className="absolute right-0 top-12 z-50 w-64 bg-white rounded-xl shadow-xl border border-gray-200 py-2">
                                                     <UserMenu close={handleCloseUserMenu} />
                                                 </div>
                                             </>
@@ -163,22 +163,25 @@ const Header = () => {
                                 ) : (
                                     <button
                                         onClick={redirectToLoginPage}
-                                        className="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors"
+                                        className="flex items-center space-x-2 bg-gradient-to-r from-yellow-500 to-red-500 hover:from-yellow-600 hover:to-red-600 text-white px-4 py-2 rounded-lg transition-all duration-300 font-semibold"
                                     >
-                                        <FaRegCircleUser />
+                                        <FaRegCircleUser size={16} />
                                         <span>Sign In</span>
                                     </button>
                                 )}
 
-                                {/* Shopping Cart */}
+                                {/* Wishlist Icon */}
+                                <WishlistIcon />
+
+                                {/* Compact Shopping Cart */}
                                 <button
                                     onClick={() => setOpenCartSection(true)}
-                                    className="relative flex items-center space-x-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-4 py-3 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg"
+                                    className="flex items-center space-x-2 bg-gradient-to-r from-yellow-600 to-red-500 hover:from-yellow-700 hover:to-red-600 text-white px-4 py-2 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg"
                                 >
                                     <div className="relative">
-                                        <HiOutlineShoppingBag size={24} />
+                                        <HiOutlineShoppingBag size={20} />
                                         {totalQty > 0 && (
-                                            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+                                            <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                                                 {totalQty}
                                             </span>
                                         )}
@@ -187,10 +190,10 @@ const Header = () => {
                                         {cartItem.length > 0 ? (
                                             <>
                                                 <p className="text-xs opacity-90">{totalQty} Items</p>
-                                                <p className="font-semibold">{DisplayPriceInRupees(totalPrice)}</p>
+                                                <p className="font-semibold text-sm">{DisplayPriceInRupees(totalPrice)}</p>
                                             </>
                                         ) : (
-                                            <p className="font-semibold">My Cart</p>
+                                            <p className="font-semibold text-sm">Cart</p>
                                         )}
                                     </div>
                                 </button>
@@ -199,129 +202,154 @@ const Header = () => {
                     </div>
                 </div>
 
-                {/* Mobile Header */}
+                {/* Compact Mobile Header */}
                 <div className="lg:hidden">
-                    <div className="flex items-center justify-between p-4">
-                        {/* Mobile Menu Button */}
+                    <div className="flex items-center justify-between p-3">
+                        {/* Compact Mobile Menu Button */}
                         <button
                             onClick={toggleMobileMenu}
-                            className="p-2 text-gray-700 hover:text-green-600 transition-colors"
+                            className="p-2 text-gray-700 hover:text-red-600 transition-colors rounded-lg hover:bg-red-50"
                         >
-                            {openMobileMenu ? <FaTimes size={24} /> : <FaBars size={24} />}
+                            {openMobileMenu ? <FaTimes size={20} /> : <FaBars size={20} />}
                         </button>
 
-                        {/* Mobile Logo */}
+                        {/* Compact Mobile Logo */}
                         <Link to="/" className="flex items-center">
                             <img 
                                 src={logo}
                                 width={120}
                                 height={50}
                                 alt="Lanka Basket"
-                                className="h-8 w-auto"
+                                className="h-7 w-auto"
                             />
                         </Link>
 
-                        {/* Mobile Actions */}
-                        <div className="flex items-center space-x-2">
+                        {/* Compact Mobile Actions */}
+                        <div className="flex items-center space-x-1">
                             {/* Mobile Search Toggle */}
                             <button
                                 onClick={toggleMobileSearch}
-                                className="p-2 text-gray-700 hover:text-green-600 transition-colors"
+                                className="p-2 text-gray-700 hover:text-yellow-600 transition-colors rounded-lg hover:bg-yellow-50"
                             >
-                                <IoSearchOutline size={24} />
+                                <IoSearchOutline size={20} />
                             </button>
+
+                            {/* Mobile Wishlist */}
+                            <div className="flex items-center">
+                                <WishlistIcon />
+                            </div>
 
                             {/* Mobile Cart */}
                             <button
                                 onClick={() => setOpenCartSection(true)}
-                                className="relative p-2 text-gray-700 hover:text-green-600 transition-colors"
+                                className="relative p-2 text-gray-700 hover:text-red-600 transition-colors rounded-lg hover:bg-red-50"
                             >
-                                <HiOutlineShoppingBag size={24} />
+                                <HiOutlineShoppingBag size={20} />
                                 {totalQty > 0 && (
-                                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                                         {totalQty}
                                     </span>
                                 )}
                             </button>
 
                             {/* Mobile User */}
-                            <button onClick={handleMobileUser} className="p-2 text-gray-700 hover:text-green-600 transition-colors">
-                                <FaRegCircleUser size={22} />
+                            <button 
+                                onClick={handleMobileUser} 
+                                className="relative p-2 text-gray-700 hover:text-yellow-600 transition-colors rounded-lg hover:bg-yellow-50"
+                            >
+                                <FaRegCircleUser size={18} />
+                                {user?._id && (
+                                    <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 border border-white rounded-full"></div>
+                                )}
                             </button>
                         </div>
                     </div>
 
-                    {/* Mobile Search Bar */}
+                    {/* Compact Mobile Search Bar */}
                     {(openMobileSearch || isSearchPage) && (
-                        <div className="px-4 pb-4 border-t border-gray-100">
+                        <div className="px-3 pb-3 border-t border-gray-100">
                             <Search />
                         </div>
                     )}
                 </div>
 
-                {/* Mobile Menu Overlay */}
+                {/* Compact Mobile Menu Overlay */}
                 {openMobileMenu && (
                     <>
                         <div 
                             className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
                             onClick={() => setOpenMobileMenu(false)}
                         />
-                        <div className="fixed top-0 left-0 z-50 w-80 h-full bg-white shadow-xl transform transition-transform lg:hidden">
+                        <div className="fixed top-0 left-0 z-50 w-72 h-full bg-white shadow-xl transform transition-transform lg:hidden">
+                            {/* Compact Mobile Menu Header */}
                             <div className="flex items-center justify-between p-4 border-b border-gray-200">
-                                <img src={logo} alt="Lanka Basket" className="h-8 w-auto" />
+                                <img src={logo} alt="Lanka Basket" className="h-7 w-auto" />
                                 <button
                                     onClick={() => setOpenMobileMenu(false)}
-                                    className="p-2 text-gray-500 hover:text-gray-700"
+                                    className="p-2 text-gray-500 hover:text-red-600 transition-colors rounded-lg"
                                 >
-                                    <FaTimes size={20} />
+                                    <FaTimes size={18} />
                                 </button>
                             </div>
                             
+                            {/* Compact Mobile Menu Content */}
                             <div className="p-4">
-                                <nav className="space-y-4">
-                                    <Link
-                                        to="/"
-                                        className="block py-2 text-gray-700 hover:text-green-600 transition-colors"
-                                        onClick={() => setOpenMobileMenu(false)}
-                                    >
-                                        Home
-                                    </Link>
-                                    <Link
-                                        to="/categories"
-                                        className="block py-2 text-gray-700 hover:text-green-600 transition-colors"
-                                        onClick={() => setOpenMobileMenu(false)}
-                                    >
-                                        Categories
-                                    </Link>
-                                    <Link
-                                        to="/offers"
-                                        className="block py-2 text-gray-700 hover:text-green-600 transition-colors"
-                                        onClick={() => setOpenMobileMenu(false)}
-                                    >
-                                        Offers
-                                    </Link>
-                                    <Link
-                                        to="/track-order"
-                                        className="block py-2 text-gray-700 hover:text-green-600 transition-colors"
-                                        onClick={() => setOpenMobileMenu(false)}
-                                    >
-                                        Track Order
-                                    </Link>
-                                    <Link
-                                        to="/help"
-                                        className="block py-2 text-gray-700 hover:text-green-600 transition-colors"
-                                        onClick={() => setOpenMobileMenu(false)}
-                                    >
-                                        Help & Support
-                                    </Link>
+                                <nav className="space-y-1">
+                                    {[
+                                        { to: "/", label: "Home", icon: "🏠" },
+                                        { to: "/categories", label: "Categories", icon: "📦" },
+                                        { to: "/offers", label: "Offers", icon: "🎁" },
+                                        { to: "/track-order", label: "Track Order", icon: "📍" },
+                                        { to: "/help", label: "Help & Support", icon: "💬" }
+                                    ].map((item, index) => (
+                                        <Link
+                                            key={index}
+                                            to={item.to}
+                                            className="flex items-center gap-3 py-3 px-3 text-gray-700 hover:text-red-600 transition-colors rounded-lg hover:bg-gray-50"
+                                            onClick={() => setOpenMobileMenu(false)}
+                                        >
+                                            <span className="text-lg">{item.icon}</span>
+                                            <span className="font-medium">{item.label}</span>
+                                        </Link>
+                                    ))}
                                 </nav>
 
-                                {/* Mobile Contact Info */}
-                                <div className="mt-8 pt-4 border-t border-gray-200">
+                                {/* Compact Mobile Contact Info */}
+                                <div className="mt-6 pt-4 border-t border-gray-200">
                                     <h4 className="font-semibold text-gray-900 mb-3">Contact Us</h4>
-                                    <p className="text-sm text-gray-600 mb-2">📞 +94 11 123 4567</p>
-                                    <p className="text-sm text-gray-600">✉️ hello@lankabasket.com</p>
+                                    <div className="space-y-2 text-sm">
+                                        <div className="flex items-center gap-2 text-gray-600">
+                                            <div className="w-1.5 h-1.5 bg-yellow-500 rounded-full"></div>
+                                            <span>📞 +94 11 123 4567</span>
+                                        </div>
+                                        <div className="flex items-center gap-2 text-gray-600">
+                                            <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+                                            <span>✉️ hello@lankabasket.com</span>
+                                        </div>
+                                    </div>
                                 </div>
+
+                                {/* Compact Mobile User Section */}
+                                {user?._id && (
+                                    <div className="mt-6 pt-4 border-t border-gray-200">
+                                        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                                            <div className="relative">
+                                                <div className="w-10 h-10 bg-gradient-to-r from-yellow-100 to-red-100 rounded-full flex items-center justify-center">
+                                                    {user.avatar ? (
+                                                        <img src={user.avatar} alt="User" className="w-10 h-10 rounded-full" />
+                                                    ) : (
+                                                        <FaRegCircleUser className="text-red-600" />
+                                                    )}
+                                                </div>
+                                                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                                            </div>
+                                            <div>
+                                                <p className="font-semibold text-gray-900">{user.name || 'User'}</p>
+                                                <p className="text-sm text-gray-600">Welcome back!</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </>
