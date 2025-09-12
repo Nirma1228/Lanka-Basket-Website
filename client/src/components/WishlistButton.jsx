@@ -44,24 +44,38 @@ const WishlistButton = ({
         try {
             if (isInWishlist) {
                 // Remove from wishlist
-                await Axios({
-                    ...SummaryApi.removeFromWishlist,
-                    data: { productId: product._id }
-                })
+                try {
+                    // Try backend API first
+                    await Axios({
+                        ...SummaryApi.removeFromWishlist,
+                        data: { productId: product._id }
+                    })
+                } catch (apiError) {
+                    // If backend fails, continue with local storage as fallback
+                    console.warn('Backend wishlist API not available, using localStorage fallback')
+                }
+                
                 dispatch(removeFromWishlist(product._id))
                 toast.success(`${product.name} removed from wishlist`)
             } else {
                 // Add to wishlist
-                await Axios({
-                    ...SummaryApi.addToWishlist,
-                    data: { 
-                        productId: product._id,
-                        name: product.name,
-                        price: product.price,
-                        image: product.image,
-                        stock: product.stock || 0
-                    }
-                })
+                try {
+                    // Try backend API first
+                    await Axios({
+                        ...SummaryApi.addToWishlist,
+                        data: { 
+                            productId: product._id,
+                            name: product.name,
+                            price: product.price,
+                            image: product.image,
+                            stock: product.stock || 0
+                        }
+                    })
+                } catch (apiError) {
+                    // If backend fails, continue with local storage as fallback
+                    console.warn('Backend wishlist API not available, using localStorage fallback')
+                }
+                
                 dispatch(addToWishlist({
                     _id: product._id,
                     name: product.name,

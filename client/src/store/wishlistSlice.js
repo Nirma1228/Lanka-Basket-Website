@@ -1,11 +1,48 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+// Helper functions for localStorage
+const loadWishlistFromStorage = () => {
+    try {
+        const saved = localStorage.getItem('lanka-basket-wishlist')
+        return saved ? JSON.parse(saved) : []
+    } catch (error) {
+        console.error('Error loading wishlist from localStorage:', error)
+        return []
+    }
+}
+
+const saveWishlistToStorage = (wishlistItems) => {
+    try {
+        localStorage.setItem('lanka-basket-wishlist', JSON.stringify(wishlistItems))
+    } catch (error) {
+        console.error('Error saving wishlist to localStorage:', error)
+    }
+}
+
+const loadNotificationsFromStorage = () => {
+    try {
+        const saved = localStorage.getItem('lanka-basket-wishlist-alerts')
+        return saved ? JSON.parse(saved) : []
+    } catch (error) {
+        console.error('Error loading notifications from localStorage:', error)
+        return []
+    }
+}
+
+const saveNotificationsToStorage = (notifications) => {
+    try {
+        localStorage.setItem('lanka-basket-wishlist-alerts', JSON.stringify(notifications))
+    } catch (error) {
+        console.error('Error saving notifications to localStorage:', error)
+    }
+}
+
 const initialState = {
-    wishlistItems: [],
+    wishlistItems: loadWishlistFromStorage(),
     loading: false,
     error: null,
     notifications: [],
-    stockAlerts: []
+    stockAlerts: loadNotificationsFromStorage()
 }
 
 const wishlistSlice = createSlice({
@@ -33,6 +70,9 @@ const wishlistSlice = createSlice({
                     lastStockCheck: new Date().toISOString()
                 })
                 
+                // Save to localStorage
+                saveWishlistToStorage(state.wishlistItems)
+                
                 // Add success notification
                 state.notifications.push({
                     id: Date.now(),
@@ -48,6 +88,9 @@ const wishlistSlice = createSlice({
             
             state.wishlistItems = state.wishlistItems.filter(item => item._id !== productId)
             
+            // Save to localStorage
+            saveWishlistToStorage(state.wishlistItems)
+            
             if (removedItem) {
                 state.notifications.push({
                     id: Date.now(),
@@ -59,6 +102,9 @@ const wishlistSlice = createSlice({
         },
         clearWishlist: (state) => {
             state.wishlistItems = []
+            // Save to localStorage
+            saveWishlistToStorage([])
+            
             state.notifications.push({
                 id: Date.now(),
                 type: 'info',

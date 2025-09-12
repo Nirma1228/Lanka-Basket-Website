@@ -115,13 +115,7 @@ const Header = () => {
                             {/* Compact Right Side Actions */}
                             <div className="flex items-center space-x-3">
                                 
-                                {/* Compact Wishlist */}
-                                <button className="relative p-2 text-gray-700 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50">
-                                    <FaHeart size={18} />
-                                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                                        0
-                                    </span>
-                                </button>
+                    
 
                                 {/* Compact Notifications */}
                                 <button className="relative p-2 text-gray-700 hover:text-yellow-600 transition-colors rounded-lg hover:bg-yellow-50">
