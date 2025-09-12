@@ -10,6 +10,7 @@ import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import useMobile from '../hooks/useMobile';
 import { useSelector } from 'react-redux';
 import UserMenu from './UserMenu';
+import WishlistIcon from './WishlistIcon';
 import { DisplayPriceInRupees } from '../utils/DisplayPriceInRupees';
 import { useGlobalContext } from '../provider/GlobalProvider';
 import DisplayCartItem from './DisplayCartItem';
@@ -175,6 +176,9 @@ const Header = () => {
                                     </button>
                                 )}
 
+                                {/* Wishlist Icon */}
+                                <WishlistIcon />
+
                                 {/* Compact Shopping Cart */}
                                 <button
                                     onClick={() => setOpenCartSection(true)}
@@ -235,6 +239,11 @@ const Header = () => {
                             >
                                 <IoSearchOutline size={20} />
                             </button>
+
+                            {/* Mobile Wishlist */}
+                            <div className="flex items-center">
+                                <WishlistIcon />
+                            </div>
 
                             {/* Mobile Cart */}
                             <button

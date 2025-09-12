@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { valideURLConvert } from '../utils/valideURLConvert'
 import { pricewithDiscount } from '../utils/PriceWithDiscount'
 import AddToCartButton from './AddToCartButton'
+import WishlistButton from './WishlistButton'
 import { FaFire, FaStar } from "react-icons/fa"
 import { MdLocalOffer } from "react-icons/md"
 
@@ -17,6 +18,11 @@ const CardProduct = ({data}) => {
             to={url} 
             className='group relative bg-white rounded-2xl shadow-md hover:shadow-2xl border border-gray-100 hover:border-green-200 overflow-hidden transform hover:scale-105 transition-all duration-300 hover-lift min-w-72'
         >
+            {/* Wishlist Button */}
+            <div className='absolute top-3 right-3 z-10'>
+                <WishlistButton product={data} size="sm" />
+            </div>
+            
             {/* Discount Badge */}
             {hasDiscount && (
                 <div className='absolute top-3 left-3 z-10 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 animate-pulse'>
