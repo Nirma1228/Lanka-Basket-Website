@@ -11,11 +11,13 @@ import UserMenuMobile from "../pages/UserMenuMobile";
 import Dashboard from "../layouts/Dashboard";
 import Profile from "../pages/Profile";
 import MyOrders from "../pages/MyOrders";
+import AdminOrders from "../pages/AdminOrders";
 import Address from "../pages/Address";
 import CategoryPage from "../pages/CategoryPage";
 import SubCategoryPage from "../pages/SubCategoryPage";
 import UploadProduct from "../pages/UploadProduct";
 import ProductAdmin from "../pages/ProductAdmin";
+import UserManagement from "../pages/UserManagement";
 import AdminPermision from "../layouts/AdminPermision";
 import ProductListPage from "../pages/ProductListPage";
 import ProductDisplayPage from "../pages/ProductDisplayPage";
@@ -24,6 +26,10 @@ import CheckoutPage from "../pages/CheckoutPage";
 import Success from "../pages/Success";
 import Cancel from "../pages/Cancel";
 import VerifyEmail from "../pages/VerifyEmail";
+import TrackOrder from "../pages/TrackOrder";
+import Help from "../pages/Help";
+import StockManagement from "../pages/StockManagement";
+import WishlistPage from "../pages/WishlistPage";
 
 const router = createBrowserRouter([
     {
@@ -67,6 +73,18 @@ const router = createBrowserRouter([
                 element : <UserMenuMobile/>
             },
             {
+                path : "track-order",
+                element : <TrackOrder/>
+            },
+            {
+                path : "help",
+                element : <Help/>
+            },
+            {
+                path : "wishlist",
+                element : <WishlistPage/>
+            },
+            {
                 path : "dashboard",
                 element : <Dashboard/>,
                 children : [
@@ -77,6 +95,10 @@ const router = createBrowserRouter([
                     {
                         path : "myorders",
                         element : <MyOrders/>
+                    },
+                    {
+                        path : "orders",
+                        element : <AdminPermision><AdminOrders/></AdminPermision>
                     },
                     {
                         path : "address",
@@ -97,6 +119,14 @@ const router = createBrowserRouter([
                     {
                         path : 'product',
                         element : <AdminPermision><ProductAdmin/></AdminPermision>
+                    },
+                    {
+                        path : 'user-management',
+                        element : <AdminPermision><UserManagement/></AdminPermision>
+                    },
+                    {
+                        path : 'stock-management',
+                        element : <AdminPermision><StockManagement/></AdminPermision>
                     }
                 ]
             },

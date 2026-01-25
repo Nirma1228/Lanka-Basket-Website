@@ -1,7 +1,9 @@
 import React from 'react'
 import UserMenu from '../components/UserMenu'
+import StockAlert from '../components/StockAlert'
 import { Outlet } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import isAdmin from '../utils/isAdmin'
 
 const Dashboard = () => {
 
@@ -10,7 +12,7 @@ const Dashboard = () => {
   console.log("user dashboard",user)
   return (
     <section className='bg-white'>
-        <div className='container mx-auto p-3 grid lg:grid-cols-[250px,1fr]  '>
+        <div className='container mx-auto p-3 grid lg:grid-cols-[250px,1fr]'>
                 {/**left for menu */}
                 <div className='py-4 sticky top-24 max-h-[calc(100vh-96px)] overflow-y-auto hidden lg:block border-r'>
                     <UserMenu/>
@@ -19,7 +21,13 @@ const Dashboard = () => {
 
 
                 {/**right for content */}
-                <div className='bg-white min-h-[75vh] '>
+                <div className='bg-white min-h-[75vh]'>
+                    {/* Show Stock Alert for admin users */}
+                    {isAdmin(user.role) && (
+                        <div className='p-4 pb-0'>
+                            <StockAlert />
+                        </div>
+                    )}
 
                     <Outlet/>
                 </div>
