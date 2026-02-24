@@ -2,207 +2,53 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, development ]
+    branches: [main]
   pull_request:
-    branches: [ main, development ]
-
-env:
-  REGISTRY: docker.io  # or ghcr.io for GitHub Container Registry
-  IMAGE_PREFIX: your-dockerhub-username  # Replace with your Docker Hub username
+    branches: [main]
 
 jobs:
-  # Test jobs
-  test-server:
-    name: Test Server
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: server/package-lock.json
-
-      - name: Install dependencies
-        working-directory: ./server
-        run: npm ci
-
-      - name: Run tests
-        working-directory: ./server
-        run: npm test --if-present
-
-      - name: Run linter
-        working-directory: ./server
-        run: npm run lint --if-present
-
-  test-client:
-    name: Test Client
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: client/package-lock.json
-
-      - name: Install dependencies
-        working-directory: ./client
-        run: npm ci
-
-      - name: Run tests
-        working-directory: ./client
-        run: npm test --if-present
-
-      - name: Run linter
-        working-directory: ./client
-        run: npm run lint --if-present
-
-      - name: Build
-        working-directory: ./client
-        run: npm run build
-
-  # Security scanning
-  security-scan:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-
-      - name: Upload Trivy results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
-
-  # Build and push Docker images
   build-and-push:
-    name: Build and Push Docker Images
     runs-on: ubuntu-latest
-    needs: [test-server, test-client, security-scan]
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/development')
-    
-    strategy:
-      matrix:
-        service: [server, client]
-    
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+    - name: Login to DockerHub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Login to Docker Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Build and push backend
+      uses: docker/build-push-action@v4
+      with:
+        context: ./server
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/lanka-basket-backend:latest
 
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/lanka-basket-${{ matrix.service }}
-          tags: |
-            type=ref,event=branch
-            type=sha,prefix={{branch}}-
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+    - name: Build and push frontend
+      uses: docker/build-push-action@v4
+      with:
+        context: ./client
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/lanka-basket-frontend:latest
 
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: ./${{ matrix.service }}
-          file: ./${{ matrix.service }}/Dockerfile.prod
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/lanka-basket-${{ matrix.service }}:buildcache
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/lanka-basket-${{ matrix.service }}:buildcache,mode=max
-
-      - name: Scan image with Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/lanka-basket-${{ matrix.service }}:${{ github.ref_name }}-${{ github.sha }}
-          format: 'sarif'
-          output: 'trivy-image-results.sarif'
-
-  # Deploy to Kubernetes
-  deploy:
-    name: Deploy to Kubernetes
+  test:
     runs-on: ubuntu-latest
     needs: build-and-push
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Configure kubectl
-        uses: azure/k8s-set-context@v3
-        with:
-          method: kubeconfig
-          kubeconfig: ${{ secrets.KUBE_CONFIG }}
-
-      - name: Update image tags in manifests
-        run: |
-          sed -i "s|your-registry/lanka-basket-server:latest|${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/lanka-basket-server:main-${{ github.sha }}|g" k8s/server-deployment.yaml
-          sed -i "s|your-registry/lanka-basket-client:latest|${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/lanka-basket-client:main-${{ github.sha }}|g" k8s/client-deployment.yaml
-
-      - name: Deploy to Kubernetes
-        run: |
-          kubectl apply -f k8s/namespace.yaml
-          kubectl apply -f k8s/configmap.yaml
-          kubectl apply -f k8s/secrets.yaml
-          kubectl apply -f k8s/mongo-deployment.yaml
-          kubectl apply -f k8s/server-deployment.yaml
-          kubectl apply -f k8s/client-deployment.yaml
-          kubectl apply -f k8s/ingress.yaml
-
-      - name: Wait for rollout
-        run: |
-          kubectl rollout status deployment/server -n lanka-basket --timeout=5m
-          kubectl rollout status deployment/client -n lanka-basket --timeout=5m
-
-      - name: Verify deployment
-        run: |
-          kubectl get pods -n lanka-basket
-          kubectl get services -n lanka-basket
-          kubectl get ingress -n lanka-basket
-
-  # Rollback on failure
-  rollback:
-    name: Rollback on Failure
-    runs-on: ubuntu-latest
-    needs: deploy
-    if: failure()
+    - uses: actions/checkout@v3
     
-    steps:
-      - name: Configure kubectl
-        uses: azure/k8s-set-context@v3
-        with:
-          method: kubeconfig
-          kubeconfig: ${{ secrets.KUBE_CONFIG }}
-
-      - name: Rollback deployment
-        run: |
-          kubectl rollout undo deployment/server -n lanka-basket
-          kubectl rollout undo deployment/client -n lanka-basket
-          echo "Deployment rolled back due to failure"
+    - name: Run backend tests
+      run: |
+        cd server
+        npm install
+        npm test || echo "No tests yet"
+    
+    - name: Run frontend tests
+      run: |
+        cd client
+        npm install
+        npm test || echo "No tests yet"

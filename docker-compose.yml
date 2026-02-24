@@ -1,41 +1,38 @@
 
+version: '3.8'
+
 services:
-  server:
-    build: ./server
-    container_name: my-server
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./server:/app
-      - /app/node_modules
-    environment:
-      NODE_ENV: development
-      PORT: 8080
-    env_file:
-      - .env
-
-  client:
-    build: ./client
-    container_name: my-client
-    ports:
-      - "5173:5173"
-    volumes:
-      - ./client:/app
-      - /app/node_modules
-    environment:
-      NODE_ENV: development
-    env_file:
-      - .env
-
-  mongo:
-    image: mongo:6
-    container_name: my-mongo
+  mongodb:
+    image: mongo:7
+    container_name: mongodb
     ports:
       - "27017:27017"
     volumes:
-      - mongo-data:/data/db
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+
+  backend:
+    build: ./server
+    container_name: backend
+    ports:
+      - "5000:5000"
+    environment:
+      MONGO_URI: mongodb://admin:password@mongodb:27017/lankabasket?authSource=admin
+      JWT_SECRET: your_jwt_secret
+    depends_on:
+      - mongodb
+
+  frontend:
+    build: ./client
+    container_name: frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
 
 volumes:
-  mongo-data:
+  mongo_data:
 
   

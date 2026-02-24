@@ -1,20 +1,12 @@
-# Use Node 18 as base
-FROM node:18
+FROM node:18-alpine
 
-# Set working directory
 WORKDIR /app
 
-# Copy package.json and lockfile from server
-COPY server/package*.json ./
+COPY package*.json ./
+RUN npm install --production
 
-# Install dependencies
-RUN npm install
+COPY . .
 
-# Copy the rest of the server code
-COPY server/ .
+EXPOSE 5000
 
-# Expose backend port
-EXPOSE 8080
-
-# Start the backend
-CMD ["npm", "start"]
+CMD ["node", "index.js"]
