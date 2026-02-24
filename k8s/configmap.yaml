@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: lanka-basket
+data:
+  NODE_ENV: "production"
+  PORT: "8080"
+  CLIENT_URL: "http://your-domain.com"
+  # Add other non-sensitive configuration here
